@@ -1,0 +1,114 @@
+$body-background:#f2f6fc !default;
+$transparent:    #0000002d !default;
+$white:          #fff !default;
+$white-01:       #f8f8f9 !default;
+$black:          #000 !default;
+$gray:           #6c757d !default;
+$gray-01:        #e8e9ea !default;
+$gray-02:        #d3d4d6 !default;
+$red:            #e81500 !default;
+$red-01:         #cd201f !default;
+$green:          #00ac69 !default;
+$blue:           #0061f2 !default;
+$blue-01:        #384fa1 !default;
+$yellow:         #f4a100 !default;
+$cyan:           #00cfd5 !default;
+$orange:         #f76400 !default;
+$purple:         #6900c7 !default;
+$brown:          #A52A2A !default;
+$pink:           #e30059 !default;
+$linear-gradient: linear-gradient(135deg, #0061f2 0%, rgba(105, 0, 199, 0.8) 100%);
+
+$colors: (
+    'body':        $body-background,
+    'transparent': $transparent,
+    'white':       $white,
+    'white-01':    $white-01,
+    'black':       $black,
+    'gray':        $gray,
+    'gray-01':     $gray-01,
+    'gray-02':     $gray-02,
+    'red':         $red,
+    'red-01':      $red-01,
+    'green':       $green,
+    'blue':        $blue,
+    'blue-01':     $blue-01,
+    'yellow':      $yellow,
+    'cyan':        $cyan,
+    'orange':      $orange,
+    'purple':      $purple,
+    'brown':       $brown,
+    'pink':        $pink,
+    'linear-gradient': $linear-gradient,
+) !default;
+
+$text-colors: (
+    '01':    #292a3aa8,
+    '02':    #363d47,
+    '03':    #ffffff80,
+    'white':   $white,
+    'blue':    $blue,
+    'blue-01': $blue-01,
+) !default;
+
+$box-shadows: (
+    '01': '0 0.15rem 1.75rem 0 rgba(33, 40, 50, 0.15)',
+    '02': '0.15rem 0 1.75rem 0 rgba(33, 40, 50, 0.15)',
+    '03': '0 0 0 1px rgb(0 0 0 / 5%), 0 3px 6px 1px rgb(0 0 0 / 5%)',
+) !default;
+
+$inputs: (
+    '01': (
+        background: #eef2f8,
+        border: 1px solid #eef2f8,
+        color: #69707a,
+    ),
+
+    '02': (
+        background: #fff,
+        border: 2px #eee solid,
+        color: #adb5bd,
+    ),
+) !default;
+
+$transitions: (
+    '01': all 0.5s ease,
+    '02': all 0.2s ease-in-out,
+    '03': all 0.1s ease-in-out
+) !default;
+
+$text-colors: (
+    01: 'black-01',
+    02: 'black-02',
+    03: 'gray-03',
+) !default;
+
+$font-sizes: (
+    10: 10px,
+    12: 12px,
+    14: 14px,
+    16: 16px,
+    18: 18px,
+    20: 20px,
+    22: 22px,
+    24: 24px,
+) !default;
+
+$font-weights: (
+    400: 400,
+    500: 500,
+    600: 600,
+) !default;
+
+$mps: (
+    5: 5px,
+    10: 10px,
+    15: 15px,
+    20: 20px,
+) !default;
+
+$roundeds: (
+    4: 4px,
+    6: 6px,
+    8: 8px,
+) !default;

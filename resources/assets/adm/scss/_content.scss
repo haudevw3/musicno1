@@ -1,0 +1,26 @@
+.content {
+    width: calc(100% - 240px);
+    height: auto;
+    margin-top: 72px;
+    margin-left: 240px;
+    transition: var(--bs-transition-02);
+
+    .content-top {
+        width: 100%;
+        height: 250px;
+        padding: 20px;
+        transition: var(--bs-transition-02);
+
+        .box-common {
+            width: 100%;
+            height: 100px;
+        }
+    }
+
+    .content-body {
+        width: 100%;
+        margin-top: -100px;
+        padding: 20px;
+        transition: var(--bs-transition-02);
+    }
+}

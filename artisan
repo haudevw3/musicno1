@@ -1,0 +1,9 @@
+<?php
+
+use App\Console\Command;
+
+require 'vendor/autoload.php';
+
+$command = new Command;
+
+$command->make();

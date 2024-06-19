@@ -1,0 +1,27 @@
+.form-control,
+.form-select {
+    font-size: 14px !important;
+    font-weight: 600 !important;
+    color: var(--bs-input-color-01) !important;
+}
+
+.form-group {
+    position: relative !important;
+}
+
+.form-check-input:checked {
+    background-color: var(--bs-color-blue-01) !important;
+}
+
+.form-check-label {
+    color: var(--bs-input-color-01) !important;
+}
+
+.form-container {
+    width: 75%;
+}
+
+.form-top .box-text {
+    height: 50px;
+    border-radius: 6px 6px 0 0;
+}

@@ -1,0 +1,23 @@
+{
+    "name": "w3base/w3base",
+    "type": "project",
+    "description": "A simple PHP foundation",
+    "keywords": ["foundation", "simple"],
+    "license": "MIT",
+    "require": {
+        "haudevw3/foundation": "^1.0.2"
+    },
+    "autoload": {
+        "psr-4": {
+            "App\\": "app/",
+            "Core\\": "core/",
+            "Modules\\User\\": "modules/user/",
+            "Modules\\Adm\\": "modules/adm/"
+        },
+        "files": [
+            "core/helpers.php"
+        ]
+    },
+    "minimum-stability": "dev",
+    "prefer-stable": true
+}
