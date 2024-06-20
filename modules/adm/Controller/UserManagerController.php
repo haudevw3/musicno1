@@ -25,6 +25,8 @@ class UserManagerController
         $users = $pagination['data'];
         unset($pagination['data']);
         $data = [
+            'title' => 'Bảng thành viên',
+            'label' => 1,
             'users' => $users,
             'pagination' => $pagination,
             'dialog' => config('adm.user.MESSAGE.DIALOG'),
@@ -34,7 +36,11 @@ class UserManagerController
 
     public function pageAddUser()
     {
-        return view('adm.viewCrudUser');
+        $data = [
+            'title' => 'Biểu mẫu tạo thành viên',
+            'label' => 2,
+        ];
+        return view('adm.viewCrudUser', $data);
     }
 
     public function createUser(FormCreateUser $request)
@@ -84,10 +90,7 @@ class UserManagerController
 
     public function deleteMultipleUser(Request $request)
     {
-        $ids = $request->filterInput(
-            $_POST, INPUT_POST, FILTER_DEFAULT, FILTER_REQUIRE_ARRAY
-        )['ids'];
-        if ($this->userService->delete(['id' => $ids])) {
+        if ($this->userService->delete(['id' => $request->all()['ids']])) {
             return redirect()->route('adm-manager-user', ['page' => 1])
                     ->with('success', config('adm.user.MESSAGE.DELETE_SUCCESS'));
         }

@@ -12,7 +12,8 @@
             "App\\": "app/",
             "Core\\": "core/",
             "Modules\\User\\": "modules/user/",
-            "Modules\\Adm\\": "modules/adm/"
+            "Modules\\Adm\\": "modules/adm/",
+            "Modules\\Categories\\": "modules/categories/"
         },
         "files": [
             "core/helpers.php"

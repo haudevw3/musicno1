@@ -1,25 +1,25 @@
-const USER_MANAGER = (function () {
+const CATEGORIES_MANAGER = (function () {
 
     var ctrls = {};
     var rows = 0;
 
     const bindControl = function () {
         var self = {};
-        self.table = $("#table-user");
+        self.table = $("#table-categories");
         self.wrapper = self.table.find(".wrapper");
-        self.chooseDetailUser = self.table.find(".choose-detail-user");
-        self.chooseDeleteUser = self.table.find(".choose-delete-user");
-        self.chooseDeleteMultipleUser = self.table.find(".delete-multiple-user");
+        self.chooseDetailCategory = self.table.find(".choose-detail-category");
+        self.chooseDeleteCategory = self.table.find(".choose-delete-category");
+        self.chooseDeleteMultipleCategory = self.table.find(".delete-multiple-category");
         return self;
     }
 
     const bindFunction = function () {
-        ctrls.chooseDetailUser.on("click", chooseDetailUser);
-        ctrls.chooseDeleteUser.on("click", chooseDeleteUser);
-        ctrls.chooseDeleteMultipleUser.on("click", chooseDeleteMultipleUser);
+        ctrls.chooseDetailCategory.on("click", chooseDetailCategory);
+        ctrls.chooseDeleteCategory.on("click", chooseDeleteCategory);
+        ctrls.chooseDeleteMultipleCategory.on("click", chooseDeleteMultipleCategory);
     }
 
-    const chooseDetailUser = function () {
+    const chooseDetailCategory = function () {
         var id = $(this).attr("row-id");
         var rowId = "#row-" + id;
         addFocusButton(true, this);
@@ -27,12 +27,12 @@ const USER_MANAGER = (function () {
         ctrls.wrapper.css({display: "block"});
         ctrls.wrapper.on("click", function () {
             ctrls.wrapper.css({ display: "none" });
-            addFocusButton(false, ctrls.chooseDetailUser);
+            addFocusButton(false, ctrls.chooseDetailCategory);
             $(rowId).find(".dropdown-menu-" + id).css({display: "none"});
         })
     }
 
-    const chooseDeleteUser = function () {
+    const chooseDeleteCategory = function () {
         var url = $(this).attr("data-url");
         addFocusButton(true, this);
         DIALOG.show(url);
@@ -46,10 +46,10 @@ const USER_MANAGER = (function () {
         }
     }
 
-    const chooseDeleteMultipleUser = function () {
+    const chooseDeleteMultipleCategory = function () {
         if (TABLE.getStatusChecbox()) {
             var url = $(this).attr("data-url");
-            DIALOG.show(url, "#form-user");
+            DIALOG.show(url, "#form-category");
         } else {
             ALERT.show(ALERT.WARNING, "Vui lòng tích vào các ô để sử dụng chức năng này.");
         }
@@ -57,9 +57,9 @@ const USER_MANAGER = (function () {
 
     $(document).ready(function () {
         rows = TABLE.getRows();
-        ctrls.table.wrap("<form id='form-user' method='post'></form>");
+        ctrls.table.wrap("<form id='form-category' method='post'></form>");
         DIALOG.init({
-            subject: ctrls.chooseDeleteUser,
+            subject: ctrls.chooseDeleteCategory,
             name: "btn-sm-01-focus"
         })
     })
@@ -76,4 +76,4 @@ const USER_MANAGER = (function () {
 
 })();
 
-USER_MANAGER.init();
+CATEGORIES_MANAGER.init();

@@ -1,7 +1,7 @@
 <div class="d-flex">
     <div class="form-container box-shadow-01 rounded-6 bg-color-white">
         <div class="form-top">
-            <div class="box-text bg-color-white-01 vertical-center-items pl-20 pr-20 fs-16 fw-600 text-color-blue">Biểu mẫu</div>
+            <div class="box-text bg-color-white-01 vertical-center-items pl-20 pr-20 fs-16 fw-600 text-color-blue"><?php echo isset($title) ? $title : null ?></div>
             <div class="divider-01"></div>
         </div>
         <div class="form-body p-20">
