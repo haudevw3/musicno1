@@ -12,7 +12,8 @@
             "Core\\": "core/",
             "Modules\\User\\": "modules/user/",
             "Modules\\Adm\\": "modules/adm/",
-            "Modules\\Categories\\": "modules/categories/"
+            "Modules\\Categories\\": "modules/categories/",
+            "Modules\\Page\\": "modules/page/"
         },
         "files": [
             "core/helpers.php"

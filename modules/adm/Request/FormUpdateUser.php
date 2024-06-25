@@ -23,13 +23,13 @@ class FormUpdateUser extends FormRequest
     public function messages()
     {
         return [
-            'fullname.min'    => 'Họ và tên tối thiểu 6 kí tự.',
-            'fullname.max'    => 'Họ và tên tối đa 50 kí tự.',
+            'fullname.min' => 'Họ và tên tối thiểu 6 kí tự.',
+            'fullname.max' => 'Họ và tên tối đa 50 kí tự.',
             'username.except' => 'Tên đăng nhập đã tồn tại.',
-            'username.min'    => 'Tên đăng nhập tối thiểu 6 kí tự.',
-            'username.max'    => 'Tên đăng nhập tối đa 30 kí tự.',
-            'password.min'    => 'Mật khẩu tối thiểu 6 kí tự.',
-            'password.max'    => 'Mật khẩu tối đa 30 kí tự.'
+            'username.min' => 'Tên đăng nhập tối thiểu 6 kí tự.',
+            'username.max' => 'Tên đăng nhập tối đa 30 kí tự.',
+            'password.min' => 'Mật khẩu tối thiểu 6 kí tự.',
+            'password.max' => 'Mật khẩu tối đa 30 kí tự.'
         ];
     }
 }

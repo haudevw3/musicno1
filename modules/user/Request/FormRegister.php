@@ -1,0 +1,38 @@
+<?php
+
+namespace Modules\User\Request;
+
+use Foundation\Http\FormRequest;
+
+class FormRegister extends FormRequest
+{
+    public function authorized()
+    {
+        return true;
+    }
+
+    public function rules()
+    {
+        return [
+            'username' => 'required|min:6|max:30|exists:users,username',
+            'email' => 'required|min:6|email',
+            'password' => 'required|min:6|max:30',
+        ];
+    }
+
+    public function messages()
+    {
+        return [
+            'username.required' => 'Tên đăng nhập không được bỏ trống.',
+            'username.exists' => 'Tên đăng nhập đã tồn tại.',
+            'username.min' => 'Tên đăng nhập tối thiểu 6 kí tự.',
+            'username.max' => 'Tên đăng nhập tối đa 30 kí tự.',
+            'email.required' => 'Email không được bỏ trống.',
+            'email.min' => 'Email tối thiểu 6 kí tự.',
+            'email.email' => 'Email không đúng định dạng.',
+            'password.required' => 'Mật khẩu không được bỏ trống.',
+            'password.min' => 'Mật khẩu tối thiểu 6 kí tự.',
+            'password.max' => 'Mật khẩu tối đa 30 kí tự.'
+        ];
+    }
+}

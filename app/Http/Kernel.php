@@ -8,5 +8,7 @@ class Kernel extends HttpKernel
 {
     protected $middleware = [];
     protected $middlewareGroups = [];
-    protected $routeMiddleware = [];
+    protected $routeMiddleware = [
+        'auth.remember' => \Core\Middleware\AuthenticateRemember::class
+    ];
 }

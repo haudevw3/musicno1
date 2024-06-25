@@ -19,13 +19,13 @@ class UserServiceImpl extends BaseServiceImpl implements UserService
     {
         $attributes = [
             'ip' => request()->ip(),
-            'fullname' => trim($data['fullname']),
+            'fullname' => isset($data['fullname']) ? trim($data['fullname']) : null,
             'username' => trim($data['username']),
             'password' => password_hash($data['password'], PASSWORD_DEFAULT),
             'email' => isset($data['email']) ? $data['email'] : null,
             'tel' => isset($data['tel']) ? $data['tel'] : null,
             'address' => isset($data['address']) ? $data['address'] : null,
-            'roles' => ($data['roles'] == 1) ? '1, 2' : '2',
+            'role' => (int) $data['role'],
             'image' => isset($data['image']) ? $data['image'] : null
         ];
         return $this->baseRepo->create($attributes);

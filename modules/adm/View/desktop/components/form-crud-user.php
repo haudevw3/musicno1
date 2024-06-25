@@ -55,8 +55,8 @@
                 <label class="form-label fw-600">Vai trò:</label>
                 <select class="form-select">
                     <option value="" selected disabled hidden>Chọn vai trò</option>
-                    <option value="1" <?php echo isset($user) ? (($user['roles'] == 1) ? 'selected' : null) : ((old('roles') == 1) ? 'selected' : null) ?>>Quản trị viên</option>
-                    <option value="2" <?php echo isset($user) ? (($user['roles'] == 2) ? 'selected' : null) : ((old('roles') == 2) ? 'selected' : null) ?>>Thành viên</option>
+                    <option value="1" <?php echo isset($user) ? (($user['role'] == 1) ? 'selected' : null) : ((old('role') == 1) ? 'selected' : null) ?>>Quản trị viên</option>
+                    <option value="2" <?php echo isset($user) ? (($user['role'] == 2) ? 'selected' : null) : ((old('role') == 2) ? 'selected' : null) ?>>Thành viên</option>
                 </select>
             </div>
 

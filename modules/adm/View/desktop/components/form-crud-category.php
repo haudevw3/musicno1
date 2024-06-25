@@ -18,6 +18,11 @@
                 </div>
 
                 <div class="mb-3">
+                    <label for="title" class="form-label fw-600">Tiêu đề danh mục: ( được bỏ trống )</label>
+                    <textarea id="title" type="text" class="form-control" placeholder="Nhập nội dung tiêu đề"><?php echo isset($category) ? $category['title'] : old('title') ?></textarea>
+                </div>
+
+                <div class="mb-3">
                     <label for="priority" class="form-label fw-600">Độ ưu tiên: ( được bỏ trống )</label>
                     <div class="form-group input-md-01">
                         <i class="fa-regular fa-flag"></i>
