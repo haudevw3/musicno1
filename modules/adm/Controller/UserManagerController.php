@@ -59,8 +59,12 @@ class UserManagerController
     {
         $id = $request->input('id');
         $user = $this->userService->findOne(['id' => $id]);
+        $data = [
+            'user' => $user,
+            'title' => 'Cập nhật thành viên'
+        ];
         if (! is_null($user)) {
-            return view('adm.viewCrudUser', compact('user'));
+            return view('adm.viewCrudUser', $data);
         }
     }
 

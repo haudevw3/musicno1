@@ -4,20 +4,20 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "364dca4c8acb9f6372cc87204d3f7f0a",
+    "content-hash": "e5b3db32b0a6a4b9c5dec8935924c2bc",
     "packages": [
         {
             "name": "haudevw3/foundation",
-            "version": "1.0.6",
+            "version": "1.0.7",
             "source": {
                 "type": "git",
                 "url": "https://github.com/haudevw3/foundation.git",
-                "reference": "772a94f0f94569c0e0ec0316a48195879ef5a6c8"
+                "reference": "ffe84e8fb102fbc7d08f20883756cf9b66f0e771"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/haudevw3/foundation/zipball/772a94f0f94569c0e0ec0316a48195879ef5a6c8",
-                "reference": "772a94f0f94569c0e0ec0316a48195879ef5a6c8",
+                "url": "https://api.github.com/repos/haudevw3/foundation/zipball/ffe84e8fb102fbc7d08f20883756cf9b66f0e771",
+                "reference": "ffe84e8fb102fbc7d08f20883756cf9b66f0e771",
                 "shasum": ""
             },
             "require": {
@@ -62,9 +62,9 @@
             "description": "A simple PHP foundation",
             "support": {
                 "issues": "https://github.com/haudevw3/foundation/issues",
-                "source": "https://github.com/haudevw3/foundation/tree/v1.0.6"
+                "source": "https://github.com/haudevw3/foundation/tree/v1.0.7"
             },
-            "time": "2024-06-17T06:01:36+00:00"
+            "time": "2024-06-21T07:09:45+00:00"
         }
     ],
     "packages-dev": [],

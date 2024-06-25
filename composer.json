@@ -1,11 +1,10 @@
 {
-    "name": "w3base/w3base",
+    "name": "musicno1/musicno1",
     "type": "project",
-    "description": "A simple PHP foundation",
-    "keywords": ["foundation", "simple"],
+    "description": "The online music streaming website is built with PHP.",
     "license": "MIT",
     "require": {
-        "haudevw3/foundation": "^1.0.2"
+        "haudevw3/foundation": "^1.0.7"
     },
     "autoload": {
         "psr-4": {

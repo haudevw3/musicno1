@@ -83,22 +83,22 @@ abstract class BaseRepositoryImpl implements BaseRepository
         return $paginator->toArray();
     }
 
-    public function create(array $data = [])
+    public function create(array $data)
     {
         return $this->model()->create($data);
     }
 
-    public function update(array $condition = [], array $data = [])
+    public function update(array $condition, array $data)
     {
         return $this->buildQuery($condition)->update($data);
     }
 
-    public function updateOne($id, array $data = [])
+    public function updateOne($id, array $data)
     {
         return $this->model()->update($id, $data);
     }
 
-    public function delete(array $condition = [], $forever = false)
+    public function delete(array $condition, $forever = false)
     {
         $column = array_keys($condition)[0];
         $value = array_values($condition)[0];

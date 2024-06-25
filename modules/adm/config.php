@@ -39,8 +39,8 @@ return [
         ],
 
         'MESSAGE' => [
-            'CREATE_SUCCESS' => 'Tạo tài danh mục thành công.',
-            'CREATE_FAIL' => 'Tạo tài danh mục thất bại. Vui lòng kiểm tra lại các thông tin.',
+            'CREATE_SUCCESS' => 'Tạo danh mục thành công.',
+            'CREATE_FAIL' => 'Tạo danh mục thất bại. Vui lòng kiểm tra lại các thông tin.',
             'UPDATE_SUCCESS' => 'Cập nhật dữ liệu danh mục thành công.',
             'UPDATE_FAIL' => 'Cập nhật dữ liệu danh mục thất bại. Vui lòng kiểm tra lại các thông tin.',
             'DELETE_SUCCESS' => 'Xóa dữ liệu danh mục thành công.',

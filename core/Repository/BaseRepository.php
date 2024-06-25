@@ -14,13 +14,13 @@ interface BaseRepository
 
     public function list(array $columns = [], array $conditions = [], array $sorted = [], $perPage = 10);
 
-    public function create(array $data = []);
+    public function create(array $data);
 
-    public function update(array $condition = [], array $data = []);
+    public function update(array $condition, array $data);
 
-    public function updateOne($id, array $data = []);
+    public function updateOne($id, array $data);
 
-    public function delete(array $condition = [], $forever = false);
+    public function delete(array $condition, $forever = false);
 
     public function deleteOne($id, $forever = false);
 }

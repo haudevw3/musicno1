@@ -13,4 +13,4 @@
     }
 ?>
 
-<div class="alert-container alert col-2 p-3 animated-fade-in-up"></div>
+<div class="alert col-2 p-3 animated-fade-in-up"></div>

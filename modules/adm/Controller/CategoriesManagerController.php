@@ -64,6 +64,7 @@ class CategoriesManagerController
         $categories = $this->categoriesService->findAll(['id','name']);
         $data = [
             'id' => $id,
+            'title' => 'Cập nhật danh mục',
             'category' => $category,
             'categories' => $categories,
         ];
