@@ -1,5 +1,5 @@
 <div class="box-image box-user bg-color-dark-03 rounded-circle cursor-pointer center-items">
-    <img class="rounded-circle" src="<?php echo random_avatar() ?>" alt="">
+    <img class="rounded-circle" src="<?php echo $user->image ?? random_avatar() ?>" alt="">
 </div>
 
 <div class="wrapper"></div>
@@ -17,7 +17,7 @@
             }
             foreach ($array as $key => $value) {
                 ?>
-                    <a class="dropdown-item text-color-white d-flex" href="">
+                    <a class="dropdown-item text-color-white d-flex" href="<?php echo route($value['route']['name'], $value['route']['params']) ?>">
                         <i class="<?php echo $value['icon'] ?>"></i>
                         <span><?php echo $value['title'] ?></span>
                     </a>

@@ -18,9 +18,11 @@ class User extends Model
         'tel',
         'address',
         'role',
+        'image',
         'session_id',
         'remember_token',
-        'image',
+        // 'access_token',
+        // 'refresh_token',
         'forgot_token',
         'active_token',
         'created_at',
@@ -36,14 +38,18 @@ class User extends Model
         'tel' => '',
         'address' => '',
         'role' => 0,
+        'image' => '',
         'session_id' => '',
         'remember_token' => '',
-        'image' => '',
+        // 'access_token' => '',
+        // 'refresh_token' => '',
         'forgot_token' => '',
         'active_token' => '',
     ];
 
     protected $hidden = [
         'password',
+        // 'access_token',
+        // 'refresh_token',
     ];
 }

@@ -5,7 +5,7 @@ use Modules\Adm\Controller\AdmController;
 use Modules\Adm\Controller\CategoriesManagerController;
 use Modules\Adm\Controller\UserManagerController;
 
-Route::prefix('adm')->group(function () {
+Route::prefix('adm')->middleware('auth.admin')->group(function () {
     Route::get('home', [AdmController::class, 'pageHome'])->name('adm-page');
     Route::get('manager-user/{page?}', [UserManagerController::class, 'pageManagerUser'])
             ->where('page', 'page-(\d+)')

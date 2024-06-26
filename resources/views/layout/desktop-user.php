@@ -26,12 +26,19 @@
     <div class="footer bg-color-dark-01 fixed-bottom">
         <div class="divider-01"></div>
 
-        <div class="music-container d-flex pl-20 pr-20">
-            <?php include_one('components.user.music-left') ?>
-            <?php include_one('components.user.music-center') ?>
-            <?php include_one('components.user.music-right') ?>
-            <?php include_one('components.user.ads') ?>
-        </div>
+        <?php
+            if (auth()->user()) {
+                ?>
+                    <div class="music-container d-flex pl-20 pr-20">
+                        <?php include_one('components.user.music-left') ?>
+                        <?php include_one('components.user.music-center') ?>
+                        <?php include_one('components.user.music-right') ?>
+                    </div>
+                <?php
+            } else {
+                include_one('components.user.ads');
+            } 
+        ?>
     </div>
 
     <?php include_one('components.user.render-js') ?>

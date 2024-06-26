@@ -9,5 +9,7 @@
         <img class="rounded-circle" src="<?php echo random_avatar() ?>" alt="">
     </div>
 
-    <?php include_one('components.adm.dropdown-menu') ?>
+    <?php
+        include_one('components.adm.dropdown-menu', ['user' => auth()->user()]);
+    ?>
 </div>

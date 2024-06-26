@@ -39,7 +39,7 @@
         <div class="form-group mb-3 center-items">Hoặc</div>
 
         <div class="form-group mb-4">
-            <a href="#" class="btn-md-02 bg-color-dark-03 center-items">Đăng nhập bằng Google</a>
+            <a href="<?php echo $authUrl ?>" class="btn-md-02 bg-color-dark-03 center-items">Đăng nhập bằng Google</a>
         </div>
         
         <div class="form-group center-items">
