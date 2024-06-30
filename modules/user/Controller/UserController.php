@@ -50,7 +50,7 @@ class UserController
             return back()->withInput()->withErrors();
         }
         $data = $request->all();
-        array_merge($data, ['role' => 2]);
+        $data['role'] = 2;
         $this->userService->create($data);
         return redirect()->route('page-login');
     }

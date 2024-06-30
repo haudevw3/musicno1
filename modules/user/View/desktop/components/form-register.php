@@ -10,6 +10,14 @@
             <div class="mb-4">
                 <div class="form-group input-md-02">
                     <i class="fa-regular fa-user"></i>
+                    <input type="text" class="form-control" placeholder="Họ và tên" name="fullname" value="<?php echo old('fullname') ?>">
+                </div>
+                <div class="form-text text-color-red"><?php echo error('fullname') ?></div>
+            </div>
+
+            <div class="mb-4">
+                <div class="form-group input-md-02">
+                    <i class="fa-regular fa-user"></i>
                     <input type="text" class="form-control" placeholder="Tên đăng nhập" name="username" value="<?php echo old('username') ?>">
                 </div>
                 <div class="form-text text-color-red"><?php echo error('username') ?></div>

@@ -37,11 +37,11 @@
                                     <td><?php echo $key ?></td>
                                     <td><?php echo $user['fullname'] ?></td>
                                     <td><?php echo $user['username'] ?></td>
-                                    <td><?php echo $user['tel'] ?></td>
-                                    <td><?php echo $user['address'] ?></td>
                                     <td><?php echo $user['email'] ?></td>
+                                    <td><?php echo $user['tel'] ?></td>
                                     <td><div class="bg-color-blue center-items table-label">Hoạt động</div></td>
-                                    <td><?php echo $user['created_at'] ?></td>
+                                    <td><?php echo date_format(date_create($user['created_at']), 'd-m-Y') ?></td>
+                                    <td><?php echo date_format(date_create($user['updated_at']), 'd-m-Y | H:i') ?></td>
                                     <td>
                                         <div class="d-flex position-relative">
                                             <div row-id="<?php echo $key ?>" class="table-btn center-items choose-detail-user"><i class="fa-regular fa-ellipsis-vertical fw-600"></i></div>

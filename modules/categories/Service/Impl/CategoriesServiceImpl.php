@@ -15,25 +15,25 @@ class CategoriesServiceImpl extends BaseServiceImpl implements CategoriesService
         parent::__construct($baseRepo);
     }
 
+    protected function parseData(array $data)
+    {
+        return [
+            'name' => trim($data['name']),
+            'slug' => trim($data['slug']),
+            'image' => trim($data['image']),
+            'priority' => ! empty($data['priority']) ? $data['priority'] : 0,
+            'subs' => ! empty($data['subs']) ? implode(',', $data['subs']) : null,
+        ];
+    }
+
     public function create(array $data)
     {
-        $attributes = [
-            'name' => trim($data['name']),
-            'priority' => ! empty($data['priority']) ? $data['priority'] : 0,
-            'sub_id' => ! empty($data['subs']) ? implode(',', $data['subs']) : null,
-            'display_limit' => ! empty($data['display_limit']) ? $data['display_limit'] : 0,
-            'slug' => trim($data['slug']),
-            'image' => ! empty($data['image']) ? trim($data['image']) : null
-        ];
-
-        return $this->baseRepo->create($attributes);
+        return $this->baseRepo->create($this->parseData($data));
     }
 
     public function updateOne($id, array $data)
     {
-        $data['sub_id'] = ! empty($data['subs']) ? implode(',', $data['subs']) : null;
-        unset($data['subs']);
-        return $this->baseRepo->updateOne($id, $data);
+        return $this->baseRepo->updateOne($id, $this->parseData($data));
     }
 
     public function deleteOne($id)

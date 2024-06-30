@@ -15,25 +15,30 @@ class UserServiceImpl extends BaseServiceImpl implements UserService
         parent::__construct($baseRepo);
     }
 
-    public function create(array $data)
+    protected function parseData(array $data)
     {
-        $attributes = [
+        return [
             'ip' => request()->ip(),
-            'fullname' => isset($data['fullname']) ? trim($data['fullname']) : null,
+            'fullname' => trim($data['fullname']),
             'username' => trim($data['username']),
             'password' => password_hash($data['password'], PASSWORD_DEFAULT),
-            'email' => isset($data['email']) ? $data['email'] : null,
-            'tel' => isset($data['tel']) ? $data['tel'] : null,
-            'address' => isset($data['address']) ? $data['address'] : null,
+            'email' => trim($data['email']),
+            'tel' => isset($data['tel']) ? trim($data['tel']) : null,
             'role' => (int) $data['role'],
-            'image' => isset($data['image']) ? $data['image'] : null
+            'image' => isset($data['image']) ? trim($data['image']) : null,
         ];
-        return $this->baseRepo->create($attributes);
+    }
+
+    public function create(array $data)
+    {
+        return $this->baseRepo->create($this->parseData($data));
     }
 
     public function updateOne($id, array $data)
     {
-        if (isset($data['password']) && $data['password'] == 'musicno1') {
+        $password = $data['password'];
+        $data = $this->parseData($data);
+        if ($password == 'musicno1') {
             unset($data['password']);
         }
         return $this->baseRepo->updateOne($id, $data);

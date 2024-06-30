@@ -14,15 +14,22 @@ class FormUpdateCategory extends FormRequest
     public function rules()
     {
         return [
-            'name' => 'except:categories,name|min:6|max:255',
+            'name' => 'required|except:categories,name|min:6|max:255',
+            'slug' => 'required|except:artist,slug|min:6|max:255',
         ];
     }
 
     public function messages()
     {
         return [
-            'name.min' => 'Tên danh mục thiểu 6 kí tự.',
-            'name.max' => 'Tên danh mục đa 255 kí tự.',
+            'name.required' => 'Tên danh mục không được bỏ trống.',
+            'name.except' => 'Tên danh mục đã tồn tại.',
+            'name.min' => 'Tên danh mục tối thiểu 6 kí tự.',
+            'name.max' => 'Tên danh mục tối đa 255 kí tự.',
+            'slug.required' => 'Đường dẫn hiển thị không được bỏ trống.',
+            'slug.except' => 'Đường dẫn hiển thị đã tồn tại.',
+            'slug.min' => 'Đường dẫn hiển thị tối thiểu 6 kí tự.',
+            'slug.max' => 'Đường dẫn hiển thị tối đa 255 kí tự.',
         ];
     }
 }

@@ -14,7 +14,8 @@ class FormRegister extends FormRequest
     public function rules()
     {
         return [
-            'username' => 'required|min:6|max:30|exists:users,username',
+            'fullname' => 'required|min:6|max:50',
+            'username' => 'required|exists:users,username|min:6|max:30',
             'email' => 'required|min:6|email',
             'password' => 'required|min:6|max:30',
         ];
@@ -23,6 +24,9 @@ class FormRegister extends FormRequest
     public function messages()
     {
         return [
+            'fullname.required' => 'Họ và tên không được bỏ trống.',
+            'fullname.min' => 'Họ và tên tối thiểu 6 kí tự.',
+            'fullname.max' => 'Họ và tên tối đa là 50 kí tự.',
             'username.required' => 'Tên đăng nhập không được bỏ trống.',
             'username.exists' => 'Tên đăng nhập đã tồn tại.',
             'username.min' => 'Tên đăng nhập tối thiểu 6 kí tự.',

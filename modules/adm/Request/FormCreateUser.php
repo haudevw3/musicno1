@@ -14,22 +14,27 @@ class FormCreateUser extends FormRequest
     public function rules()
     {
         return [
-            'fullname' => 'min:6|max:50',
-            'username' => 'exists:users,username|min:6|max:30',
-            'password' => 'min:6|max:30'
+            'fullname' => 'required|min:6|max:50',
+            'username' => 'required|exists:users,username|min:6|max:30',
+            'password' => 'required|min:6|max:30',
+            'role' => 'required',
         ];
     }
 
     public function messages()
     {
         return [
+            'fullname.required' => 'Họ và tên không được bỏ trống.',
             'fullname.min' => 'Họ và tên tối thiểu 6 kí tự.',
             'fullname.max' => 'Họ và tên tối đa 50 kí tự.',
+            'username.required' => 'Tên đăng nhập không được bỏ trống.',
             'username.exists'=> 'Tên đăng nhập đã tồn tại.',
             'username.min' => 'Tên đăng nhập tối thiểu 6 kí tự.',
             'username.max' => 'Tên đăng nhập tối đa 30 kí tự.',
+            'password.required' => 'Mật khẩu không được bỏ trống.',
             'password.min' => 'Mật khẩu tối thiểu 6 kí tự.',
-            'password.max' => 'Mật khẩu tối đa 30 kí tự.'
+            'password.max' => 'Mật khẩu tối đa 30 kí tự.',
+            'role.required' => 'Vai trò không được bỏ trống.',
         ];
     }
 }

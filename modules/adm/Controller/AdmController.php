@@ -6,6 +6,6 @@ class AdmController
 {
     public function pageHome()
     {
-        echo 'homepage';
+        return view('adm.viewHome');
     }
 }

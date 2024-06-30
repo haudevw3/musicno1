@@ -18,15 +18,12 @@ class CategoriesManagerController
 
     public function pageManagerCategories()
     {
-        $pagination = $this->categoriesService->listCategories(
-            ['id', 'name', 'priority', 'sub_id', 'display_limit', 'slug', 'created_at'],
-            [], ['created_at' => 'desc'], 15
-        );
+        $pagination = $this->categoriesService->listCategories();
         $categories = $pagination['data'];
         unset($pagination['data']);
         $data = [
-            'title' => 'Bảng danh mục',
             'label' => 1,
+            'title' => 'Bảng dữ liệu danh mục',
             'categories' => $categories,
             'pagination' => $pagination,
             'dialog' => config('adm.categories.MESSAGE.DIALOG'),
@@ -38,8 +35,8 @@ class CategoriesManagerController
     {
         $categories = $this->categoriesService->findAll(['id','name']);
         $data = [
-            'title' => 'Biểu mẫu tạo danh mục',
             'label' => 2,
+            'title' => 'Biểu mẫu tạo danh mục',
             'categories' => $categories,
         ];
         return view('adm.viewCrudCategory', $data);
@@ -50,11 +47,17 @@ class CategoriesManagerController
         $validated = $request->validated();
         if (is_array($validated)) {
             return back()->with('fail', config('adm.categories.MESSAGE.CREATE_FAIL'))
-                ->withInput()->withErrors();
+                         ->withInput()->withErrors();
         }
-        $this->categoriesService->create($request->all());
+        $data = $request->all();
+        $file = $request->file('image');
+        if (! is_null($file)) {
+            $fileName = $file->hash()->move('public/uploads/images');
+            $data['image'] = asset("uploads/images/$fileName");
+        }
+        $this->categoriesService->create($data);
         return redirect()->route('adm-manager-categories', ['page' => 1])
-                ->with('success', config('adm.categories.MESSAGE.CREATE_SUCCESS'));
+                         ->with('success', config('adm.categories.MESSAGE.CREATE_SUCCESS'));
     }
 
     public function pageEditCategory(Request $request)
@@ -63,7 +66,7 @@ class CategoriesManagerController
         $category = $this->categoriesService->findOne(['id' => $id]);
         $categories = $this->categoriesService->findAll(['id','name']);
         $data = [
-            'id' => $id,
+            'label' => 2,
             'title' => 'Cập nhật danh mục',
             'category' => $category,
             'categories' => $categories,
@@ -76,14 +79,22 @@ class CategoriesManagerController
         $validated = $request->validated();
         if (is_array($validated)) {
             return back()->with('fail', config('adm.categories.MESSAGE.UPDATE_FAIL'))
-                    ->withInput()->withErrors();
+                         ->withInput()->withErrors();
         }
         $data = $request->all();
         $id = $data['id'];
         unset($data['id']);
+        $file = $request->file('image');
+        if (is_null($file)) {
+            $data['image'] = $data['image_url'];
+            unset($data['image_url']);
+        } else {
+            $fileName = $file->hash()->move('public/uploads/images');
+            $data['image'] = asset("uploads/images/$fileName");
+        }
         $this->categoriesService->updateOne($id, $data);
         return redirect()->route('adm-manager-categories', ['page' => 1])
-                ->with('success', config('adm.categories.MESSAGE.UPDATE_SUCCESS'));
+                         ->with('success', config('adm.categories.MESSAGE.UPDATE_SUCCESS'));
     }
 
     public function deleteCategory(Request $request)
@@ -99,7 +110,7 @@ class CategoriesManagerController
     {
         if ($this->categoriesService->delete(['id' => $request->all()['ids']])) {
             return redirect()->route('adm-manager-categories', ['page' => 1])
-                    ->with('success', config('adm.categories.MESSAGE.DELETE_SUCCESS'));
+                             ->with('success', config('adm.categories.MESSAGE.DELETE_SUCCESS'));
         }
         return back()->with('fail', config('adm.categories.MESSAGE.DELETE_FAIL'));
     }

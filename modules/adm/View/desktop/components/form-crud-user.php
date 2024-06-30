@@ -5,12 +5,14 @@
     </div>
     <div class="form-body p-20">
         <form method="post" action="<?php echo isset($user) ? route('adm-update-user') : route('adm-create-user') ?>">
-            <input class="d-none" name="<?php echo isset($user) ? 'id' : null ?>" value="<?php echo isset($user) ? $user['id'] : null ?>" />
+            <input class="d-none" type="text" name="<?php echo isset($user) ? 'id' : null ?>" value="<?php echo isset($user) ? $user['id'] : null ?>" />
+            <input class="d-none" type="text" name="<?php echo isset($user) ? 'image_url' : null ?>" value="<?php echo isset($user) ? $user['image'] : null ?>" />
+
             <div class="mb-3">
                 <label for="fullname" class="form-label fw-600">Họ và tên:</label>
                 <div class="form-group input-md-01">
                     <i class="fa-regular fa-user"></i>
-                    <input id="fullname" type="text" name="fullname" class="form-control" placeholder="Nhập họ và tên" value="<?php echo isset($user) ? $user['fullname'] : old('fullname') ?>" required>
+                    <input id="fullname" type="text" name="fullname" class="form-control" placeholder="Nhập họ và tên" value="<?php echo isset($user) ? $user['fullname'] : old('fullname') ?>">
                 </div>
                 <div class="form-text text-color-red"><?php echo error('fullname') ?></div>
             </div>
@@ -19,7 +21,7 @@
                 <label for="username" class="form-label fw-600">Tên đăng nhập:</label>
                 <div class="form-group input-md-01">
                     <i class="fa-regular fa-user"></i>
-                    <input id="username" type="text" name="username" class="form-control" placeholder="Nhập tên đăng nhập" value="<?php echo isset($user) ? $user['username'] : old('username') ?>" required>
+                    <input id="username" type="text" name="username" class="form-control" placeholder="Nhập tên đăng nhập" value="<?php echo isset($user) ? $user['username'] : old('username') ?>">
                 </div>
                 <div class="form-text text-color-red"><?php echo error('username') ?></div>
             </div>
@@ -28,9 +30,34 @@
                 <label for="email" class="form-label fw-600">Email:</label>
                 <div class="form-group input-md-01">
                     <i class="fa-regular fa-envelope"></i>
-                    <input id="email" type="email" name="email" class="form-control" placeholder="Nhập email" value="<?php echo isset($user) ? $user['email'] : old('email') ?>" required>
+                    <input id="email" type="email" name="email" class="form-control" placeholder="Nhập email" value="<?php echo isset($user) ? $user['email'] : old('email') ?>">
                 </div>
                 <div class="form-text text-color-red"><?php echo error('email') ?></div>
+            </div>
+
+            <div class="mb-3">
+                <label for="password" class="form-label fw-600">Mật khẩu:</label>
+                <div class="form-group input-md-01">
+                    <i class="fa-regular fa-lock"></i>
+                    <input id="password" type="password" name="password" class="form-control" placeholder="Nhập mật khẩu" value="<?php echo isset($user) ? 'musicno1' : old('password') ?>">
+                </div>
+                <div class="form-text text-color-red"><?php echo error('password') ?></div>
+            </div>
+
+            <div class="mb-3">
+                <label class="form-label fw-600">Vai trò:</label>
+                <select class="form-select" name="role">
+                    <option value="0" selected disabled hidden>Chọn vai trò</option>
+                    <?php
+                        $role = old('role');
+                        foreach ([1 => 'Quản trị viên', 2 => 'Thành viên'] as $key => $value) {
+                            ?>
+                                <option value="<?php echo $key ?>" <?php echo isset($user) ? (($user['role'] == $key) ? 'selected' : null) : (($role == $key) ? 'selected' : null) ?>><?php echo $value ?></option>
+                            <?php
+                        }
+                    ?>
+                </select>
+                <div class="form-text text-color-red"><?php echo error('role') ?></div>
             </div>
 
             <div class="mb-3">
@@ -43,30 +70,12 @@
             </div>
 
             <div class="mb-3">
-                <label for="password" class="form-label fw-600">Mật khẩu:</label>
-                <div class="form-group input-md-01">
-                    <i class="fa-regular fa-lock"></i>
-                    <input id="password" type="password" name="password" class="form-control" placeholder="Nhập mật khẩu" value="<?php echo isset($user) ? 'musicno1' : old('password') ?>" required>
-                </div>
-                <div class="form-text text-color-red"><?php echo error('password') ?></div>
-            </div>
-
-            <div class="mb-3">
-                <label class="form-label fw-600">Vai trò:</label>
-                <select class="form-select">
-                    <option value="" selected disabled hidden>Chọn vai trò</option>
-                    <option value="1" <?php echo isset($user) ? (($user['role'] == 1) ? 'selected' : null) : ((old('role') == 1) ? 'selected' : null) ?>>Quản trị viên</option>
-                    <option value="2" <?php echo isset($user) ? (($user['role'] == 2) ? 'selected' : null) : ((old('role') == 2) ? 'selected' : null) ?>>Thành viên</option>
-                </select>
-            </div>
-
-            <div class="mb-3">
-                <label for="image" class="form-label fw-600">Ảnh đại diện: ( được bỏ trống )</label>
+                <label for="file-upload" class="form-label fw-600">Ảnh đại diện: ( được bỏ trống )</label>
                 <div class="form-group input-md-01">
                     <i class="fa-regular fa-camera"></i>
-                    <input id="image" type="text" name="image" class="form-control" placeholder="Chọn ảnh đại diện" value="<?php echo isset($user) ? $user['image'] : old('image') ?>">
+                    <input class="col-12 file-upload" id="file-upload" type="file" name="image">
                 </div>
-                <div class="form-text text-color-red"><?php echo error('image') ?></div>
+                <div class="form-text text-color-red"></div>
             </div>
 
             <div class="form-bottom mt-20 col-12 d-flex justify-content-end">

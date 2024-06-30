@@ -12,8 +12,7 @@ class Categories extends Model
         'id',
         'name',
         'priority',
-        'sub_id',
-        'display_limit',
+        'subs',
         'slug',
         'image',
         'created_at',
@@ -23,8 +22,7 @@ class Categories extends Model
     protected $attributes = [
         'name' => '',
         'priority' => 0,
-        'sub_id' => '',
-        'display_limit' => 0,
+        'subs' => '',
         'slug' => '',
         'image' => '',
     ];

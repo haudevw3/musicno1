@@ -2,7 +2,7 @@
 
 push('adm.viewCrudCategory');
 
-echo asset('adm/js/categories/form.js');
+echo asset('adm/js/convert-slug.js');
 
 endpush();
 

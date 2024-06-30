@@ -36,11 +36,11 @@
                                     </td>
                                     <td><?php echo $key ?></td>
                                     <td><?php echo $category['name'] ?></td>
-                                    <td><?php echo $category['priority'] ?></td>
-                                    <td><?php echo $category['sub_id'] ?></td>
-                                    <td><?php echo $category['display_limit'] ?></td>
                                     <td><?php echo $category['slug'] ?></td>
-                                    <td><?php echo $category['created_at'] ?></td>
+                                    <td><?php echo $category['priority'] ?></td>
+                                    <td><?php echo $category['subs'] ?></td>
+                                    <td><?php echo date_format(date_create($category['created_at']), 'd-m-Y') ?></td>
+                                    <td><?php echo date_format(date_create($category['updated_at']), 'd-m-Y | H:i') ?></td>
                                     <td>
                                         <div class="d-flex position-relative">
                                             <div row-id="<?php echo $key ?>" class="table-btn center-items choose-detail-category"><i class="fa-regular fa-ellipsis-vertical fw-600"></i></div>

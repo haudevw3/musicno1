@@ -5,21 +5,26 @@
             <div class="divider-01"></div>
         </div>
         <div class="form-body p-20">
-            <form method="post" action="<?php echo isset($category) ? route('adm-update-category') : route('adm-create-category') ?>">
-                <input class="d-none" name="<?php echo isset($category) ? 'id' : null ?>" value="<?php echo isset($category) ? $category['id'] : null ?>" />
+            <form method="post" action="<?php echo isset($category) ? route('adm-update-category') : route('adm-create-category') ?>" enctype="multipart/form-data">
+                <input class="d-none" type="text" name="<?php echo isset($category) ? 'id' : null ?>" value="<?php echo isset($category) ? $category['id'] : null ?>" />
+                <input class="d-none" type="text" name="<?php echo isset($category) ? 'image_url' : null ?>" value="<?php echo isset($category) ? $category['image'] : null ?>" />
 
                 <div class="mb-3">
-                    <label for="category-name" class="form-label fw-600">Tên danh mục:</label>
+                    <label for="name" class="form-label fw-600">Tên danh mục:</label>
                     <div class="form-group input-md-01">
                         <i class="fa-regular fa-pen"></i>
-                        <input id="category-name" type="text" name="name" class="form-control" placeholder="Nhập tên danh mục" value="<?php echo isset($category) ? $category['name'] : old('name') ?>" required>
+                        <input id="name" type="text" name="name" class="form-control need-convert-to-slug" placeholder="Nhập tên danh mục" value="<?php echo isset($category) ? $category['name'] : old('name') ?>">
                     </div>
                     <div class="form-text text-color-red"><?php echo error('name') ?></div>
                 </div>
 
                 <div class="mb-3">
-                    <label for="title" class="form-label fw-600">Tiêu đề danh mục: ( được bỏ trống )</label>
-                    <textarea id="title" type="text" class="form-control" placeholder="Nhập nội dung tiêu đề"><?php echo isset($category) ? $category['title'] : old('title') ?></textarea>
+                    <label for="slug" class="form-label fw-600">Đường dẫn hiển thị:</label>
+                    <div class="form-group input-md-01">
+                        <i class="fa-regular fa-link"></i>
+                        <input id="slug" type="text" name="slug" class="form-control converted-slug" placeholder="Nhập đường dẫn hiển thị" value="<?php echo isset($category) ? $category['slug'] : old('slug') ?>">
+                    </div>
+                    <div class="form-text text-color-red"><?php echo error('slug') ?></div>
                 </div>
 
                 <div class="mb-3">
@@ -32,39 +37,28 @@
                 </div>
 
                 <div class="mb-3">
-                    <label for="display_limit" class="form-label fw-600">Chế độ hiển thị: ( được bỏ trống )</label>
-                    <div class="form-group input-md-01">
-                        <i class="fa-regular fa-flag"></i>
-                        <input id="display_limit" type="number" name="display_limit" class="form-control" placeholder="Nhập số mục muốn hiển thị" value="<?php echo isset($category) ? $category['display_limit'] : old('display_limit') ?>">
-                    </div>
-                    <div class="form-text text-color-red"><?php echo error('display_limit') ?></div>
-                </div>
-
-                <div class="mb-3">
-                    <label for="category-slug" class="form-label fw-600">Đường dẫn hiển thị:</label>
-                    <div class="form-group input-md-01">
-                        <i class="fa-regular fa-link"></i>
-                        <input id="category-slug" type="text" name="slug" class="form-control" placeholder="Nhập đường dẫn hiển thị" value="<?php echo isset($category) ? $category['slug'] : old('slug') ?>">
-                    </div>
-                    <div class="form-text text-color-red"><?php echo error('slug') ?></div>
-                </div>
-
-                <div class="mb-3">
-                    <label for="image" class="form-label fw-600">Ảnh đại diện: ( được bỏ trống )</label>
+                    <label for="file-upload" class="form-label fw-600">Ảnh danh mục: ( được bỏ trống )</label>
                     <div class="form-group input-md-01">
                         <i class="fa-regular fa-camera"></i>
-                        <input id="image" type="text" name="image" class="form-control" placeholder="Chọn ảnh đại diện" value="<?php echo isset($category) ? $category['image'] : old('image') ?>">
+                        <input class="col-12 file-upload" id="file-upload" type="file" name="image">
                     </div>
-                    <div class="form-text text-color-red"><?php echo error('image') ?></div>
+                    <div class="form-text text-color-red"></div>
                 </div>
 
                 <div class="mb-3">
-                    <label class="form-label fw-600">Chọn danh mục phụ:</label>
-                    <div class="d-flex" style="display: grid; grid-template-columns: repeat(2, 1fr);">
+                    <label for="title" class="form-label fw-600">Tiêu đề danh mục: ( được bỏ trống )</label>
+                    <textarea id="title" type="text" class="form-control" placeholder="Nhập nội dung tiêu đề"><?php echo isset($category) ? $category['title'] : old('title') ?></textarea>
+                </div>
+
+                <div class="mb-3">
+                    <label class="form-label fw-600">Chọn danh mục phụ: ( được bỏ trống )</label>
+                    <div style="display: grid; grid-template-columns: repeat(2, 1fr);">
                         <?php
                             $subs = [];
-                            if (isset($category['sub_id'])) {
-                                $subs = explode(',', $category['sub_id']);
+                            if (isset($category['subs'])) {
+                                $subs = explode(',', $category['subs']);
+                            } else {
+                                $subs = old('subs') ?? [];
                             }
                             if (! empty($categories)) {
                                 foreach ($categories as $key => $cate) {
