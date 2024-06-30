@@ -20,7 +20,7 @@ class ArtistServiceImpl extends BaseServiceImpl implements ArtistService
         return [
             'name' => trim($data['name']),
             'slug' => trim($data['slug']),
-            'image' => trim($data['image']),
+            'image' => ! empty($data['image']) ? trim($data['image']) : null,
             'tags' => ! empty($data['tags']) ? implode(',', $data['tags']) : null,
             'biography' => ! empty($data['biography']) ? implode(',', $data['biography']) : null,
         ];

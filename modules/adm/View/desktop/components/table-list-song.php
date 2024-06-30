@@ -36,7 +36,7 @@
                                     </td>
                                     <td><?php echo $key ?></td>
                                     <td><?php echo $song['name'] ?></td>
-                                    <td><?php echo $song['artist_id'] ?></td>
+                                    <td><?php echo $song['artist_name'] ?></td>
                                     <td><?php echo $song['composer'] ?></td>
                                     <td><?php echo $song['duration'] ?></td>
                                     <td><?php echo $song['tags'] ?></td>

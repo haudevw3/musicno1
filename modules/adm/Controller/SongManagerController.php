@@ -28,6 +28,9 @@ class SongManagerController
         $pagination = $this->songService->listSong();
         $songs = $pagination['data'];
         unset($pagination['data']);
+        foreach ($songs as $key => $song) {
+            $songs[$key]['artist_name'] = $this->artistService->findOne(['id' => $song['artist_id']])['name'];
+        }
         $data = [
             'label' => 1,
             'title' => 'Bảng dữ liệu bài hát',

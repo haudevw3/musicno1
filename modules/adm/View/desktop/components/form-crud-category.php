@@ -51,14 +51,14 @@
                 </div>
 
                 <div class="mb-3">
-                    <label class="form-label fw-600">Chọn danh mục phụ: ( được bỏ trống )</label>
+                    <label class="form-label fw-600">Chọn danh để hiển thị: ( được bỏ trống )</label>
                     <div style="display: grid; grid-template-columns: repeat(2, 1fr);">
                         <?php
-                            $subs = [];
-                            if (isset($category['subs'])) {
-                                $subs = explode(',', $category['subs']);
+                            $tags = [];
+                            if (isset($category['tags'])) {
+                                $tags = explode(',', $category['tags']);
                             } else {
-                                $subs = old('subs') ?? [];
+                                $tags = old('tags') ?? [];
                             }
                             if (! empty($categories)) {
                                 foreach ($categories as $key => $cate) {
@@ -66,11 +66,9 @@
                                         continue;
                                     }
                                     ?>
-                                        <div class="col-6">
-                                            <div class="form-check form-check-01">
-                                                <input class="form-check-input" id="check-box-<?php echo $key ?>" type="checkbox" name="subs[]" value="<?php echo $cate['id'] ?>" <?php echo in_array($cate['id'], $subs) ? 'checked' : null ?>>
-                                                <label class="form-check-label fw-600" for="check-box-<?php echo $key ?>"><?php echo $cate['name'] ?></label>
-                                            </div>
+                                        <div class="form-check form-check-01">
+                                            <input class="form-check-input" id="check-box-<?php echo $key ?>" type="checkbox" name="tags[]" value="<?php echo $cate['id'] ?>" <?php echo in_array($cate['id'], $tags) ? 'checked' : null ?>>
+                                            <label class="form-check-label fw-600" for="check-box-<?php echo $key ?>"><?php echo $cate['name'] ?></label>
                                         </div>
                                     <?php
                                 }

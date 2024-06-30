@@ -23,8 +23,8 @@ class UserServiceImpl extends BaseServiceImpl implements UserService
             'username' => trim($data['username']),
             'password' => password_hash($data['password'], PASSWORD_DEFAULT),
             'email' => trim($data['email']),
-            'tel' => isset($data['tel']) ? trim($data['tel']) : null,
             'role' => (int) $data['role'],
+            'tel' => isset($data['tel']) ? trim($data['tel']) : null,
             'image' => isset($data['image']) ? trim($data['image']) : null,
         ];
     }

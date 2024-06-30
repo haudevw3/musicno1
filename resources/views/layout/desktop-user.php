@@ -16,9 +16,9 @@
             </div>
 
             <div class="main-content">
-                <?php include_one('components.user.music-style-01') ?>
-                <?php include_one('components.user.music-style-02') ?>
-                <?php include_one('components.user.music-style-03') ?>
+                <?php include_one('components.user.music-style-01', compact('musicStyle01')) ?>
+                <?php include_one('components.user.music-style-02', compact('musicStyle02')) ?>
+                <?php include_one('components.user.music-style-03', compact('musicStyle03')) ?>
             </div>
         </div>
     </div>

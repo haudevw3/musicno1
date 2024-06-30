@@ -54,11 +54,9 @@
                             if (! empty($categories)) {
                                 foreach ($categories as $key => $category) {
                                     ?>
-                                        <div class="col-6">
-                                            <div class="form-check form-check-01">
-                                                <input class="form-check-input" id="check-box-<?php echo $key ?>" type="checkbox" name="tags[]" value="<?php echo $category['id'] ?>" <?php echo in_array($category['id'], $tags) ? 'checked' : null ?>>
-                                                <label class="form-check-label fw-600" for="check-box-<?php echo $key ?>"><?php echo $category['name'] ?></label>
-                                            </div>
+                                        <div class="form-check form-check-01">
+                                            <input class="form-check-input" id="check-box-<?php echo $key ?>" type="checkbox" name="tags[]" value="<?php echo $category['id'] ?>" <?php echo in_array($category['id'], $tags) ? 'checked' : null ?>>
+                                            <label class="form-check-label fw-600" for="check-box-<?php echo $key ?>"><?php echo $category['name'] ?></label>
                                         </div>
                                     <?php
                                 }

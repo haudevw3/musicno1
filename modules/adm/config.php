@@ -25,7 +25,7 @@ return [
     'categories' => [
 
         'table' => [
-            'column' => ['STT', 'Tên danh mục', 'Đường dẫn hiển thị', 'Độ ưu tiên', 'Danh mục phụ', 'Ngày tạo', 'Cập nhật gần đây', 'Hành động'],
+            'column' => ['STT', 'Tên danh mục', 'Đường dẫn hiển thị', 'Độ ưu tiên', 'Danh mục', 'Ngày tạo', 'Cập nhật gần đây', 'Hành động'],
         ],
 
         'action' => [

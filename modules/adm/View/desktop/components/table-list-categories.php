@@ -38,7 +38,7 @@
                                     <td><?php echo $category['name'] ?></td>
                                     <td><?php echo $category['slug'] ?></td>
                                     <td><?php echo $category['priority'] ?></td>
-                                    <td><?php echo $category['subs'] ?></td>
+                                    <td><?php echo $category['tags'] ?></td>
                                     <td><?php echo date_format(date_create($category['created_at']), 'd-m-Y') ?></td>
                                     <td><?php echo date_format(date_create($category['updated_at']), 'd-m-Y | H:i') ?></td>
                                     <td>
