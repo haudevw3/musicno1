@@ -1,11 +1,11 @@
 <div class="music-left vertical-center-items">
-    <div class="song-image">
-        <img class="rounded-6" width="80px" height="80px" src="./music-1.png" alt="">
-    </div>
-    <div class="song-info ml-10 vertical-center-items">
-        <div class="box-common">
-            <div class="box-text fw-500 text-color-white text-overflow-01">Xe anh đến đâu em theo đến đó</div>
-            <div class="box-text fs-12 fw-500 text-color-dark-05 text-overflow-01">Dương Hoàng Yến, Đạt G</div>
+    <div class="song-info vertical-center-items">
+        <div class="song-image">
+            <img class="rounded-6" width="80px" height="80px" src="./music-1.png" alt="">
+        </div>
+        <div class="box-common ml-10">
+            <div class="box-text song-name fw-500 text-color-white text-overflow-01"></div>
+            <div class="box-text song-composer fs-12 fw-500 text-color-dark-05 text-overflow-01"></div>
         </div>
     </div>
     <div class="song-interact center-items">

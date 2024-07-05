@@ -18,8 +18,20 @@ class PageController
         $this->artistService = $artistService;
         $this->songService = $songService;
     }
-    
+
     public function index()
+    {
+        $data = $this->renderData();
+        return view('page.viewHome', $data);
+    }
+
+    public function home()
+    {
+        $data = $this->renderData();
+        return view('page.viewHome', $data);
+    }
+    
+    protected function renderData()
     {
         $categories = $this->categoriesService->findAll(['id', 'name', 'image', 'slug', 'tags'], [], ['sorted' => ['priority' => 'desc']]);
         $result = [];
@@ -38,7 +50,7 @@ class PageController
             }
         }
         $artists = $this->artistService->findAll(['id', 'name']);
-        $songs = $this->songService->findAll(['id', 'name', 'artist_id', 'composer', 'image', 'audio', 'slug', 'tags']);
+        $songs = $this->songService->findAll(['id', 'name', 'artist_id', 'composer', 'image', 'audio', 'slug', 'duration', 'tags']);
         foreach ($songs as $song) {
             $tags = ! is_null($song['tags']) ? explode(',', $song['tags']) : [];
             if (in_array($result['music_style_02']['id'], $tags)) {
@@ -61,16 +73,10 @@ class PageController
             }
         }
         $result['music_style_03'] = $temp;
-        $data = [
+        return [
             'musicStyle01' => $result['music_style_01'],
             'musicStyle02' => $result['music_style_02'],
             'musicStyle03' => $result['music_style_03'],
         ];
-        return view('page.viewHome', $data);
-    }
-
-    public function home()
-    {
-        return view('page.viewHome');
     }
 }
