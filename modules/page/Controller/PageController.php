@@ -2,6 +2,7 @@
 
 namespace Modules\Page\Controller;
 
+use Foundation\Http\Request;
 use Modules\Artist\Service\ArtistService;
 use Modules\Categories\Service\CategoriesService;
 use Modules\Song\Service\SongService;
@@ -21,62 +22,63 @@ class PageController
 
     public function index()
     {
-        $data = $this->renderData();
-        return view('page.viewHome', $data);
+        return view('page.viewHome');
     }
 
-    public function home()
+    public function loadDataPage(Request $request)
     {
-        $data = $this->renderData();
-        return view('page.viewHome', $data);
+        $alias = $request->input('alias');
+        return response()->json($this->filterDataForPage($alias));
     }
-    
-    protected function renderData()
+
+    protected function filterDataForPage($alias)
     {
-        $categories = $this->categoriesService->findAll(['id', 'name', 'image', 'slug', 'tags'], [], ['sorted' => ['priority' => 'desc']]);
         $result = [];
-        $result['music_style_01'] = $categories[0];
-        $result['music_style_02'] = $categories[1];
-        $result['music_style_03'] = [];
-        foreach ($categories as $category) {
-            $tags = ! is_null($category['tags']) ? explode(',', $category['tags']) : [];
-            if (in_array($result['music_style_01']['id'], $tags)) {
-                $result['music_style_01']['tags'][] = $category;
-            }
-            if (! empty($tags)) {
-                foreach ($tags as $key) {
-                    $result['music_style_03'][$key][] = $category;
+        $categories = [];
+        $parents = [];
+        $subs = [];
+        $columnsCategories = ['id', 'name', 'image', 'slug', 'tags'];
+        $columnsSong = ['id', 'name', 'artist_id', 'composer', 'image', 'audio', 'slug', 'duration', 'tags'];
+        $songs = $this->songService->findAll($columnsSong);
+        if ($alias == 'home') {
+            $options = ['sorted' => ['priority' => 'desc']];
+            $categories = $this->categoriesService->findAll($columnsCategories, [], $options);
+            foreach ($categories as $key => $category) {
+                if (is_null($category['tags'])) {
+                    $parents[] = $category;
+                } else {
+                    $category['tags'] = explode(',', $category['tags']);
+                    $subs[] = $category;
                 }
             }
-        }
-        $artists = $this->artistService->findAll(['id', 'name']);
-        $songs = $this->songService->findAll(['id', 'name', 'artist_id', 'composer', 'image', 'audio', 'slug', 'duration', 'tags']);
-        foreach ($songs as $song) {
-            $tags = ! is_null($song['tags']) ? explode(',', $song['tags']) : [];
-            if (in_array($result['music_style_02']['id'], $tags)) {
-                foreach ($artists as $artist) {
-                    if ($song['artist_id'] == $artist['id']) {
-                        $song['artist_name'] = $artist['name'];
+
+            $result['style_01'] = $parents[0];
+            $result['style_02'] = $parents[1];
+            unset($parents[0], $parents[1]);
+            foreach ($subs as $sub) {
+                if (in_array($result['style_01']['id'], $sub['tags'])) {
+                    $result['style_01']['tags'][] = $sub;
+                }
+            }
+
+            foreach ($songs as $song) {
+                $tags = is_null($song['tags']) ? [] : explode(',', $song['tags']);
+                if (in_array($result['style_02']['id'], $tags)) {
+                    $song['artist_name'] = $this->artistService->findOne(['id' => $song['artist_id']])['name'];
+                    $result['style_02']['tags'][] = $song;
+                };
+            }
+
+            foreach ($parents as $parent) {
+                foreach ($subs as $sub) {
+                    if (in_array($parent['id'], $sub['tags'])) {
+                        $parent['tags'][] = $sub;
                     }
                 }
-                $result['music_style_02']['tags'][] = $song;
-            };
-        }
-        unset($categories[0], $categories[1]);
-        $temp = [];
-        foreach ($result['music_style_03'] as $id => $values) {
-            foreach ($categories as $key => $category) {
-                if ($id == $category['id']) {
-                    $category['tags'] = $values;
-                    $temp[] = $category;
-                }
+                $result['style_03'][] = $parent;
             }
         }
-        $result['music_style_03'] = $temp;
-        return [
-            'musicStyle01' => $result['music_style_01'],
-            'musicStyle02' => $result['music_style_02'],
-            'musicStyle03' => $result['music_style_03'],
-        ];
+
+        return $result;
     }
 }

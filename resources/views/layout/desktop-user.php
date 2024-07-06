@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <?php include_one('components.user.render-css') ?>
-    <?php if (isset($_namespace)) { render_css($_namespace); } ?>
+    <?php isset($_namespace) ? render_css($_namespace) : null ?>
 </head>
 <body class="body-style">
     <div class="full-screen d-flex">
@@ -16,32 +16,22 @@
             </div>
 
             <div class="main-content">
-                <?php include_one('components.user.music-style-01', compact('musicStyle01')) ?>
-                <?php include_one('components.user.music-style-02', compact('musicStyle02')) ?>
-                <?php include_one('components.user.music-style-03', compact('musicStyle03')) ?>
+                <?php include_one('components.user.music-main') ?>
             </div>
         </div>
     </div>
 
     <div class="footer bg-color-dark-01 fixed-bottom">
         <div class="divider-01"></div>
-
-        <?php
-            if (auth()->user()) {
-                ?>
-                    <div class="music-container d-flex pl-20 pr-20">
-                        <?php include_one('components.user.music-left') ?>
-                        <?php include_one('components.user.music-center') ?>
-                        <?php include_one('components.user.music-right') ?>
-                    </div>
-                <?php
-            } else {
-                include_one('components.user.ads');
-            } 
-        ?>
+        <div id="music-control" class="music-container d-flex d-none pl-20 pr-20">
+            <?php include_one('components.user.music-left') ?>
+            <?php include_one('components.user.music-center') ?>
+            <?php include_one('components.user.music-right') ?>
+        </div>
+        <?php include_one('components.user.ads') ?>
     </div>
 
     <?php include_one('components.user.render-js') ?>
-    <?php if (isset($_namespace)) { render_js($_namespace); } ?>
+    <?php isset($_namespace) ? render_js($_namespace) : null ?>
 </body>
 </html>

@@ -567,16 +567,16 @@
         },
         {
             "name": "haudevw3/foundation",
-            "version": "1.0.7",
+            "version": "1.0.8",
             "source": {
                 "type": "git",
                 "url": "https://github.com/haudevw3/foundation.git",
-                "reference": "ffe84e8fb102fbc7d08f20883756cf9b66f0e771"
+                "reference": "424b4f42b1f0d08df4690a95fc6a343660da2667"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/haudevw3/foundation/zipball/ffe84e8fb102fbc7d08f20883756cf9b66f0e771",
-                "reference": "ffe84e8fb102fbc7d08f20883756cf9b66f0e771",
+                "url": "https://api.github.com/repos/haudevw3/foundation/zipball/424b4f42b1f0d08df4690a95fc6a343660da2667",
+                "reference": "424b4f42b1f0d08df4690a95fc6a343660da2667",
                 "shasum": ""
             },
             "require": {
@@ -621,9 +621,9 @@
             "description": "A simple PHP foundation",
             "support": {
                 "issues": "https://github.com/haudevw3/foundation/issues",
-                "source": "https://github.com/haudevw3/foundation/tree/v1.0.7"
+                "source": "https://github.com/haudevw3/foundation/tree/v1.0.8"
             },
-            "time": "2024-06-21T07:09:45+00:00"
+            "time": "2024-07-06T05:52:14+00:00"
         },
         {
             "name": "monolog/monolog",

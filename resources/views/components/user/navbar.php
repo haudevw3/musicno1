@@ -1,4 +1,4 @@
-<div class="nav-bar bg-color-dark-01 fixed-top">
+<div id="navbar" class="nav-bar bg-color-dark-01 fixed-top">
     <div class="nav-bar-top vertical-center-items pl-20 pr-20">
         <a class="d-flex text-color-white vertical-center-items" href="">
             <i class="fa-regular fa-compact-disc fs-18"></i>
@@ -16,7 +16,7 @@
                         <?php
                             echo (! auth()->user() && in_array($key, ['thu-vien', 'nghe-gan-day', 'bai-hat-yeu-thich', 'danh-sach-phat', 'thiet-lap']))
                             ? 'text-color-dark-05' : 'text-color-white';
-                        ?> mt-10" href="">
+                        ?> mt-10" href="<?php echo route($value['route']['name'], $value['route']['params']) ?>" data-alias = "<?php echo $key ?>">
                         <i class="<?php echo $value['icon'] ?>"></i>
                         <span class="ml-10"><?php echo $value['title'] ?></span>
                     </a>
