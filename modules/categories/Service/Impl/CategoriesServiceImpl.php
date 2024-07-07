@@ -24,6 +24,7 @@ class CategoriesServiceImpl extends BaseServiceImpl implements CategoriesService
             'title' => ! empty($data['title']) ? trim($data['title']) : null,
             'priority' => ! empty($data['priority']) ? (int) $data['priority'] : 0,
             'tags' => ! empty($data['tags']) ? implode(',', $data['tags']) : null,
+            'views' => ! empty($data['views']) ? implode(',', $data['views']) : null,
         ];
     }
 

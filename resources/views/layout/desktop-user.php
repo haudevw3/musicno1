@@ -15,9 +15,7 @@
                 <?php include_one('components.user.header-right') ?>
             </div>
 
-            <div class="main-content">
-                <?php include_one('components.user.music-main') ?>
-            </div>
+            <div id="main-content" class="main-content"></div>
         </div>
     </div>
 

@@ -37,7 +37,7 @@ class PageController
         $categories = [];
         $parents = [];
         $subs = [];
-        $columnsCategories = ['id', 'name', 'image', 'slug', 'tags'];
+        $columnsCategories = ['id', 'name', 'image', 'slug', 'tags', 'views'];
         $columnsSong = ['id', 'name', 'artist_id', 'composer', 'image', 'audio', 'slug', 'duration', 'tags'];
         $songs = $this->songService->findAll($columnsSong);
         if ($alias == 'home') {
@@ -70,15 +70,23 @@ class PageController
             }
 
             foreach ($parents as $parent) {
-                foreach ($subs as $sub) {
-                    if (in_array($parent['id'], $sub['tags'])) {
-                        $parent['tags'][] = $sub;
+                if ($this->isViewHome($parent['views'])) {
+                    foreach ($subs as $sub) {
+                        if (in_array($parent['id'], $sub['tags'])) {
+                            $parent['tags'][] = $sub;
+                        }
                     }
+                    $result['style_03'][] = $parent;
                 }
-                $result['style_03'][] = $parent;
             }
         }
 
         return $result;
+    }
+
+    protected function isViewHome($views)
+    {
+        $views = explode(',', $views);
+        return in_array(1, $views);
     }
 }

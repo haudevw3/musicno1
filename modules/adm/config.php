@@ -41,7 +41,7 @@ return [
             'DELETE_SUCCESS' => 'Xóa dữ liệu danh mục thành công.',
             'DELETE_FAIL' => 'Xóa dữ liệu danh mục thất bại. Vui lòng kiểm tra lại các thông tin.',
             'DIALOG' => 'Bạn có chắc muốn xóa dữ liệu danh mục này không? Khi xóa mọi dữ liệu liên quan đến danh mục này sẽ bị mất.',
-        ]
+        ],
     ],
 
     'song' => [

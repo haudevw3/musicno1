@@ -15,6 +15,7 @@ class Categories extends Model
         'tags',
         'slug',
         'image',
+        'view',
         'created_at',
         'updated_at'
     ];
@@ -25,5 +26,6 @@ class Categories extends Model
         'tags' => '',
         'slug' => '',
         'image' => '',
+        'view' => 0,
     ];
 }
