@@ -28,15 +28,6 @@
                 </div>
 
                 <div class="mb-3">
-                    <label for="priority" class="form-label fw-600">Độ ưu tiên: ( được bỏ trống )</label>
-                    <div class="form-group input-md-01">
-                        <i class="fa-regular fa-flag"></i>
-                        <input id="priority" type="number" name="priority" class="form-control" placeholder="Nhập độ ưu tiên cho danh mục" value="<?php echo isset($category) ? $category['priority'] : old('priority') ?>">
-                    </div>
-                    <div class="form-text text-color-red"><?php echo error('priority') ?></div>
-                </div>
-
-                <div class="mb-3">
                     <label for="file-upload" class="form-label fw-600">Ảnh danh mục: ( được bỏ trống )</label>
                     <div class="form-group input-md-01">
                         <i class="fa-regular fa-camera"></i>
@@ -51,49 +42,28 @@
                 </div>
 
                 <div class="mb-3">
-                    <label class="form-label fw-600">Chọn danh để hiển thị: ( được bỏ trống )</label>
-                    <div style="display: grid; grid-template-columns: repeat(2, 1fr);">
+                    <label class="form-label fw-600">Chọn danh mục để hiển thị: ( được bỏ trống )</label>
+                    <div class="checkbox-container" data-rows="<?php echo count($categories) ?>" style="display: grid; grid-template-columns: repeat(2, 1fr);">
                         <?php
-                            $tags = [];
-                            if (isset($category['tags'])) {
-                                $tags = explode(',', $category['tags']);
+                            $parentId = [];
+                            if (isset($category['parent_id'])) {
+                                $parentId = [$category['parent_id']];
                             } else {
-                                $tags = old('tags') ?? [];
+                                $parentId = [old('parent_id')];
                             }
                             if (! empty($categories)) {
                                 foreach ($categories as $key => $cate) {
+                                    $key++;
                                     if (isset($category['id']) && $cate['id'] == $category['id']) {
                                         continue;
                                     }
                                     ?>
                                         <div class="form-check form-check-01">
-                                            <input class="form-check-input" id="check-box-<?php echo $key ?>" type="checkbox" name="tags[]" value="<?php echo $cate['id'] ?>" <?php echo in_array($cate['id'], $tags) ? 'checked' : null ?>>
-                                            <label class="form-check-label fw-600" for="check-box-<?php echo $key ?>"><?php echo $cate['name'] ?></label>
+                                            <input data-key="<?php echo $key ?>" class="form-check-input checkbox-once" id="checkbox-<?php echo $key ?>" type="checkbox" name="parent_id" value="<?php echo $cate['id'] ?>" <?php echo in_array($cate['id'], $parentId) ? 'checked' : null ?>>
+                                            <label class="form-check-label fw-600" for="checkbox-<?php echo $key ?>"><?php echo $cate['name'] ?></label>
                                         </div>
                                     <?php
                                 }
-                            }
-                        ?>
-                    </div>
-                </div>
-
-                <div class="mb-3">
-                    <label class="form-label fw-600">Chọn chế độ xem để hiển thị: ( được bỏ trống )</label>
-                    <div style="display: grid; grid-template-columns: repeat(2, 1fr);">
-                        <?php
-                            $views = [];
-                            if (isset($category['views'])) {
-                                $views = explode(',', $category['views']);
-                            } else {
-                                $views = old('views') ?? [];
-                            }
-                            foreach (config('menu_user.views') as $key => $view) {
-                                ?>
-                                    <div class="form-check form-check-01">
-                                        <input class="form-check-input" id="_check-box-<?php echo $key ?>" type="checkbox" name="views[]" value="<?php echo $key ?>" <?php echo in_array($key, $views) ? 'checked' : null ?>>
-                                        <label class="form-check-label fw-600" for="_check-box-<?php echo $key ?>"><?php echo $view ?></label>
-                                    </div>
-                                <?php
                             }
                         ?>
                     </div>

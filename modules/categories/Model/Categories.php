@@ -11,21 +11,19 @@ class Categories extends Model
     protected $fillable = [
         'id',
         'name',
-        'priority',
-        'tags',
+        'title',
         'slug',
         'image',
-        'view',
+        'parent_id',
         'created_at',
         'updated_at'
     ];
 
     protected $attributes = [
         'name' => '',
-        'priority' => 0,
-        'tags' => '',
+        'title' => '',
         'slug' => '',
         'image' => '',
-        'view' => 0,
+        'parent_id' => 0,
     ];
 }

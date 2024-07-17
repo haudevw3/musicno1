@@ -3,7 +3,7 @@
         <?php
             foreach (config('menu_adm.navbar') as $key => $value) {
                 ?>
-                    <a class="nav-link fw-600 vertical-center-items rounded-6 <?php echo $value['class'] ?>" href="<?php echo route($value['route']['name'], $value['route']['params']) ?>">
+                    <a class="nav-link fw-600 vertical-center-items rounded-6 <?php echo $value['class'] ?>" data-alias = "<?php echo $key ?>" href="<?php echo route($value['route']['name'], $value['route']['params']) ?>">
                         <i class="<?php echo $value['icon'] ?>"></i>
                         <span class="ml-5"><?php echo $value['title'] ?></span>
                     </a>

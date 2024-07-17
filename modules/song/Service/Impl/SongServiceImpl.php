@@ -18,7 +18,7 @@ class SongServiceImpl extends BaseServiceImpl implements SongService
     protected function parseData(array $data)
     {
         return [
-            'name' => trim($data['name']),
+            'name' => ucwords(trim($data['name'])),
             'slug' => trim($data['slug']),
             'audio' => trim($data['audio']),
             'duration' => trim($data['duration']),

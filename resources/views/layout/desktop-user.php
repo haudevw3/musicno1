@@ -22,9 +22,7 @@
     <div class="footer bg-color-dark-01 fixed-bottom">
         <div class="divider-01"></div>
         <div id="music-control" class="music-container d-flex d-none pl-20 pr-20">
-            <?php include_one('components.user.music-left') ?>
-            <?php include_one('components.user.music-center') ?>
-            <?php include_one('components.user.music-right') ?>
+            <?php include_one('components.user.music-control') ?>
         </div>
         <?php include_one('components.user.ads') ?>
     </div>

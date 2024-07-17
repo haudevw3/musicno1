@@ -18,7 +18,7 @@ class CategoriesManagerController
 
     public function pageManagerCategories()
     {
-        $pagination = $this->categoriesService->listCategories();
+        $pagination = $this->categoriesService->listCategories([], [], ['sorted' => ['created_at' => 'desc']]);
         $categories = $pagination['data'];
         unset($pagination['data']);
         $data = [
@@ -33,7 +33,7 @@ class CategoriesManagerController
 
     public function pageAddCategory()
     {
-        $categories = $this->categoriesService->findAll(['id','name']);
+        $categories = $this->categoriesService->findAll(['id','name', 'parent_id']);
         $data = [
             'label' => 2,
             'title' => 'Biểu mẫu tạo danh mục',
@@ -64,7 +64,7 @@ class CategoriesManagerController
     {
         $id = $request->input('id');
         $category = $this->categoriesService->findOne(['id' => $id]);
-        $categories = $this->categoriesService->findAll(['id','name']);
+        $categories = $this->categoriesService->findAll(['id','name', 'parent_id']);
         $data = [
             'label' => 2,
             'title' => 'Cập nhật danh mục',

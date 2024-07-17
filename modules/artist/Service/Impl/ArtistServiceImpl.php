@@ -18,7 +18,7 @@ class ArtistServiceImpl extends BaseServiceImpl implements ArtistService
     protected function parseData(array $data)
     {
         return [
-            'name' => trim($data['name']),
+            'name' => ucwords(trim($data['name'])),
             'slug' => trim($data['slug']),
             'image' => ! empty($data['image']) ? trim($data['image']) : null,
             'tags' => ! empty($data['tags']) ? implode(',', $data['tags']) : null,

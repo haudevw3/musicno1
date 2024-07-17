@@ -3,6 +3,7 @@
 push('adm.viewCrudCategory');
 
 echo asset('adm/js/convert-slug.js');
+echo asset('adm/js/checkbox.js');
 
 endpush();
 

@@ -13,4 +13,6 @@ interface CategoriesService
     public function delete(array $condition = [], $forever = false);
 
     public function listCategories(array $columns = [], array $conditions = [], array $sorted = [], $perPage = 10);
+
+    public function treeCategories($parentId = null, array $categories = []);
 }

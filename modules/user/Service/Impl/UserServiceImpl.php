@@ -19,7 +19,7 @@ class UserServiceImpl extends BaseServiceImpl implements UserService
     {
         return [
             'ip' => request()->ip(),
-            'fullname' => trim($data['fullname']),
+            'fullname' => ucwords(trim($data['fullname'])),
             'username' => trim($data['username']),
             'password' => password_hash($data['password'], PASSWORD_DEFAULT),
             'email' => trim($data['email']),

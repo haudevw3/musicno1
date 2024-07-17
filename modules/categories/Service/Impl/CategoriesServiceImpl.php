@@ -18,13 +18,11 @@ class CategoriesServiceImpl extends BaseServiceImpl implements CategoriesService
     protected function parseData(array $data)
     {
         return [
-            'name' => trim($data['name']),
+            'name' => ucwords(trim($data['name'])),
             'slug' => trim($data['slug']),
-            'image' => ! empty($data['image']) ? trim($data['image']) : null,
             'title' => ! empty($data['title']) ? trim($data['title']) : null,
-            'priority' => ! empty($data['priority']) ? (int) $data['priority'] : 0,
-            'tags' => ! empty($data['tags']) ? implode(',', $data['tags']) : null,
-            'views' => ! empty($data['views']) ? implode(',', $data['views']) : null,
+            'image' => ! empty($data['image']) ? trim($data['image']) : null,
+            'parent_id' => isset($data['parent_id']) ? $data['parent_id'] : null,
         ];
     }
 
@@ -57,5 +55,20 @@ class CategoriesServiceImpl extends BaseServiceImpl implements CategoriesService
     public function listCategories(array $columns = [], array $conditions = [], array $sorted = [], $perPage = 10)
     {
         return $this->baseRepo->list($columns, $conditions, $sorted, $perPage);
+    }
+
+    public function treeCategories($parentId = null, array $categories = [])
+    {
+        $result = [];
+        foreach ($categories as $category) {
+            if ($category['parent_id'] == $parentId) {
+                $subs = $this->treeCategories($category['id'], $categories);
+                if (! empty($subs)) {
+                    $category['subs'] = $subs;
+                }
+                $result[] = $category;
+            }
+        }
+        return $result;
     }
 }

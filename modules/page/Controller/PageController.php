@@ -3,6 +3,7 @@
 namespace Modules\Page\Controller;
 
 use Foundation\Http\Request;
+use Google\Service\Directory\Alias;
 use Modules\Artist\Service\ArtistService;
 use Modules\Categories\Service\CategoriesService;
 use Modules\Song\Service\SongService;
@@ -28,65 +29,34 @@ class PageController
     public function loadDataPage(Request $request)
     {
         $alias = $request->input('alias');
-        return response()->json($this->filterDataForPage($alias));
+        return response()->json($this->filterData($alias));
     }
 
-    protected function filterDataForPage($alias)
+    protected function filterData($alias)
     {
         $result = [];
-        $categories = [];
-        $parents = [];
-        $subs = [];
-        $columnsCategories = ['id', 'name', 'image', 'slug', 'tags', 'views'];
-        $columnsSong = ['id', 'name', 'artist_id', 'composer', 'image', 'audio', 'slug', 'duration', 'tags'];
-        $songs = $this->songService->findAll($columnsSong);
-        if ($alias == 'home') {
-            $options = ['sorted' => ['priority' => 'desc']];
-            $categories = $this->categoriesService->findAll($columnsCategories, [], $options);
-            foreach ($categories as $key => $category) {
-                if (is_null($category['tags'])) {
-                    $parents[] = $category;
-                } else {
-                    $category['tags'] = explode(',', $category['tags']);
-                    $subs[] = $category;
-                }
-            }
-
-            $result['style_01'] = $parents[0];
-            $result['style_02'] = $parents[1];
-            unset($parents[0], $parents[1]);
-            foreach ($subs as $sub) {
-                if (in_array($result['style_01']['id'], $sub['tags'])) {
-                    $result['style_01']['tags'][] = $sub;
-                }
-            }
-
-            foreach ($songs as $song) {
-                $tags = is_null($song['tags']) ? [] : explode(',', $song['tags']);
-                if (in_array($result['style_02']['id'], $tags)) {
-                    $song['artist_name'] = $this->artistService->findOne(['id' => $song['artist_id']])['name'];
-                    $result['style_02']['tags'][] = $song;
-                };
-            }
-
-            foreach ($parents as $parent) {
-                if ($this->isViewHome($parent['views'])) {
-                    foreach ($subs as $sub) {
-                        if (in_array($parent['id'], $sub['tags'])) {
-                            $parent['tags'][] = $sub;
-                        }
-                    }
-                    $result['style_03'][] = $parent;
-                }
-            }
+        $categories = $this->categoriesService->treeCategories(
+            null, $this->categoriesService->findAll(['id', 'name', 'slug', 'parent_id', 'image'])
+        );
+        $songs = $this->songService->findAll(
+            ['id', 'name', 'artist_id', 'composer', 'image', 'audio', 'slug', 'duration', 'tags']
+        );
+        foreach ($songs as $key => $song) {
+            $song['artist_name'] = $this->artistService->findOne(['id' => $song['artist_id']])['name'];
+            $categories[1]['songs'][] = $song;
         }
-
+        if ($alias == 'home') {
+            $result['style_01'] = $categories[0];
+            $result['style_02'] = $categories[1];
+            $result['style_03'] = [
+                $categories[3],
+                $categories[4],
+            ];
+            $result['style_03'][0]['subs'] = $categories[3]['subs'][0]['subs'];
+        }
+        if ($alias == 'top-100') {
+            $result['style_03'] = $categories[3]['subs'];
+        }
         return $result;
-    }
-
-    protected function isViewHome($views)
-    {
-        $views = explode(',', $views);
-        return in_array(1, $views);
     }
 }

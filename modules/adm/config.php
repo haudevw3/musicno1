@@ -11,6 +11,8 @@ return [
             'xoa-nhanh' => ['title' => 'Xóa nhanh', 'icon' => 'fa-regular fa-trash', 'class' => 'bg-color-red delete-multiple-artist', 'tag' => 'div', 'route' => ['name' => 'adm-delete-multiple-artist']]
         ],
 
+        'option' => [],
+
         'MESSAGE' => [
             'CREATE_SUCCESS' => 'Tạo nghệ sĩ thành công.',
             'CREATE_FAIL' => 'Tạo nghệ sĩ thất bại. Vui lòng kiểm tra lại các thông tin.',
@@ -25,13 +27,15 @@ return [
     'categories' => [
 
         'table' => [
-            'column' => ['STT', 'Tên danh mục', 'Đường dẫn hiển thị', 'Độ ưu tiên', 'Danh mục', 'Ngày tạo', 'Cập nhật gần đây', 'Hành động'],
+            'column' => ['STT', 'Tên danh mục', 'Đường dẫn hiển thị', 'Ngày tạo', 'Cập nhật gần đây', 'Hành động'],
         ],
 
         'action' => [
             'them-danh-muc' => ['title' => 'Thêm danh mục', 'icon' => 'fa-regular fa-layer-plus', 'tag' => 'a', 'class' => 'bg-color-blue-01', 'route' => ['name' => 'adm-add-category']],
             'xoa-nhanh' => ['title' => 'Xóa nhanh', 'icon' => 'fa-regular fa-trash', 'class' => 'bg-color-red delete-multiple-category', 'tag' => 'div', 'route' => ['name' => 'adm-delete-multiple-category']]
         ],
+
+        'option' => [],
 
         'MESSAGE' => [
             'CREATE_SUCCESS' => 'Tạo danh mục thành công.',
@@ -55,6 +59,8 @@ return [
             'xoa-nhanh' => ['title' => 'Xóa nhanh', 'icon' => 'fa-regular fa-trash', 'class' => 'bg-color-red delete-multiple-song', 'tag' => 'div', 'route' => ['name' => 'adm-delete-multiple-song']]
         ],
 
+        'option' => [],
+
         'MESSAGE' => [
             'CREATE_SUCCESS' => 'Tạo bài hát thành công.',
             'CREATE_FAIL' => 'Tạo bài hát thất bại. Vui lòng kiểm tra lại các thông tin.',
@@ -77,9 +83,7 @@ return [
             'xoa-nhanh' => ['title' => 'Xóa nhanh', 'icon' => 'fa-regular fa-trash', 'class' => 'bg-color-red delete-multiple-user', 'tag' => 'div', 'route' => ['name' => 'adm-delete-multiple-user']]
         ],
 
-        'option' => [
-            'doi-mat-khau'  => ['title' => 'Đổi mật khẩu', 'icon' => 'fa-regular fa-key', 'class' => '', 'route' => ['name' => '', 'params' => '']],
-        ],
+        'option' => [],
 
         'MESSAGE' => [
             'CREATE_SUCCESS' => 'Tạo tài khoản người dùng thành công.',
