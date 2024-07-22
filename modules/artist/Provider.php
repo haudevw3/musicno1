@@ -16,6 +16,9 @@ class Provider extends ServiceProvider
     {
         $this->mergeConfigFrom('modules/artist/config.php', 'artist');
         $this->app->singleton('Modules\Artist\Repository\ArtistRepository', 'Modules\Artist\Repository\Impl\ArtistRepositoryImpl');
+        $this->app->singleton('Modules\Artist\Repository\ArtistAlbumRepository', 'Modules\Artist\Repository\Impl\ArtistAlbumRepositoryImpl');
+
         $this->app->singleton('Modules\Artist\Service\ArtistService', 'Modules\Artist\Service\Impl\ArtistServiceImpl');
+        $this->app->singleton('Modules\Artist\Service\ArtistAlbumService', 'Modules\Artist\Service\Impl\ArtistAlbumServiceImpl');
     }
 }

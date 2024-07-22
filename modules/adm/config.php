@@ -3,7 +3,7 @@
 return [
     'artist' => [
         'table' => [
-            'column' => ['STT', 'Tên nghệ sĩ', 'Tiểu sử - Mô tả', 'Danh mục', 'Ngày tạo', 'Cập nhật gần đây', 'Hành động'],
+            'column' => ['STT', 'Tên nghệ sĩ', 'Tiểu sử - Mô tả', 'Ngày tạo', 'Cập nhật gần đây', 'Hành động'],
         ],
 
         'action' => [
@@ -21,6 +21,29 @@ return [
             'DELETE_SUCCESS' => 'Xóa dữ liệu nghệ sĩ thành công.',
             'DELETE_FAIL' => 'Xóa dữ liệu nghệ sĩ thất bại. Vui lòng kiểm tra lại các thông tin.',
             'DIALOG' => 'Bạn có chắc muốn xóa dữ liệu nghệ sĩ này không? Khi xóa mọi dữ liệu liên quan đến nghệ sĩ này sẽ bị mất.',
+        ]
+    ],
+
+    'album' => [
+        'table' => [
+            'column' => ['STT', 'Tên album', 'Loại album', 'Ngày tạo', 'Cập nhật gần đây', 'Hành động'],
+        ],
+
+        'action' => [
+            'them-album' => ['title' => 'Thêm album', 'icon' => 'fa-solid fa-album-collection', 'tag' => 'a', 'class' => 'bg-color-blue-01', 'route' => ['name' => 'adm-add-album']],
+            'xoa-nhanh' => ['title' => 'Xóa nhanh', 'icon' => 'fa-regular fa-trash', 'class' => 'bg-color-red delete-multiple-album', 'tag' => 'div', 'route' => ['name' => 'adm-delete-multiple-album']]
+        ],
+
+        'option' => [],
+
+        'MESSAGE' => [
+            'CREATE_SUCCESS' => 'Tạo album thành công.',
+            'CREATE_FAIL' => 'Tạo album thất bại. Vui lòng kiểm tra lại các thông tin.',
+            'UPDATE_SUCCESS' => 'Cập nhật dữ liệu album thành công.',
+            'UPDATE_FAIL' => 'Cập nhật dữ liệu album thất bại. Vui lòng kiểm tra lại các thông tin.',
+            'DELETE_SUCCESS' => 'Xóa dữ liệu album thành công.',
+            'DELETE_FAIL' => 'Xóa dữ liệu album thất bại. Vui lòng kiểm tra lại các thông tin.',
+            'DIALOG' => 'Bạn có chắc muốn xóa dữ liệu album này không? Khi xóa mọi dữ liệu liên quan đến album này sẽ bị mất.',
         ]
     ],
 
@@ -51,7 +74,7 @@ return [
     'song' => [
 
         'table' => [
-            'column' => ['STT', 'Tên bài hát', 'Nghệ sĩ', 'Đóng góp chung', 'Thời gian', 'Danh mục', 'Ngày tạo', 'Cập nhật gần đây', 'Hành động'],
+            'column' => ['STT', 'Tên bài hát', 'Nghệ sĩ', 'Thời gian', 'Ngày tạo', 'Cập nhật gần đây', 'Hành động'],
         ],
 
         'action' => [

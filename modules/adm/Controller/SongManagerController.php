@@ -5,22 +5,30 @@ namespace Modules\Adm\Controller;
 use Foundation\Http\Request;
 use Modules\Adm\Request\FormCreateSong;
 use Modules\Adm\Request\FormUpdateSong;
+use Modules\Album\Service\AlbumService;
+use Modules\Artist\Service\ArtistAlbumService;
 use Modules\Artist\Service\ArtistService;
-use Modules\Categories\Service\CategoriesService;
 use Modules\Song\Object\MP3;
 use Modules\Song\Service\SongService;
+use Foundation\Support\Str;
+use Modules\Album\Service\AlbumSongService;
 
 class SongManagerController
 {
     protected $songService;
     protected $artistService;
-    protected $categoriesService;
+    protected $albumService;
+    protected $albumSongService;
+    protected $artistAlbumService;
 
-    public function __construct(SongService $songService, ArtistService $artistService, CategoriesService $categoriesService)
+    public function __construct(SongService $songService, ArtistService $artistService, AlbumService $albumService, AlbumSongService $albumSongService,
+                                ArtistAlbumService $artistAlbumService)
     {
         $this->songService = $songService;
         $this->artistService = $artistService;
-        $this->categoriesService = $categoriesService;
+        $this->albumService = $albumService;
+        $this->albumSongService = $albumSongService;
+        $this->artistAlbumService = $artistAlbumService;
     }
 
     public function pageManagerSong()
@@ -28,9 +36,6 @@ class SongManagerController
         $pagination = $this->songService->listSong();
         $songs = $pagination['data'];
         unset($pagination['data']);
-        foreach ($songs as $key => $song) {
-            $songs[$key]['artist_name'] = $this->artistService->findOne(['id' => $song['artist_id']])['name'];
-        }
         $data = [
             'label' => 1,
             'title' => 'Bảng dữ liệu bài hát',
@@ -43,13 +48,11 @@ class SongManagerController
 
     public function pageAddSong()
     {
-        $artists = $this->artistService->findAll(['id','name']);
-        $categories = $this->categoriesService->findAll(['id', 'name']);
+        $albums = $this->albumService->findAll(['id', 'name']);
         $data = [
             'label' => 2,
             'title' => 'Biểu mẫu tạo bài hát',
-            'artists' => $artists,
-            'categories' => $categories,
+            'albums' => $albums,
         ];
         return view('adm.viewCrudSong', $data);
     }
@@ -57,27 +60,34 @@ class SongManagerController
     public function createSong(FormCreateSong $request)
     {
         $validated = $request->validated();
-        if (is_array($validated)) {
+        if (is_array($validated) || ! $request->hasFile('image') ||
+            ! $request->hasFile('audio') || empty($request->input('album_ids'))) {
             return back()->with('fail', config('adm.song.MESSAGE.CREATE_FAIL'))
                          ->withInput()->withErrors();
         }
         $data = $request->all();
-        $fileImage = $request->file('image');
-        $fileAudio = $request->file('audio');
-        if (! is_null($fileImage)) {
-            $fileName = $fileImage->hash()->move('public/uploads/images');
-            $data['image'] = asset("uploads/images/$fileName");
+        $data['song_id'] = Str::random(22);
+        $albumIds = $data['album_ids'];
+        unset($data['album_ids']);
+        foreach ($albumIds as $albumId) {
+            $artistId = $this->artistAlbumService->findOne(['album_id' => $albumId])['artist_id'];
+            $data['artist_names'][] = $this->artistService->findOne(['id' => $artistId])['name'];
         }
-        if (! is_null($fileAudio)) {
-            $fileName = $fileAudio->hash()->move('public/uploads/audio');
-            $data['audio'] = asset("uploads/audio/$fileName");
-            $duration = 0;
-            $mp3 = tap(new MP3(public_path("uploads/audio/$fileName")), function ($mp3) use (&$duration) {
-                $duration = $mp3->duration();
-            });
-            $data['duration'] = $mp3->format($duration);
+        $fileImage = $request->file('image')->hash()->move('public/uploads/images');
+        $data['image'] = asset("uploads/images/$fileImage");
+        $fileAudio = $request->file('audio')->hash()->move('public/uploads/audio');
+        $data['audio'] = asset("uploads/audio/$fileAudio");
+        $duration = 0;
+        $mp3 = tap(new MP3(public_path("uploads/audio/$fileAudio")), function ($mp3) use (&$duration) {
+            $duration = $mp3->duration();
+        });
+        $data['duration'] = $mp3->format($duration);
+        $song = tap($this->songService, function ($subject) use ($data) {
+            $subject->create($data);
+        })->findOne(['song_id' => $data['song_id']]);
+        foreach ($albumIds as $albumId) {
+            $this->albumSongService->create(['album_id' => $albumId, 'song_id' => $song['id']]);
         }
-        $this->songService->create($data);
         return redirect()->route('adm-manager-song', ['page' => 1])
                          ->with('success', config('adm.song.MESSAGE.CREATE_SUCCESS'));
     }
@@ -86,14 +96,18 @@ class SongManagerController
     {
         $id = $request->input('id');
         $song = $this->songService->findOne(['id' => $id]);
-        $artists = $this->artistService->findAll(['id','name']);
-        $categories = $this->categoriesService->findAll(['id','name']);
+        $albums = $this->albumService->findAll(['id', 'name']);
+        $albumSong = $this->albumSongService->findAll(['album_id'], ['song_id' => $id]);
+        $albumIds = [];
+        foreach ($albumSong as $value) {
+            $albumIds[] = $value['album_id'];
+        }
         $data = [
             'label' => 2,
             'title' => 'Cập nhật bài hát',
             'song' => $song,
-            'artists' => $artists,
-            'categories' => $categories,
+            'albums' => $albums,
+            'albumIds' => $albumIds,
         ];
         return view('adm.viewCrudSong', $data);
     }
@@ -101,7 +115,7 @@ class SongManagerController
     public function updateSong(FormUpdateSong $request)
     {
         $validated = $request->validated();
-        if (is_array($validated)) {
+        if (is_array($validated) || empty($request->input('album_ids'))) {
             return back()->with('fail', config('adm.song.MESSAGE.UPDATE_FAIL'))
                          ->withInput()->withErrors();
         }
@@ -129,7 +143,14 @@ class SongManagerController
             });
             $data['duration'] = $mp3->format($duration);
         }
+        $albumIds = $data['album_ids'];
+        unset($data['album_ids']);
+        foreach ($albumIds as $albumId) {
+            $artistId = $this->artistAlbumService->findOne(['album_id' => $albumId])['artist_id'];
+            $data['artist_names'][] = $this->artistService->findOne(['id' => $artistId])['name'];
+        }
         $this->songService->updateOne($id, $data);
+        $this->albumSongService->updateAll($id, $albumIds);
         return redirect()->route('adm-manager-song', ['page' => 1])
                          ->with('success', config('adm.song.MESSAGE.UPDATE_SUCCESS'));
     }
@@ -145,10 +166,9 @@ class SongManagerController
 
     public function deleteMultipleSong(Request $request)
     {
-        if ($this->songService->delete(['id' => $request->all()['ids']])) {
-            return redirect()->route('adm-manager-song', ['page' => 1])
-                             ->with('success', config('adm.song.MESSAGE.DELETE_SUCCESS'));
-        }
-        return back()->with('fail', config('adm.song.MESSAGE.DELETE_FAIL'));
+        $ids = $request->input('ids');
+        $this->songService->deleteAll(['id' => $ids]);
+        return redirect()->route('adm-manager-song', ['page' => 1])
+                         ->with('success', config('adm.song.MESSAGE.DELETE_SUCCESS'));
     }
 }

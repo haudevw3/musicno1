@@ -2,6 +2,7 @@
 
 use Foundation\Support\Facades\Route;
 use Modules\Adm\Controller\AdmController;
+use Modules\Adm\Controller\AlbumManagerController;
 use Modules\Adm\Controller\ArtistManagerController;
 use Modules\Adm\Controller\CategoriesManagerController;
 use Modules\Adm\Controller\SongManagerController;
@@ -21,6 +22,18 @@ Route::prefix('adm')->middleware('auth.admin')->group(function () {
     Route::post('update-artist', [ArtistManagerController::class, 'updateArtist'])->name('adm-update-artist');
     Route::get('delete-artist/{id}', [ArtistManagerController::class, 'deleteArtist'])->name('adm-delete-artist');
     Route::post('delete-multiple-artist', [ArtistManagerController::class, 'deleteMultipleArtist'])->name('adm-delete-multiple-artist');
+
+    Route::get('manager-album/{page?}', [AlbumManagerController::class, 'pageManagerAlbum'])
+                ->where('page', 'page-(\d+)')
+                ->name('adm-manager-album');
+    Route::get('page-add-album', [AlbumManagerController::class, 'pageAddAlbum'])->name('adm-add-album');
+    Route::post('create-album', [AlbumManagerController::class, 'createAlbum'])->name('adm-create-album');
+    Route::get('page-edit-album/{id?}', [AlbumManagerController::class, 'pageEditAlbum'])
+                ->where('id', '(\d+)')
+                ->name('adm-edit-album');
+    Route::post('update-album', [AlbumManagerController::class, 'updateAlbum'])->name('adm-update-album');
+    Route::get('delete-album/{id}', [AlbumManagerController::class, 'deleteAlbum'])->name('adm-delete-album');
+    Route::post('delete-multiple-album', [AlbumManagerController::class, 'deleteMultipleAlbum'])->name('adm-delete-multiple-album');
 
     Route::get('manager-categories/{page?}', [CategoriesManagerController::class, 'pageManagerCategories'])
                 ->where('page', 'page-(\d+)')

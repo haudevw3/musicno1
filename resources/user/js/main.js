@@ -28,8 +28,6 @@ const MAIN = (function () {
                     <div class="card-wrapper">
                         <div class="song-detail d-flex">
                             <div class="song-info d-flex cursor-pointer" data-position="${key}">
-                                <div class="song-duration d-none">${song.duration}</div>
-                                <div class="song-audio d-none">${song.audio}</div>
                                 <div class="song-image"><img src="${song.image}"></div>
                                 <div class="ml-10 vertical-center-items">
                                     <div class="box-common">

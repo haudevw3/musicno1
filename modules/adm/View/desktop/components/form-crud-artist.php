@@ -6,14 +6,18 @@
         </div>
         <div class="form-body p-20">
             <form method="post" action="<?php echo isset($artist) ? route('adm-update-artist') : route('adm-create-artist') ?>" enctype="multipart/form-data">
-                <input class="d-none" type="text" name="<?php echo isset($artist) ? 'id' : null ?>" value="<?php echo isset($artist) ? $artist['id'] : null ?>" />
-                <input class="d-none" type="text" name="<?php echo isset($artist) ? 'image_url' : null ?>" value="<?php echo isset($artist) ? $artist['image'] : null ?>" />
+                <input name="<?php echo isset($artist) ? 'id' : null ?>" type="text" class="d-none"
+                       value="<?php echo isset($artist) ? $artist['id'] : null ?>" />
+
+                <input name="<?php echo isset($artist) ? 'image_url' : null ?>" type="text" class="d-none"
+                       value="<?php echo isset($artist) ? $artist['image'] : null ?>" />
 
                 <div class="mb-3">
                     <label for="name" class="form-label fw-600">Tên nghệ sĩ:</label>
                     <div class="form-group input-md-01">
-                        <i class="fa-regular fa-pen"></i>
-                        <input id="name" type="text" name="name" class="form-control need-convert-to-slug" placeholder="Nhập tên nghệ sĩ" value="<?php echo isset($artist) ? $artist['name'] : old('name') ?>">
+                        <i class="fa-regular fa-user"></i>
+                        <input name="name" type="text" id="name" class="form-control need-convert-to-slug" placeholder="Nhập tên nghệ sĩ"
+                               value="<?php echo isset($artist) ? $artist['name'] : old('name') ?>">
                     </div>
                     <div class="form-text text-color-red"><?php echo error('name') ?></div>
                 </div>
@@ -22,7 +26,8 @@
                     <label for="slug" class="form-label fw-600">Đường dẫn hiển thị:</label>
                     <div class="form-group input-md-01">
                         <i class="fa-regular fa-link"></i>
-                        <input id="slug" type="text" name="slug" class="form-control converted-slug" placeholder="Nhập đường dẫn hiển thị" value="<?php echo isset($artist) ? $artist['slug'] : old('slug') ?>">
+                        <input name="slug" type="text" id="slug" class="form-control converted-slug" placeholder="Nhập đường dẫn hiển thị"
+                               value="<?php echo isset($artist) ? $artist['slug'] : old('slug') ?>">
                     </div>
                     <div class="form-text text-color-red"><?php echo error('slug') ?></div>
                 </div>
@@ -31,35 +36,30 @@
                     <label for="file-upload" class="form-label fw-600">Ảnh nghệ sĩ: ( được bỏ trống )</label>
                     <div class="form-group input-md-01">
                         <i class="fa-regular fa-camera"></i>
-                        <input class="col-12 file-upload" id="file-upload" type="file" name="image">
+                        <input name="image" type="file" class="col-12 file-upload" id="file-upload">
                     </div>
                     <div class="form-text text-color-red"></div>
                 </div>
 
                 <div class="mb-3">
-                    <label for="biography" class="form-label fw-600">Tiểu sử của nghệ sĩ: ( được bỏ trống )</label>
-                    <textarea id="biography" type="text" class="form-control" placeholder="Nhập nội dung tiểu sử, mô tả"><?php echo isset($artist) ? $artist['biography'] : old('biography') ?></textarea>
+                    <label for="description" class="form-label fw-600">Tiểu sử của nghệ sĩ: ( được bỏ trống )</label>
+                    <textarea name="description" type="text" id="description" class="form-control" placeholder="Nhập nội dung tiểu sử, mô tả"><?php echo isset($artist) ? $artist['description'] : old('description') ?></textarea>
                 </div>
 
                 <div class="mb-3">
-                    <label class="form-label fw-600">Chọn danh mục để hiển thị: (được bỏ trống)</label>
-                    <div style="display: grid; grid-template-columns: repeat(2, 1fr);">
+                    <label class="form-label fw-600">Chọn danh mục để hiển thị: ( được bỏ trống )</label>
+                    <div class="checkbox-container" data-rows="<?php echo count($categories) ?>" style="display: grid; grid-template-columns: repeat(2, 1fr);">
                         <?php
-                            $tags = [];
-                            if (isset($artist['tags'])) {
-                                $tags = explode(',', $artist['tags']);
-                            } else {
-                                $tags = old('tags') ?? [];
-                            }
-                            if (! empty($categories)) {
-                                foreach ($categories as $key => $category) {
-                                    ?>
-                                        <div class="form-check form-check-01">
-                                            <input class="form-check-input" id="check-box-<?php echo $key ?>" type="checkbox" name="tags[]" value="<?php echo $category['id'] ?>" <?php echo in_array($category['id'], $tags) ? 'checked' : null ?>>
-                                            <label class="form-check-label fw-600" for="check-box-<?php echo $key ?>"><?php echo $category['name'] ?></label>
-                                        </div>
-                                    <?php
-                                }
+                            $categoryId = (isset($categoryArtist) && ! is_null($categoryArtist)) ? $categoryArtist['category_id'] : (old('category_id') ?? 0);
+                            foreach ($categories as $key => $category) {
+                                $key++;
+                                ?>
+                                    <div class="form-check form-check-01">
+                                        <input name="category_id" type="checkbox" data-key="<?php echo $key ?>" id="checkbox-<?php echo $key ?>" class="form-check-input checkbox-once"
+                                               value="<?php echo $category['id'] ?>" <?php echo ($category['id'] == $categoryId) ? 'checked' : null ?>>
+                                        <label class="form-check-label fw-600" for="checkbox-<?php echo $key ?>"><?php echo $key.'. '.$category['name'] ?></label>
+                                    </div>
+                                <?php
                             }
                         ?>
                     </div>

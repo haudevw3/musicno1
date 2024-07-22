@@ -106,10 +106,8 @@ class UserManagerController
 
     public function deleteMultipleUser(Request $request)
     {
-        if ($this->userService->delete(['id' => $request->all()['ids']])) {
-            return redirect()->route('adm-manager-user', ['page' => 1])
-                             ->with('success', config('adm.user.MESSAGE.DELETE_SUCCESS'));
-        }
-        return back()->with('fail', config('adm.user.MESSAGE.DELETE_FAIL'));
+        $this->userService->deleteAll(['id' => $request->all()['ids']]);
+        return redirect()->route('adm-manager-user', ['page' => 1])
+                         ->with('success', config('adm.user.MESSAGE.DELETE_SUCCESS'));
     }
 }

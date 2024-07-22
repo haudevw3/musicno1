@@ -18,7 +18,7 @@ class CategoriesManagerController
 
     public function pageManagerCategories()
     {
-        $pagination = $this->categoriesService->listCategories([], [], ['sorted' => ['created_at' => 'desc']]);
+        $pagination = $this->categoriesService->listCategories();
         $categories = $pagination['data'];
         unset($pagination['data']);
         $data = [
@@ -32,8 +32,10 @@ class CategoriesManagerController
     }
 
     public function pageAddCategory()
-    {
-        $categories = $this->categoriesService->findAll(['id','name', 'parent_id']);
+    {   
+        $categories = $this->categoriesService->findAll(
+            ['id','name', 'parent_id'], ['parent_id' => 0], ['priority' => 'desc']
+        );
         $data = [
             'label' => 2,
             'title' => 'Biểu mẫu tạo danh mục',
@@ -50,11 +52,6 @@ class CategoriesManagerController
                          ->withInput()->withErrors();
         }
         $data = $request->all();
-        $file = $request->file('image');
-        if (! is_null($file)) {
-            $fileName = $file->hash()->move('public/uploads/images');
-            $data['image'] = asset("uploads/images/$fileName");
-        }
         $this->categoriesService->create($data);
         return redirect()->route('adm-manager-categories', ['page' => 1])
                          ->with('success', config('adm.categories.MESSAGE.CREATE_SUCCESS'));
@@ -64,7 +61,9 @@ class CategoriesManagerController
     {
         $id = $request->input('id');
         $category = $this->categoriesService->findOne(['id' => $id]);
-        $categories = $this->categoriesService->findAll(['id','name', 'parent_id']);
+        $categories = $this->categoriesService->findAll(
+            ['id','name', 'parent_id'], ['parent_id' => 0], ['priority' => 'desc']
+        );
         $data = [
             'label' => 2,
             'title' => 'Cập nhật danh mục',
@@ -84,14 +83,6 @@ class CategoriesManagerController
         $data = $request->all();
         $id = $data['id'];
         unset($data['id']);
-        $file = $request->file('image');
-        if (is_null($file)) {
-            $data['image'] = $data['image_url'];
-            unset($data['image_url']);
-        } else {
-            $fileName = $file->hash()->move('public/uploads/images');
-            $data['image'] = asset("uploads/images/$fileName");
-        }
         $this->categoriesService->updateOne($id, $data);
         return redirect()->route('adm-manager-categories', ['page' => 1])
                          ->with('success', config('adm.categories.MESSAGE.UPDATE_SUCCESS'));
@@ -108,10 +99,8 @@ class CategoriesManagerController
 
     public function deleteMultipleCategory(Request $request)
     {
-        if ($this->categoriesService->delete(['id' => $request->all()['ids']])) {
-            return redirect()->route('adm-manager-categories', ['page' => 1])
-                             ->with('success', config('adm.categories.MESSAGE.DELETE_SUCCESS'));
-        }
-        return back()->with('fail', config('adm.categories.MESSAGE.DELETE_FAIL'));
+        $this->categoriesService->deleteAll(['id' => $request->all()['ids']]);
+        return redirect()->route('adm-manager-categories', ['page' => 1])
+                         ->with('success', config('adm.categories.MESSAGE.DELETE_SUCCESS'));
     }
 }

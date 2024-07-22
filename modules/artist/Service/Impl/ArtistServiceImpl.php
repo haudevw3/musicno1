@@ -15,25 +15,36 @@ class ArtistServiceImpl extends BaseServiceImpl implements ArtistService
         parent::__construct($baseRepo);
     }
 
-    protected function parseData(array $data)
-    {
-        return [
-            'name' => ucwords(trim($data['name'])),
-            'slug' => trim($data['slug']),
-            'image' => ! empty($data['image']) ? trim($data['image']) : null,
-            'tags' => ! empty($data['tags']) ? implode(',', $data['tags']) : null,
-            'biography' => ! empty($data['biography']) ? implode(',', $data['biography']) : null,
-        ];
-    }
-
     public function create(array $data)
     {
-        return $this->baseRepo->create($this->parseData($data));
+        $attributes = [
+            'artist_id' => $data['artist_id'],
+            'name' => ucwords(trim($data['name'])),
+            'slug' => trim($data['slug']),
+            'image' => trim($data['image']),
+            'description' => ! empty($data['description']) ? trim($data['description']) : null,
+        ];
+        return $this->baseRepo->create($attributes);
     }
 
     public function updateOne($id, array $data)
     {
-        return $this->baseRepo->updateOne($id, $this->parseData($data));
+        $attributes = [];
+        $artist = $this->baseRepo->findOne(['id' => $id]);
+        if (array_key_exists('name', $data) && $artist['name'] !== ucwords(trim($data['name']))) {
+            $attributes['name'] = $data['name'];
+            $attributes['slug'] = trim($data['slug']);
+        }
+        if (array_key_exists('image', $data) && $artist['image'] !== $data['image']) {
+            $attributes['image'] = $data['image'];
+        }
+        if (array_key_exists('description', $data)) {
+            $attributes['description'] = $data['description'];
+        }
+        if (empty($attributes)) {
+            return;
+        }
+        return $this->baseRepo->updateOne($id, $attributes);
     }
 
     public function deleteOne($id)
@@ -41,18 +52,17 @@ class ArtistServiceImpl extends BaseServiceImpl implements ArtistService
         return $this->baseRepo->deleteOne($id);
     }
 
-    public function delete(array $condition = [], $forever = false)
+    public function deleteAll(array $condition = [], $forever = false)
     {
         $column = array_keys($condition)[0];
         $values = array_values($condition)[0];
         $values = is_array($values) ? $values : [$values];
-        foreach ($values as $key => $value) {
-            $this->baseRepo->delete([$column => $value]);
+        foreach ($values as $value) {
+            $this->baseRepo->delete([$column => $value], $forever);
         }
-        return true;
     }
 
-    public function listArtist(array $columns = [], array $conditions = [], array $sorted = [], $perPage = 10)
+    public function listArtist(array $columns = [], array $conditions = [], array $sorted = ['created_at' => 'desc'], $perPage = 10)
     {
         return $this->baseRepo->list($columns, $conditions, $sorted, $perPage);
     }

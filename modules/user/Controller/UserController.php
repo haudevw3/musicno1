@@ -22,7 +22,13 @@ class UserController
         $oauth = OAuthService::getInstance();
         $authUrl = $oauth->url();
         if ($request->input('code')) {
-            $oauth->oauth($request->input('code'));
+            $attributes = $oauth->oauth($request->input('code'));
+            if (Auth::attempt([
+                'username' => $attributes['username'],
+                'password' => $attributes['password']
+            ], true)) {
+                return redirect()->route('dashboard');
+            }
         }
         return view('user.viewLogin', compact('authUrl'));
     }
@@ -33,7 +39,7 @@ class UserController
         $remember = isset($data['remember']) ? true : false;
         unset($data['remember']);
         if (Auth::attempt($data, $remember)) {
-            return redirect()->route('home');
+            return redirect()->route('dashboard');
         }
         return back()->with('fail', config('user.MESSAGE.LOGIN_FAIL'))->withInput();
     }

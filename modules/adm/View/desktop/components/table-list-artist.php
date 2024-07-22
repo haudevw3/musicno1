@@ -36,8 +36,7 @@
                                     </td>
                                     <td><?php echo $key ?></td>
                                     <td><?php echo $artist['name'] ?></td>
-                                    <td><?php echo $artist['biography'] ?></td>
-                                    <td><?php echo $artist['tags'] ?></td>
+                                    <td><?php echo $artist['description'] ?></td>
                                     <td><?php echo date_format(date_create($artist['created_at']), 'd-m-Y') ?></td>
                                     <td><?php echo date_format(date_create($artist['updated_at']), 'd-m-Y | H:i') ?></td>
                                     <td>

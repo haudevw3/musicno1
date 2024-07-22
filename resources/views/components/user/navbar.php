@@ -16,7 +16,7 @@
                         <?php
                             echo (! auth()->user() && in_array($key, ['thu-vien', 'nghe-gan-day', 'bai-hat-yeu-thich', 'danh-sach-phat', 'thiet-lap']))
                             ? 'text-color-dark-05' : 'text-color-white';
-                        ?> mt-10" href="<?php echo route($value['route']['name'], $value['route']['params']) ?>" data-alias = "<?php echo $key ?>">
+                        ?> mt-10" href="<?php echo "/$key" ?>">
                         <i class="<?php echo $value['icon'] ?>"></i>
                         <span class="ml-10"><?php echo $value['title'] ?></span>
                     </a>

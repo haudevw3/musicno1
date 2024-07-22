@@ -53,8 +53,6 @@ class OAuthService extends Singleton
                 $user['id'],['password' => password_hash($attributes['password'], PASSWORD_DEFAULT)]
             );
         }
-        if (Auth::attempt($attributes, true)) {
-            return redirect()->route('home');
-        }
+        return $attributes;
     }
 }

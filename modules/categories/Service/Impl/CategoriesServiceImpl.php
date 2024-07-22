@@ -15,25 +15,35 @@ class CategoriesServiceImpl extends BaseServiceImpl implements CategoriesService
         parent::__construct($baseRepo);
     }
 
-    protected function parseData(array $data)
-    {
-        return [
-            'name' => ucwords(trim($data['name'])),
-            'slug' => trim($data['slug']),
-            'title' => ! empty($data['title']) ? trim($data['title']) : null,
-            'image' => ! empty($data['image']) ? trim($data['image']) : null,
-            'parent_id' => isset($data['parent_id']) ? $data['parent_id'] : null,
-        ];
-    }
-
     public function create(array $data)
     {
-        return $this->baseRepo->create($this->parseData($data));
+        $attributes = [
+            'name' => ucwords(trim($data['name'])),
+            'slug' => trim($data['slug']),
+            'priority' => $data['priority'],
+            'parent_id' => isset($data['parent_id']) ? $data['parent_id'] : 0,
+        ];
+        return $this->baseRepo->create($attributes);
     }
 
     public function updateOne($id, array $data)
     {
-        return $this->baseRepo->updateOne($id, $this->parseData($data));
+        $attributes = [];
+        $category = $this->baseRepo->findOne(['id' => $id]);
+        if (array_key_exists('name', $data) && $category['name'] !== ucwords(trim($data['name']))) {
+            $attributes['name'] = $data['name'];
+            $attributes['slug'] = trim($data['slug']);
+        }
+        if (array_key_exists('priority', $data) && $category['priority'] !== $data['priority']) {
+            $attributes['priority'] = $data['priority'];
+        }
+        if (array_key_exists('parent_id', $data) && $category['parent_id'] !== $data['parent_id']) {
+            $attributes['parent_id'] = $data['parent_id'];
+        }
+        if (empty($attributes)) {
+            return;
+        }
+        return $this->baseRepo->updateOne($id, $attributes);
     }
 
     public function deleteOne($id)
@@ -41,18 +51,17 @@ class CategoriesServiceImpl extends BaseServiceImpl implements CategoriesService
         return $this->baseRepo->deleteOne($id);
     }
 
-    public function delete(array $condition = [], $forever = false)
+    public function deleteAll(array $condition = [], $forever = false)
     {
         $column = array_keys($condition)[0];
         $values = array_values($condition)[0];
         $values = is_array($values) ? $values : [$values];
-        foreach ($values as $key => $value) {
-            $this->baseRepo->delete([$column => $value]);
+        foreach ($values as $value) {
+            $this->baseRepo->delete([$column => $value], $forever);
         }
-        return true;
     }
 
-    public function listCategories(array $columns = [], array $conditions = [], array $sorted = [], $perPage = 10)
+    public function listCategories(array $columns = [], array $conditions = [], array $sorted = ['created_at' => 'desc'], $perPage = 10)
     {
         return $this->baseRepo->list($columns, $conditions, $sorted, $perPage);
     }

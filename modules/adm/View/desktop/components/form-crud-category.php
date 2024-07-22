@@ -5,15 +5,16 @@
             <div class="divider-01"></div>
         </div>
         <div class="form-body p-20">
-            <form method="post" action="<?php echo isset($category) ? route('adm-update-category') : route('adm-create-category') ?>" enctype="multipart/form-data">
-                <input class="d-none" type="text" name="<?php echo isset($category) ? 'id' : null ?>" value="<?php echo isset($category) ? $category['id'] : null ?>" />
-                <input class="d-none" type="text" name="<?php echo isset($category) ? 'image_url' : null ?>" value="<?php echo isset($category) ? $category['image'] : null ?>" />
+            <form method="post" action="<?php echo isset($category) ? route('adm-update-category') : route('adm-create-category') ?>">
+                <input name="<?php echo isset($category) ? 'id' : null ?>" type="text" class="d-none"
+                       value="<?php echo isset($category) ? $category['id'] : null ?>" />
 
                 <div class="mb-3">
                     <label for="name" class="form-label fw-600">Tên danh mục:</label>
                     <div class="form-group input-md-01">
                         <i class="fa-regular fa-pen"></i>
-                        <input id="name" type="text" name="name" class="form-control need-convert-to-slug" placeholder="Nhập tên danh mục" value="<?php echo isset($category) ? $category['name'] : old('name') ?>">
+                        <input name="name" type="text" id="name" class="form-control need-convert-to-slug" placeholder="Nhập tên danh mục"
+                               value="<?php echo isset($category) ? $category['name'] : old('name') ?>">
                     </div>
                     <div class="form-text text-color-red"><?php echo error('name') ?></div>
                 </div>
@@ -22,48 +23,39 @@
                     <label for="slug" class="form-label fw-600">Đường dẫn hiển thị:</label>
                     <div class="form-group input-md-01">
                         <i class="fa-regular fa-link"></i>
-                        <input id="slug" type="text" name="slug" class="form-control converted-slug" placeholder="Nhập đường dẫn hiển thị" value="<?php echo isset($category) ? $category['slug'] : old('slug') ?>">
+                        <input name="slug" type="text" id="slug" class="form-control converted-slug" placeholder="Nhập đường dẫn hiển thị"
+                               value="<?php echo isset($category) ? $category['slug'] : old('slug') ?>">
                     </div>
                     <div class="form-text text-color-red"><?php echo error('slug') ?></div>
                 </div>
 
                 <div class="mb-3">
-                    <label for="file-upload" class="form-label fw-600">Ảnh danh mục: ( được bỏ trống )</label>
+                    <label for="priority" class="form-label fw-600">Độ ưu tiên danh mục:</label>
                     <div class="form-group input-md-01">
-                        <i class="fa-regular fa-camera"></i>
-                        <input class="col-12 file-upload" id="file-upload" type="file" name="image">
+                        <i class="fa-regular fa-flag"></i>
+                        <input name="priority" type="number" id="priority" class="form-control" placeholder="Nhập độ ưu tiên cho danh mục"
+                               value="<?php echo isset($category) ? $category['priority'] : (old('priority') ?? 0) ?>">
                     </div>
-                    <div class="form-text text-color-red"></div>
-                </div>
-
-                <div class="mb-3">
-                    <label for="title" class="form-label fw-600">Tiêu đề danh mục: ( được bỏ trống )</label>
-                    <textarea id="title" type="text" class="form-control" placeholder="Nhập nội dung tiêu đề"><?php echo isset($category) ? $category['title'] : old('title') ?></textarea>
+                    <div class="form-text text-color-red"><?php echo error('priority') ?></div>
                 </div>
 
                 <div class="mb-3">
                     <label class="form-label fw-600">Chọn danh mục để hiển thị: ( được bỏ trống )</label>
                     <div class="checkbox-container" data-rows="<?php echo count($categories) ?>" style="display: grid; grid-template-columns: repeat(2, 1fr);">
                         <?php
-                            $parentId = [];
-                            if (isset($category['parent_id'])) {
-                                $parentId = [$category['parent_id']];
-                            } else {
-                                $parentId = [old('parent_id')];
-                            }
-                            if (! empty($categories)) {
-                                foreach ($categories as $key => $cate) {
-                                    $key++;
-                                    if (isset($category['id']) && $cate['id'] == $category['id']) {
-                                        continue;
-                                    }
-                                    ?>
-                                        <div class="form-check form-check-01">
-                                            <input data-key="<?php echo $key ?>" class="form-check-input checkbox-once" id="checkbox-<?php echo $key ?>" type="checkbox" name="parent_id" value="<?php echo $cate['id'] ?>" <?php echo in_array($cate['id'], $parentId) ? 'checked' : null ?>>
-                                            <label class="form-check-label fw-600" for="checkbox-<?php echo $key ?>"><?php echo $cate['name'] ?></label>
-                                        </div>
-                                    <?php
+                            $parentId = isset($category['parent_id']) ? $category['parent_id'] : (old('parent_id') ?? 0);
+                            foreach ($categories as $key => $cate) {
+                                $key++;
+                                if ((isset($category['id']) && $cate['id'] == $category['id'])) {
+                                    continue;
                                 }
+                                ?>
+                                    <div class="form-check form-check-01">
+                                        <input name="parent_id" type="checkbox" data-key="<?php echo $key ?>" id="checkbox-<?php echo $key ?>" class="form-check-input checkbox-once"
+                                               value="<?php echo $cate['id'] ?>" <?php echo ($cate['id'] == $parentId) ? 'checked' : null ?>>
+                                        <label class="form-check-label fw-600" for="checkbox-<?php echo $key ?>"><?php echo $key.'. '.$cate['name'] ?></label>
+                                    </div>
+                                <?php
                             }
                         ?>
                     </div>

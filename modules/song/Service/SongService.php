@@ -10,7 +10,7 @@ interface SongService
 
     public function deleteOne($id);
 
-    public function delete(array $condition = [], $forever = false);
+    public function deleteAll(array $condition = [], $forever = false);
 
-    public function listSong(array $columns = [], array $conditions = [], array $sorted = [], $perPage = 10);
+    public function listSong(array $columns = [], array $conditions = [], array $sorted = ['created_at' => 'desc'], $perPage = 10);
 }

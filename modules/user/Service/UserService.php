@@ -10,7 +10,7 @@ interface UserService
 
     public function deleteOne($id);
 
-    public function delete(array $condition = [], $forever = false);
+    public function deleteAll(array $condition = [], $forever = false);
 
     public function listUser(array $columns = [], array $conditions = [], array $sorted = [], $perPage = 10);
 }

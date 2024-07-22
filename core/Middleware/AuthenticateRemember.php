@@ -22,7 +22,7 @@ class AuthenticateRemember
             $rememberToken = Cookie::get('remember_token');
 
             if (Auth::loginUsingToken($rememberToken)) {
-                return redirect()->route('home');
+                return redirect()->route('dashboard');
             }
         }
 

@@ -29,54 +29,57 @@ abstract class BaseRepositoryImpl implements BaseRepository
     public function buildQuery(array $columns = [], array $conditions = [], array $options = [])
     {
         // [key => value] = where
-        // [key => value, 'and' => [key => value]]
-        // ['and' => [key => value], 'or' => [key => value]]
-        // ['and' => [key => value, 'key1' => 'value1]...]
+        // ['and' => [key => value, 'key' => 'value',...]]
+        // ['and' => [key => value,...], 'or' => [key => value,...]]
         $query = $this->model()->newQuery()->select($columns);
         if (count($conditions) > 0) {
             foreach ($conditions as $key => $values) {
                 $method = 'where';
+                $operator = '=';
                 if (is_array($values)) {
-                    $method = $key.'Where';
+                    if (in_array($key, ['or', 'and'])) {
+                        $method = $key.'Where';
+                    } else {
+                        $operator = $key;
+                    }
                     if (count($values) > 1) {
+                        $b = true;
                         foreach ($values as $column => $value) {
-                            $query->{$method}($column, $value);
+                            if ($b) {
+                                $b = false;
+                                $query->where($column, $operator, $value);
+                            } else {
+                                $query->$method($column, $operator, $value);
+                            }
                         }
                     } else {
-                        $query->{$method}(
-                            array_keys($values)[0], array_values($values)[0]
-                        );
+                        $query->$method(array_keys($values)[0], $operator, array_values($values)[0]);
                     }
                 } else {
-                    $query->{$method}($key, $values);
+                    $query->$method($key, ($values === 0) ? '0' : $values);
                 }
             }
         }
-        // sorted => [column => asc|desc]
         if (count($options) > 0) {
             if (isset($options['sorted'])) {
-                $query->orderBy(
-                    array_keys($options['sorted'])[0], array_values($options['sorted'])[0]
-                );
+                $query->orderBy(array_keys($options['sorted'])[0], array_values($options['sorted'])[0]);
             }
         }
         return $query;
     }
 
-    public function findOne(array $condition = [], array $columns = [])
+    public function findOne(array $conditions = [], array $columns = [])
     {
-        // [key => value]
-        return $this->model()->where(
-            array_keys($condition)[0], array_values($condition)[0]
-        )->get($columns)[0];
+        $query = $this->buildQuery($columns, $conditions);
+        return $query->get($columns)[0];
     }
 
-    public function findAll(array $columns = [], array $conditions = [], array $sorted = [])
+    public function findAll(array $columns = [], array $conditions = [], array $sorted = ['created_at' => 'asc'])
     {
-        return $this->buildQuery($columns, $conditions, $sorted)->get();
+        return $this->buildQuery($columns, $conditions, ['sorted' => $sorted])->get();
     }
 
-    public function list(array $columns = [], array $conditions = [], array $sorted = [], $perPage = 10)
+    public function list(array $columns = [], array $conditions = [], array $sorted = ['created_at' => 'desc'], $perPage = 10)
     {
         $items = $this->findAll($columns, $conditions, $sorted);
         $paginator = new Paginator($items, $perPage, [], app('request'));

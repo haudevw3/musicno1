@@ -16,7 +16,6 @@ class FormCreateSong extends FormRequest
         return [
             'name' => 'required|exists:song,name|min:6|max:255',
             'slug' => 'required|exists:song,slug|min:6|max:255',
-            'artist_id' => 'required',
         ];
     }
 
@@ -31,7 +30,6 @@ class FormCreateSong extends FormRequest
             'slug.exists' => 'Đường dẫn hiển thị đã tồn tại.',
             'slug.min' => 'Đường dẫn hiển thị tối thiểu 6 kí tự.',
             'slug.max' => 'Đường dẫn hiển thị tối đa 255 kí tự.',
-            'artist_id.required' => 'Nghệ sĩ không được bỏ trống.',
         ];
     }
 }

@@ -5,14 +5,18 @@
     </div>
     <div class="form-body p-20">
         <form method="post" action="<?php echo isset($user) ? route('adm-update-user') : route('adm-create-user') ?>">
-            <input class="d-none" type="text" name="<?php echo isset($user) ? 'id' : null ?>" value="<?php echo isset($user) ? $user['id'] : null ?>" />
-            <input class="d-none" type="text" name="<?php echo isset($user) ? 'image_url' : null ?>" value="<?php echo isset($user) ? $user['image'] : null ?>" />
+            <input name="<?php echo isset($user) ? 'id' : null ?>" type="text" class="d-none"
+                   value="<?php echo isset($user) ? $user['id'] : null ?>" />
+
+            <input name="<?php echo isset($user) ? 'image_url' : null ?>" type="text" class="d-none"
+                   value="<?php echo isset($user) ? $user['image'] : null ?>" />
 
             <div class="mb-3">
                 <label for="fullname" class="form-label fw-600">Họ và tên:</label>
                 <div class="form-group input-md-01">
                     <i class="fa-regular fa-user"></i>
-                    <input id="fullname" type="text" name="fullname" class="form-control" placeholder="Nhập họ và tên" value="<?php echo isset($user) ? $user['fullname'] : old('fullname') ?>">
+                    <input name="fullname" type="text" id="fullname" class="form-control" placeholder="Nhập họ và tên"
+                           value="<?php echo isset($user) ? $user['fullname'] : old('fullname') ?>">
                 </div>
                 <div class="form-text text-color-red"><?php echo error('fullname') ?></div>
             </div>
@@ -21,7 +25,8 @@
                 <label for="username" class="form-label fw-600">Tên đăng nhập:</label>
                 <div class="form-group input-md-01">
                     <i class="fa-regular fa-user"></i>
-                    <input id="username" type="text" name="username" class="form-control" placeholder="Nhập tên đăng nhập" value="<?php echo isset($user) ? $user['username'] : old('username') ?>">
+                    <input name="username" type="text" id="username" class="form-control" placeholder="Nhập tên đăng nhập"
+                           value="<?php echo isset($user) ? $user['username'] : old('username') ?>">
                 </div>
                 <div class="form-text text-color-red"><?php echo error('username') ?></div>
             </div>
@@ -30,7 +35,8 @@
                 <label for="email" class="form-label fw-600">Email:</label>
                 <div class="form-group input-md-01">
                     <i class="fa-regular fa-envelope"></i>
-                    <input id="email" type="email" name="email" class="form-control" placeholder="Nhập email" value="<?php echo isset($user) ? $user['email'] : old('email') ?>">
+                    <input name="email" type="email" id="email" class="form-control" placeholder="Nhập email"
+                           value="<?php echo isset($user) ? $user['email'] : old('email') ?>">
                 </div>
                 <div class="form-text text-color-red"><?php echo error('email') ?></div>
             </div>
@@ -39,7 +45,8 @@
                 <label for="password" class="form-label fw-600">Mật khẩu:</label>
                 <div class="form-group input-md-01">
                     <i class="fa-regular fa-lock"></i>
-                    <input id="password" type="password" name="password" class="form-control" placeholder="Nhập mật khẩu" value="<?php echo isset($user) ? 'musicno1' : old('password') ?>">
+                    <input name="password" type="password" id="password" class="form-control" placeholder="Nhập mật khẩu"
+                           value="<?php echo isset($user) ? 'musicno1' : old('password') ?>">
                 </div>
                 <div class="form-text text-color-red"><?php echo error('password') ?></div>
             </div>
@@ -49,10 +56,11 @@
                 <select class="form-select" name="role">
                     <option value="0" selected disabled hidden>Chọn vai trò</option>
                     <?php
-                        $role = old('role');
-                        foreach ([1 => 'Quản trị viên', 2 => 'Thành viên'] as $key => $value) {
+                        foreach (config('user.roles') as $key => $value) {
                             ?>
-                                <option value="<?php echo $key ?>" <?php echo isset($user) ? (($user['role'] == $key) ? 'selected' : null) : (($role == $key) ? 'selected' : null) ?>><?php echo $value ?></option>
+                                <option value="<?php echo $key ?>"
+                                <?php echo isset($user) ? (($user['role'] == $key) ? 'selected' : null) 
+                                : ((old('role') == $key) ? 'selected' : null) ?>><?php echo $value ?></option>
                             <?php
                         }
                     ?>
@@ -64,7 +72,8 @@
                 <label for="tel" class="form-label fw-600">Số điện thoại: ( được bỏ trống )</label>
                 <div class="form-group input-md-01">
                     <i class="fa-regular fa-phone"></i>
-                    <input id="tel" type="text" name="tel" class="form-control" placeholder="Nhập số điện thoại" value="<?php echo isset($user) ? $user['tel'] : old('tel') ?>">
+                    <input name="tel" type="text" id="tel" class="form-control" placeholder="Nhập số điện thoại"
+                           value="<?php echo isset($user) ? $user['tel'] : old('tel') ?>">
                 </div>
                 <div class="form-text text-color-red"><?php echo error('tel') ?></div>
             </div>

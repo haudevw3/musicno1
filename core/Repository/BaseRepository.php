@@ -8,11 +8,11 @@ interface BaseRepository
 
     public function buildQuery(array $columns = [], array $conditions = [], array $options = []);
 
-    public function findOne(array $condition = [], array $columns = []);
+    public function findOne(array $conditions = [], array $columns = []);
 
-    public function findAll(array $columns = [], array $conditions = [], array $sorted = []);
+    public function findAll(array $columns = [], array $conditions = [], array $sorted = ['created_at' => 'asc']);
 
-    public function list(array $columns = [], array $conditions = [], array $sorted = [], $perPage = 10);
+    public function list(array $columns = [], array $conditions = [], array $sorted = ['created_at' => 'desc'], $perPage = 10);
 
     public function create(array $data);
 
