@@ -97,9 +97,9 @@ class SongManagerController
         $id = $request->input('id');
         $song = $this->songService->findOne(['id' => $id]);
         $albums = $this->albumService->findAll(['id', 'name']);
-        $albumSong = $this->albumSongService->findAll(['album_id'], ['song_id' => $id]);
+        $albumSongs = $this->albumSongService->findAll(['album_id'], ['song_id' => $id]);
         $albumIds = [];
-        foreach ($albumSong as $value) {
+        foreach ($albumSongs as $value) {
             $albumIds[] = $value['album_id'];
         }
         $data = [

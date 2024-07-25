@@ -44,22 +44,48 @@
                     <div class="checkbox-container" data-rows="<?php echo count($categories) ?>" style="display: grid; grid-template-columns: repeat(2, 1fr);">
                         <?php
                             $parentId = isset($category['parent_id']) ? $category['parent_id'] : (old('parent_id') ?? 0);
-                            foreach ($categories as $key => $cate) {
-                                $key++;
-                                if ((isset($category['id']) && $cate['id'] == $category['id'])) {
-                                    continue;
+                            if (! empty($categories)) {
+                                foreach ($categories as $key => $cate) {
+                                    $key++;
+                                    if ((isset($category['id']) && $cate['id'] == $category['id'])) {
+                                        continue;
+                                    }
+                                    ?>
+                                        <div class="form-check form-check-01">
+                                            <input name="parent_id" type="checkbox" data-key="<?php echo $key ?>" id="checkbox-cate-<?php echo $key ?>" class="form-check-input checkbox-once"
+                                                   value="<?php echo $cate['id'] ?>" <?php echo ($cate['id'] == $parentId) ? 'checked' : null ?>>
+                                            <label class="form-check-label fw-600" for="checkbox-cate-<?php echo $key ?>"><?php echo $key.'. '.$cate['name'] ?></label>
+                                        </div>
+                                    <?php
                                 }
-                                ?>
-                                    <div class="form-check form-check-01">
-                                        <input name="parent_id" type="checkbox" data-key="<?php echo $key ?>" id="checkbox-<?php echo $key ?>" class="form-check-input checkbox-once"
-                                               value="<?php echo $cate['id'] ?>" <?php echo ($cate['id'] == $parentId) ? 'checked' : null ?>>
-                                        <label class="form-check-label fw-600" for="checkbox-<?php echo $key ?>"><?php echo $key.'. '.$cate['name'] ?></label>
-                                    </div>
-                                <?php
                             }
                         ?>
                     </div>
                 </div>
+                
+                <?php
+                    if (! empty($playlists)) {
+                        ?>
+                            <div class="mb-3">
+                                <label class="form-label fw-600">Chọn playlist cho danh mục: ( được bỏ trống )</label>
+                                <div style="display: grid; grid-template-columns: repeat(2, 1fr);">
+                                    <?php
+                                        $playlistIds = isset($playlistIds) ? $playlistIds : (old('playlist_ids') ?? []);
+                                        foreach ($playlists as $key => $playlist) {
+                                            ?>
+                                                <div class="form-check form-check-01">
+                                                    <input name="playlist_ids[]" type="checkbox" value="<?php echo $playlist['id'] ?>" id="checkbox-playlist-<?php echo $key ?>" class="form-check-input"
+                                                    <?php echo in_array($playlist['id'], $playlistIds) ? 'checked' : null ?>>
+                                                    <label class="form-check-label fw-600" for="checkbox-playlist-<?php echo $key ?>"><?php echo $playlist['name'] ?></label>
+                                                </div>
+                                            <?php
+                                        }
+                                    ?>
+                                </div>
+                            </div>
+                        <?php
+                    }
+                ?>
 
                 <div class="form-bottom mt-20 col-12 d-flex justify-content-end">
                     <button type="submit" class="btn btn-md-01 bg-color-blue-01"><?php echo isset($category) ? 'Cập nhật danh mục' : 'Tạo danh mục' ?></button>

@@ -64,7 +64,7 @@
                 </div>
 
                 <div class="mb-3">
-                    <label class="form-label fw-600">Chọn nghệ sĩ sáng tác: ( chọn một hoặc nhiều )</label>
+                    <label class="form-label fw-600">Chọn nghệ sĩ để hiển thị:</label>
                     <div style="display: grid; grid-template-columns: repeat(2, 1fr);">
                         <?php
                             $artistIds = isset($artistIds) ? $artistIds : (old('artist_ids') ?? []);
@@ -72,9 +72,9 @@
                                 $key++;
                                 ?>
                                     <div class="form-check form-check-01">
-                                        <input name="artist_ids[]" type="checkbox" id="_checkbox-<?php echo $key ?>" class="form-check-input"
+                                        <input name="artist_ids[]" type="checkbox" id="checkbox-<?php echo $key ?>" class="form-check-input"
                                                value="<?php echo $artist['id'] ?>" <?php echo in_array($artist['id'], $artistIds) ? 'checked' : null ?>>
-                                        <label class="form-check-label fw-600" for="_checkbox-<?php echo $key ?>"><?php echo $artist['name'] ?></label>
+                                        <label class="form-check-label fw-600" for="checkbox-<?php echo $key ?>"><?php echo $artist['name'] ?></label>
                                     </div>
                                 <?php
                             }

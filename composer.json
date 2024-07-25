@@ -16,6 +16,7 @@
             "Modules\\Artist\\": "modules/artist/",
             "Modules\\Categories\\": "modules/categories/",
             "Modules\\Page\\": "modules/page/",
+            "Modules\\Playlist\\": "modules/playlist/",
             "Modules\\Song\\": "modules/song/",
             "Modules\\User\\": "modules/user/"
         },

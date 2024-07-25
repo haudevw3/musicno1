@@ -5,11 +5,36 @@ use Modules\Adm\Controller\AdmController;
 use Modules\Adm\Controller\AlbumManagerController;
 use Modules\Adm\Controller\ArtistManagerController;
 use Modules\Adm\Controller\CategoriesManagerController;
+use Modules\Adm\Controller\PlaylistManagerController;
 use Modules\Adm\Controller\SongManagerController;
 use Modules\Adm\Controller\UserManagerController;
 
 Route::prefix('adm')->middleware('auth.admin')->group(function () {
     Route::get('home', [AdmController::class, 'pageHome'])->name('adm-page');
+
+    Route::get('manager-categories/{page?}', [CategoriesManagerController::class, 'pageManagerCategories'])
+                ->where('page', 'page-(\d+)')
+                ->name('adm-manager-categories');
+    Route::get('page-add-category', [CategoriesManagerController::class, 'pageAddCategory'])->name('adm-add-category');
+    Route::post('create-category', [CategoriesManagerController::class, 'createCategory'])->name('adm-create-category');
+    Route::get('page-edit-category/{id?}', [CategoriesManagerController::class, 'pageEditCategory'])
+                ->where('id', '(\d+)')
+                ->name('adm-edit-category');
+    Route::post('update-category', [CategoriesManagerController::class, 'updateCategory'])->name('adm-update-category');
+    Route::get('delete-category/{id}', [CategoriesManagerController::class, 'deleteCategory'])->name('adm-delete-category');
+    Route::post('delete-multiple-category', [CategoriesManagerController::class, 'deleteMultipleCategory'])->name('adm-delete-multiple-category');
+
+    Route::get('manager-playlist/{page?}', [PlaylistManagerController::class, 'pageManagerPlaylist'])
+                ->where('page', 'page-(\d+)')
+                ->name('adm-manager-playlist');
+    Route::get('page-add-playlist', [PlaylistManagerController::class, 'pageAddPlaylist'])->name('adm-add-playlist');
+    Route::post('create-playlist', [PlaylistManagerController::class, 'createPlaylist'])->name('adm-create-playlist');
+    Route::get('page-edit-playlist/{id?}', [PlaylistManagerController::class, 'pageEditPlaylist'])
+                ->where('id', '(\d+)')
+                ->name('adm-edit-playlist');
+    Route::post('update-playlist', [PlaylistManagerController::class, 'updatePlaylist'])->name('adm-update-playlist');
+    Route::get('delete-playlist/{id}', [PlaylistManagerController::class, 'deletePlaylist'])->name('adm-delete-playlist');
+    Route::post('delete-multiple-playlist', [PlaylistManagerController::class, 'deleteMultiplePlaylist'])->name('adm-delete-multiple-playlist');
 
     Route::get('manager-artist/{page?}', [ArtistManagerController::class, 'pageManagerArtist'])
                 ->where('page', 'page-(\d+)')
@@ -34,18 +59,6 @@ Route::prefix('adm')->middleware('auth.admin')->group(function () {
     Route::post('update-album', [AlbumManagerController::class, 'updateAlbum'])->name('adm-update-album');
     Route::get('delete-album/{id}', [AlbumManagerController::class, 'deleteAlbum'])->name('adm-delete-album');
     Route::post('delete-multiple-album', [AlbumManagerController::class, 'deleteMultipleAlbum'])->name('adm-delete-multiple-album');
-
-    Route::get('manager-categories/{page?}', [CategoriesManagerController::class, 'pageManagerCategories'])
-                ->where('page', 'page-(\d+)')
-                ->name('adm-manager-categories');
-    Route::get('page-add-category', [CategoriesManagerController::class, 'pageAddCategory'])->name('adm-add-category');
-    Route::post('create-category', [CategoriesManagerController::class, 'createCategory'])->name('adm-create-category');
-    Route::get('page-edit-category/{id?}', [CategoriesManagerController::class, 'pageEditCategory'])
-                ->where('id', '(\d+)')
-                ->name('adm-edit-category');
-    Route::post('update-category', [CategoriesManagerController::class, 'updateCategory'])->name('adm-update-category');
-    Route::get('delete-category/{id}', [CategoriesManagerController::class, 'deleteCategory'])->name('adm-delete-category');
-    Route::post('delete-multiple-category', [CategoriesManagerController::class, 'deleteMultipleCategory'])->name('adm-delete-multiple-category');
 
     Route::get('manager-song/{page?}', [SongManagerController::class, 'pageManagerSong'])
                 ->where('page', 'page-(\d+)')

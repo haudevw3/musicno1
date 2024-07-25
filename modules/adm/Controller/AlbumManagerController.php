@@ -15,8 +15,6 @@ class AlbumManagerController
     protected $albumService;
     protected $artistService;
     protected $artistAlbumService;
-    protected $categoriesService;
-    protected $categoryAlbumService;
 
     public function __construct(AlbumService $albumService, ArtistService $artistService, ArtistAlbumService $artistAlbumService)
     {
@@ -78,14 +76,14 @@ class AlbumManagerController
         $id = $request->input('id');
         $album = $this->albumService->findOne(['id' => $id]);
         $artists = $this->artistService->findAll(['id', 'name']);
-        $artistAlbum = $this->artistAlbumService->findAll(['artist_id'], ['album_id' => $id]);
+        $artistAlbums = $this->artistAlbumService->findAll(['artist_id'], ['album_id' => $id]);
         $artistIds = [];
-        foreach ($artistAlbum as $value) {
+        foreach ($artistAlbums as $value) {
             $artistIds[] = $value['artist_id'];
         }
         $data = [
             'label' => 2,
-            'title' => 'Cập nhật nghệ sĩ',
+            'title' => 'Cập nhật album',
             'album' => $album,
             'artists' => $artists,
             'artistIds' => $artistIds,

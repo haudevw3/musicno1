@@ -1,9 +1,57 @@
 <?php
 
 return [
+    
+    'categories' => [
+
+        'table' => [
+            'column' => ['STT', 'Tên danh mục', 'Đường dẫn hiển thị', 'Ngày tạo', 'Cập nhật gần đây', 'Hành động'],
+        ],
+
+        'action' => [
+            'them-danh-muc' => ['title' => 'Thêm danh mục', 'icon' => 'fa-regular fa-layer-plus', 'tag' => 'a', 'class' => 'bg-color-blue-01', 'route' => ['name' => 'adm-add-category']],
+            'xoa-nhanh' => ['title' => 'Xóa nhanh', 'icon' => 'fa-regular fa-trash', 'class' => 'bg-color-red delete-multiple-category', 'tag' => 'div', 'route' => ['name' => 'adm-delete-multiple-category']]
+        ],
+
+        'option' => [],
+
+        'MESSAGE' => [
+            'CREATE_SUCCESS' => 'Tạo danh mục thành công.',
+            'CREATE_FAIL' => 'Tạo danh mục thất bại. Vui lòng kiểm tra lại các thông tin.',
+            'UPDATE_SUCCESS' => 'Cập nhật dữ liệu danh mục thành công.',
+            'UPDATE_FAIL' => 'Cập nhật dữ liệu danh mục thất bại. Vui lòng kiểm tra lại các thông tin.',
+            'DELETE_SUCCESS' => 'Xóa dữ liệu danh mục thành công.',
+            'DELETE_FAIL' => 'Xóa dữ liệu danh mục thất bại. Vui lòng kiểm tra lại các thông tin.',
+            'DIALOG' => 'Bạn có chắc muốn xóa dữ liệu danh mục này không? Khi xóa mọi dữ liệu liên quan đến danh mục này sẽ bị mất.',
+        ],
+    ],
+
+    'playlist' => [
+        'table' => [
+            'column' => ['STT', 'Tên playlist', 'Mô tả', 'Ngày tạo', 'Cập nhật gần đây', 'Hành động'],
+        ],
+
+        'action' => [
+            'them-playlist' => ['title' => 'Thêm playlist', 'icon' => 'fa-solid fa-list-music', 'tag' => 'a', 'class' => 'bg-color-blue-01', 'route' => ['name' => 'adm-add-playlist']],
+            'xoa-nhanh' => ['title' => 'Xóa nhanh', 'icon' => 'fa-regular fa-trash', 'class' => 'bg-color-red delete-multiple-playlist', 'tag' => 'div', 'route' => ['name' => 'adm-delete-multiple-playlist']]
+        ],
+
+        'option' => [],
+
+        'MESSAGE' => [
+            'CREATE_SUCCESS' => 'Tạo playlist thành công.',
+            'CREATE_FAIL' => 'Tạo playlist thất bại. Vui lòng kiểm tra lại các thông tin.',
+            'UPDATE_SUCCESS' => 'Cập nhật dữ liệu playlist thành công.',
+            'UPDATE_FAIL' => 'Cập nhật dữ liệu playlist thất bại. Vui lòng kiểm tra lại các thông tin.',
+            'DELETE_SUCCESS' => 'Xóa dữ liệu playlist thành công.',
+            'DELETE_FAIL' => 'Xóa dữ liệu playlist thất bại. Vui lòng kiểm tra lại các thông tin.',
+            'DIALOG' => 'Bạn có chắc muốn xóa dữ liệu playlist này không? Khi xóa mọi dữ liệu liên quan đến playlist này sẽ bị mất.',
+        ]
+    ],
+
     'artist' => [
         'table' => [
-            'column' => ['STT', 'Tên nghệ sĩ', 'Tiểu sử - Mô tả', 'Ngày tạo', 'Cập nhật gần đây', 'Hành động'],
+            'column' => ['STT', 'Tên nghệ sĩ', 'Mô tả', 'Ngày tạo', 'Cập nhật gần đây', 'Hành động'],
         ],
 
         'action' => [
@@ -45,30 +93,6 @@ return [
             'DELETE_FAIL' => 'Xóa dữ liệu album thất bại. Vui lòng kiểm tra lại các thông tin.',
             'DIALOG' => 'Bạn có chắc muốn xóa dữ liệu album này không? Khi xóa mọi dữ liệu liên quan đến album này sẽ bị mất.',
         ]
-    ],
-
-    'categories' => [
-
-        'table' => [
-            'column' => ['STT', 'Tên danh mục', 'Đường dẫn hiển thị', 'Ngày tạo', 'Cập nhật gần đây', 'Hành động'],
-        ],
-
-        'action' => [
-            'them-danh-muc' => ['title' => 'Thêm danh mục', 'icon' => 'fa-regular fa-layer-plus', 'tag' => 'a', 'class' => 'bg-color-blue-01', 'route' => ['name' => 'adm-add-category']],
-            'xoa-nhanh' => ['title' => 'Xóa nhanh', 'icon' => 'fa-regular fa-trash', 'class' => 'bg-color-red delete-multiple-category', 'tag' => 'div', 'route' => ['name' => 'adm-delete-multiple-category']]
-        ],
-
-        'option' => [],
-
-        'MESSAGE' => [
-            'CREATE_SUCCESS' => 'Tạo danh mục thành công.',
-            'CREATE_FAIL' => 'Tạo danh mục thất bại. Vui lòng kiểm tra lại các thông tin.',
-            'UPDATE_SUCCESS' => 'Cập nhật dữ liệu danh mục thành công.',
-            'UPDATE_FAIL' => 'Cập nhật dữ liệu danh mục thất bại. Vui lòng kiểm tra lại các thông tin.',
-            'DELETE_SUCCESS' => 'Xóa dữ liệu danh mục thành công.',
-            'DELETE_FAIL' => 'Xóa dữ liệu danh mục thất bại. Vui lòng kiểm tra lại các thông tin.',
-            'DIALOG' => 'Bạn có chắc muốn xóa dữ liệu danh mục này không? Khi xóa mọi dữ liệu liên quan đến danh mục này sẽ bị mất.',
-        ],
     ],
 
     'song' => [

@@ -18,6 +18,7 @@ class CategoriesServiceImpl extends BaseServiceImpl implements CategoriesService
     public function create(array $data)
     {
         $attributes = [
+            'category_id' => $data['category_id'],
             'name' => ucwords(trim($data['name'])),
             'slug' => trim($data['slug']),
             'priority' => $data['priority'],

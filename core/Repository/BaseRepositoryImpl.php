@@ -71,7 +71,7 @@ abstract class BaseRepositoryImpl implements BaseRepository
     public function findOne(array $conditions = [], array $columns = [])
     {
         $query = $this->buildQuery($columns, $conditions);
-        return $query->get($columns)[0];
+        return ! is_null($query->get($columns)) ? $query->get($columns)[0] : null;
     }
 
     public function findAll(array $columns = [], array $conditions = [], array $sorted = ['created_at' => 'asc'])

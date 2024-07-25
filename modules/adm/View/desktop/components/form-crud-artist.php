@@ -33,7 +33,7 @@
                 </div>
 
                 <div class="mb-3">
-                    <label for="file-upload" class="form-label fw-600">Ảnh nghệ sĩ: ( được bỏ trống )</label>
+                    <label for="file-upload" class="form-label fw-600">Ảnh nghệ sĩ:</label>
                     <div class="form-group input-md-01">
                         <i class="fa-regular fa-camera"></i>
                         <input name="image" type="file" class="col-12 file-upload" id="file-upload">
@@ -44,25 +44,6 @@
                 <div class="mb-3">
                     <label for="description" class="form-label fw-600">Tiểu sử của nghệ sĩ: ( được bỏ trống )</label>
                     <textarea name="description" type="text" id="description" class="form-control" placeholder="Nhập nội dung tiểu sử, mô tả"><?php echo isset($artist) ? $artist['description'] : old('description') ?></textarea>
-                </div>
-
-                <div class="mb-3">
-                    <label class="form-label fw-600">Chọn danh mục để hiển thị: ( được bỏ trống )</label>
-                    <div class="checkbox-container" data-rows="<?php echo count($categories) ?>" style="display: grid; grid-template-columns: repeat(2, 1fr);">
-                        <?php
-                            $categoryId = (isset($categoryArtist) && ! is_null($categoryArtist)) ? $categoryArtist['category_id'] : (old('category_id') ?? 0);
-                            foreach ($categories as $key => $category) {
-                                $key++;
-                                ?>
-                                    <div class="form-check form-check-01">
-                                        <input name="category_id" type="checkbox" data-key="<?php echo $key ?>" id="checkbox-<?php echo $key ?>" class="form-check-input checkbox-once"
-                                               value="<?php echo $category['id'] ?>" <?php echo ($category['id'] == $categoryId) ? 'checked' : null ?>>
-                                        <label class="form-check-label fw-600" for="checkbox-<?php echo $key ?>"><?php echo $key.'. '.$category['name'] ?></label>
-                                    </div>
-                                <?php
-                            }
-                        ?>
-                    </div>
                 </div>
 
                 <div class="form-bottom mt-20 col-12 d-flex justify-content-end">
