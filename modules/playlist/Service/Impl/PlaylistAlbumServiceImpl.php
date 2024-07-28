@@ -20,18 +20,20 @@ class PlaylistAlbumServiceImpl extends BaseServiceImpl implements PlaylistAlbumS
         return $this->baseRepo->create($data);
     }
 
-    public function updateAll($playlistId, array $albumIds)
+    public function updateAll($id, array $albumIds)
     {
-        $playlistAlbums = $this->baseRepo->findAll(['id', 'playlist_id', 'album_id'], ['playlist_id' => $playlistId]);
-        foreach ($playlistAlbums as $playlistAlbum) {
-            if (! in_array($playlistAlbum['album_id'], $albumIds)) {
-               $this->baseRepo->deleteOne($playlistAlbum['id']);
+        $playlistAlbums = $this->baseRepo->findAll(['id', 'album_id'], ['playlist_id' => $id]);
+        if (! empty($playlistAlbums)) {
+            foreach ($playlistAlbums as $playlistAlbum) {
+                if (! in_array($playlistAlbum['album_id'], $albumIds)) {
+                   $this->baseRepo->deleteOne($playlistAlbum['id']);
+                }
             }
         }
         foreach ($albumIds as $albumId) {
-            $playlistAlbum = $this->baseRepo->findOne(['and' => ['playlist_id' => $playlistId, 'album_id' => $albumId]]);
+            $playlistAlbum = $this->baseRepo->findOne(['and' => ['playlist_id' => $id, 'album_id' => $albumId]]);
             if (is_null($playlistAlbum)) {
-                $this->baseRepo->create(['playlist_id' => $playlistId, 'album_id' => $albumId]);
+                $this->baseRepo->create(['playlist_id' => $id, 'album_id' => $albumId]);
             }
         }
     }

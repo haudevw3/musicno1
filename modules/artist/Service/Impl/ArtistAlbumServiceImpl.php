@@ -20,18 +20,20 @@ class ArtistAlbumServiceImpl extends BaseServiceImpl implements ArtistAlbumServi
         return $this->baseRepo->create($data);
     }
 
-    public function updateAll($albumId, array $artistIds)
+    public function updateAll($id, array $albumIds)
     {
-        $artistAlbums = $this->baseRepo->findAll(['id', 'artist_id', 'album_id'], ['album_id' => $albumId]);
-        foreach ($artistAlbums as $artistAlbum) {
-            if (! in_array($artistAlbum['artist_id'], $artistIds)) {
-               $this->baseRepo->deleteOne($artistAlbum['id']);
+        $artistAlbums = $this->baseRepo->findAll(['id', 'album_id'], ['artist_id' => $id]);
+        if (! empty($artistAlbums)) {
+            foreach ($artistAlbums as $artistAlbum) {
+                if (! in_array($artistAlbum['album_id'], $albumIds)) {
+                   $this->baseRepo->deleteOne($artistAlbum['id']);
+                }
             }
         }
-        foreach ($artistIds as $artistId) {
-            $artistAlbum = $this->baseRepo->findOne(['and' => ['artist_id' => $artistId, 'album_id' => $albumId]]);
+        foreach ($albumIds as $albumId) {
+            $artistAlbum = $this->baseRepo->findOne(['and' => ['artist_id' => $id, 'album_id' => $albumId]]);
             if (is_null($artistAlbum)) {
-                $this->baseRepo->create(['artist_id' => $artistId, 'album_id' => $albumId]);
+                $this->baseRepo->create(['artist_id' => $id, 'album_id' => $albumId]);
             }
         }
     }

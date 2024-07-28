@@ -20,18 +20,20 @@ class CategoryPlaylistServiceImpl extends BaseServiceImpl implements CategoryPla
         return $this->baseRepo->create($data);
     }
 
-    public function updateAll($categoryId, array $playlistIds)
+    public function updateAll($id, array $playlistIds)
     {
-        $categoryPlaylists = $this->baseRepo->findAll(['id', 'playlist_id'], ['category_id' => $categoryId]);
-        foreach ($categoryPlaylists as $value) {
-            if (! in_array($value['playlist_id'], $playlistIds)) {
-               $this->baseRepo->deleteOne($value['id']);
+        $categoryPlaylists = $this->baseRepo->findAll(['id', 'playlist_id'], ['category_id' => $id]);
+        if (! empty($categoryPlaylists)) {
+            foreach ($categoryPlaylists as $categoryPlaylist) {
+                if (! in_array($categoryPlaylist['playlist_id'], $playlistIds)) {
+                   $this->baseRepo->deleteOne($categoryPlaylist['id']);
+                }
             }
         }
         foreach ($playlistIds as $playlistId) {
-            $categoryPlaylist = $this->baseRepo->findOne(['and' => ['category_id' => $categoryId, 'playlist_id' => $playlistId]]);
+            $categoryPlaylist = $this->baseRepo->findOne(['and' => ['category_id' => $id, 'playlist_id' => $playlistId]]);
             if (is_null($categoryPlaylist)) {
-                $this->baseRepo->create(['category_id' => $categoryId, 'playlist_id' => $playlistId]);
+                $this->baseRepo->create(['category_id' => $id, 'playlist_id' => $playlistId]);
             }
         }
     }

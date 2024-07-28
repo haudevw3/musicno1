@@ -52,7 +52,7 @@ class PlaylistManagerController
     public function createPlaylist(FormCreatePlaylist $request)
     {
         $validated = $request->validated();
-        if (is_array($validated) || ! $request->hasFile('image') || empty($request->input('album_ids'))) {
+        if (is_array($validated) || ! $request->hasFile('image')) {
             return back()->with('fail', config('adm.playlist.MESSAGE.CREATE_FAIL'))
                          ->withInput()->withErrors();
         }
@@ -60,13 +60,7 @@ class PlaylistManagerController
         $data['playlist_id'] = Str::random(22);
         $fileName = $request->file('image')->hash()->move('public/uploads/images');
         $data['image'] = asset("uploads/images/$fileName");
-        $albumIds = $data['album_ids'];
-        $playlist = tap($this->playlistService, function ($subject) use ($data) {
-            $subject->create($data);
-        })->findOne(['playlist_id' => $data['playlist_id']]);
-        foreach ($albumIds as $albumId) {
-            $this->playlistAlbumService->create(['playlist_id' => $playlist['id'], 'album_id' => $albumId]);
-        }
+        $this->playlistService->create($data);
         return redirect()->route('adm-manager-playlist', ['page' => 1])
                          ->with('success', config('adm.playlist.MESSAGE.CREATE_SUCCESS'));
     }
@@ -74,19 +68,11 @@ class PlaylistManagerController
     public function pageEditPlaylist(Request $request)
     {
         $id = $request->input('id');
-        $albums = $this->albumService->findAll(['id', 'name']);
         $playlist = $this->playlistService->findOne(['id' => $id]);
-        $playlistAlbums = $this->playlistAlbumService->findAll(['album_id'], ['playlist_id' => $id]);
-        $albumIds = [];
-        foreach ($playlistAlbums as $value) {
-            $albumIds[] = $value['album_id'];
-        }
         $data = [
             'label' => 2,
             'title' => 'Cập nhật playlist',
             'playlist' => $playlist,
-            'albums' => $albums,
-            'albumIds' => $albumIds,
         ];
         return view('adm.viewCrudPlaylist', $data);
     }
@@ -94,7 +80,7 @@ class PlaylistManagerController
     public function updatePlaylist(FormUpdatePlaylist $request)
     {
         $validated = $request->validated();
-        if (is_array($validated) || empty($request->input('album_ids'))) {
+        if (is_array($validated)) {
             return back()->with('fail', config('adm.playlist.MESSAGE.UPDATE_FAIL'))
                          ->withInput()->withErrors();
         }
@@ -109,10 +95,7 @@ class PlaylistManagerController
             $fileName = $file->hash()->move('public/uploads/images');
             $data['image'] = asset("uploads/images/$fileName");
         }
-        $albumIds = $data['album_ids'];
-        unset($data['album_ids']);
         $this->playlistService->updateOne($id, $data);
-        $this->playlistAlbumService->updateAll($id, $albumIds);
         return redirect()->route('adm-manager-playlist', ['page' => 1])
                          ->with('success', config('adm.playlist.MESSAGE.UPDATE_SUCCESS'));
     }
@@ -132,5 +115,39 @@ class PlaylistManagerController
         $this->playlistService->deleteAll(['id' => $ids]);
         return redirect()->route('adm-manager-playlist', ['page' => 1])
                          ->with('success', config('adm.playlist.MESSAGE.DELETE_SUCCESS'));
+    }
+
+    public function chooseAlbumForPlaylist(Request $request)
+    {
+        $id = $request->input('id');
+        $playlist = $this->playlistService->findOne(['id' => $id], ['id']);
+        $albums = $this->albumService->findAll(['id', 'name']);
+        $albumIds = [];
+        $playlistAlbums = $this->playlistAlbumService->findAll(['album_id'], ['playlist_id' => $id]);
+        if (! empty($playlistAlbums)) {
+            foreach ($playlistAlbums as $playlistAlbum) {
+                $albumIds[] = $playlistAlbum['album_id'];
+            }
+        }
+        $data = [
+            'label' => 2,
+            'title' => 'Biểu mẫu chọn album cho playlist',
+            'playlist' => $playlist,
+            'albums' => $albums,
+            'albumIds' => $albumIds,
+        ];
+        return view('adm.viewChooseAlbumForPlaylist', $data);
+    }
+
+    public function updateAlbumForPlaylist(Request $request)
+    {
+        $id = $request->input('id');
+        $albumIds = $request->input('album_ids');
+        if (empty($albumIds)) {
+            return back()->with('fail', config('adm.playlist.MESSAGE.CHOOSE_ALBUM_FOR_PLAYLIST_FAIL'));
+        }
+        $this->playlistAlbumService->updateAll($id, $albumIds);
+        return redirect()->route('adm-manager-playlist', ['page' => 1])
+                         ->with('success', config('adm.playlist.MESSAGE.CHOOSE_ALBUM_FOR_PLAYLIST_SUCCESS'));
     }
 }

@@ -24,7 +24,6 @@ class SongServiceImpl extends BaseServiceImpl implements SongService
             'audio' => trim($data['audio']),
             'image' => trim($data['image']),
             'duration' => trim($data['duration']),
-            'artist_names' => implode(', ', $data['artist_names'])
         ];
         return $this->baseRepo->create($attributes);
     }
@@ -35,6 +34,7 @@ class SongServiceImpl extends BaseServiceImpl implements SongService
         $song = $this->baseRepo->findOne(['id' => $id]);
         if (array_key_exists('name', $data) && $song['name'] !== $data['name']) {
             $attributes['name'] = $data['name'];
+            $attributes['slug'] = $data['slug'];
         }
         if (array_key_exists('image', $data) && $song['image'] !== $data['image']) {
             $attributes['image'] = $data['image'];
@@ -42,9 +42,6 @@ class SongServiceImpl extends BaseServiceImpl implements SongService
         if (array_key_exists('audio', $data) && $song['audio'] !== $data['audio']) {
             $attributes['audio'] = $data['audio'];
             $attributes['duration'] = $data['duration'];
-        }
-        if (array_key_exists('artist_names', $data) && $song['artist_names'] !== ($artistNames = implode(', ', $data['artist_names']))) {
-            $attributes['artist_names'] = $artistNames;
         }
         if (empty($attributes)) {
             return;

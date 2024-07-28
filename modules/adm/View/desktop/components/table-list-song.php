@@ -36,7 +36,6 @@
                                     </td>
                                     <td><?php echo $key ?></td>
                                     <td><?php echo $song['name'] ?></td>
-                                    <td><?php echo $song['artist_names'] ?></td>
                                     <td><?php echo $song['duration'] ?></td>
                                     <td><?php echo date_format(date_create($song['created_at']), 'd-m-Y') ?></td>
                                     <td><?php echo date_format(date_create($song['updated_at']), 'd-m-Y | H:i') ?></td>

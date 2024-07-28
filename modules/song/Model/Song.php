@@ -16,7 +16,6 @@ class Song extends Model
         'image',
         'duration',
         'audio',
-        'artist_names',
         'created_at',
         'updated_at',
     ];
@@ -28,6 +27,5 @@ class Song extends Model
         'image' => '',
         'duration' => '',
         'audio' => '',
-        'artist_names' => '',
     ];
 }

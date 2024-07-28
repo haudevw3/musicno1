@@ -26,25 +26,36 @@
                     if (! empty($albums)) {
                         foreach ($albums as $key => $album) {
                             $key++;
+                            $id = $album['id'];
                             ?>
                                 <tr id="row-<?php echo $key ?>">
                                     <td>
                                         <div class="form-check form-check-01">
-                                            <input id="checkbox-<?php echo $key ?>" name="ids[]" value="<?php echo $album['id'] ?>" class="form-check-input cursor-pointer" type="checkbox">
+                                            <input id="checkbox-<?php echo $key ?>" name="ids[]" value="<?php echo $id ?>" class="form-check-input cursor-pointer" type="checkbox">
                                             <label for="checkbox-<?php echo $key ?>" class="form-check-label"></label>
                                         </div>
                                     </td>
                                     <td><?php echo $key ?></td>
-                                    <td><?php echo $album['name'] ?></td>
-                                    <td><?php echo $album['type'] ?></td>
+                                    <td>
+                                        <?php
+                                            $color = null;
+                                            if ($album['type'] == 1) $color = 'bg-color-red';
+                                            elseif ($album['type'] == 2) $color = 'bg-color-yellow';
+                                            else $color = 'bg-color-blue';
+                                        ?>
+                                        <div class="d-flex">
+                                            <div style="width:8px; height:8px; margin-top:8px" class="rounded-circle <?php echo $color ?>"></div>
+                                            <span class="ml-5"><?php echo $album['name'] ?></span>
+                                        </div>
+                                    </td>
                                     <td><?php echo date_format(date_create($album['created_at']), 'd-m-Y') ?></td>
                                     <td><?php echo date_format(date_create($album['updated_at']), 'd-m-Y | H:i') ?></td>
                                     <td>
                                         <div class="d-flex position-relative">
                                             <div row-id="<?php echo $key ?>" class="table-btn center-items show-options"><i class="fa-regular fa-ellipsis-vertical fw-600"></i></div>
-                                            <a href="<?php echo route('adm-edit-album', $album['id']) ?>" class="table-btn center-items ml-10"><i class="fa-regular fa-pen-to-square"></i></a>
-                                            <div data-url="<?php echo route('adm-delete-album', $album['id']) ?>" class="table-btn center-items ml-10 show-modal"><i class="fa-regular fa-trash-can"></i></div>
-                                            <?php _require('adm.components.dropdown-manager-album', compact('key')) ?>
+                                            <a href="<?php echo route('adm-edit-album', $id) ?>" class="table-btn center-items ml-10"><i class="fa-regular fa-pen-to-square"></i></a>
+                                            <div data-url="<?php echo route('adm-delete-album', $id) ?>" class="table-btn center-items ml-10 show-modal"><i class="fa-regular fa-trash-can"></i></div>
+                                            <?php _require('adm.components.dropdown-manager-album', compact('key', 'id')) ?>
                                         </div>
                                     </td>
                                 </tr>

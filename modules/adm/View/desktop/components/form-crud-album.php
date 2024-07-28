@@ -63,25 +63,6 @@
                     echo isset($album) ? $album['description'] : old('description') ?></textarea>
                 </div>
 
-                <div class="mb-3">
-                    <label class="form-label fw-600">Chọn nghệ sĩ để hiển thị:</label>
-                    <div style="display: grid; grid-template-columns: repeat(2, 1fr);">
-                        <?php
-                            $artistIds = isset($artistIds) ? $artistIds : (old('artist_ids') ?? []);
-                            foreach ($artists as $key => $artist) {
-                                $key++;
-                                ?>
-                                    <div class="form-check form-check-01">
-                                        <input name="artist_ids[]" type="checkbox" id="checkbox-<?php echo $key ?>" class="form-check-input"
-                                               value="<?php echo $artist['id'] ?>" <?php echo in_array($artist['id'], $artistIds) ? 'checked' : null ?>>
-                                        <label class="form-check-label fw-600" for="checkbox-<?php echo $key ?>"><?php echo $artist['name'] ?></label>
-                                    </div>
-                                <?php
-                            }
-                        ?>
-                    </div>
-                </div>
-
                 <div class="form-bottom mt-20 col-12 d-flex justify-content-end">
                     <button type="submit" class="btn btn-md-01 bg-color-blue-01"><?php echo isset($album) ? 'Cập nhật album' : 'Tạo album' ?></button>
                 </div>

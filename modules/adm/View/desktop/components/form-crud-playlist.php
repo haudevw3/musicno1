@@ -47,25 +47,6 @@
                     echo isset($playlist) ? $playlist['description'] : old('description') ?></textarea>
                 </div>
 
-                <div class="mb-3">
-                    <label class="form-label fw-600">Chọn album cho playlist:</label>
-                    <div style="display: grid; grid-template-columns: repeat(2, 1fr);">
-                        <?php
-                            $albumIds = isset($albumIds) ? $albumIds : (old('album_ids') ?? []);
-                            foreach ($albums as $key => $album) {
-                                $key++;
-                                ?>
-                                    <div class="form-check form-check-01">
-                                        <input name="album_ids[]" type="checkbox" id="checkbox-<?php echo $key ?>" class="form-check-input"
-                                               value="<?php echo $album['id'] ?>" <?php echo in_array($album['id'], $albumIds) ? 'checked' : null ?>>
-                                        <label class="form-check-label fw-600" for="checkbox-<?php echo $key ?>"><?php echo $album['name'] ?></label>
-                                    </div>
-                                <?php
-                            }
-                        ?>
-                    </div>
-                </div>
-
                 <div class="form-bottom mt-20 col-12 d-flex justify-content-end">
                     <button type="submit" class="btn btn-md-01 bg-color-blue-01"><?php echo isset($playlist) ? 'Cập nhật playlist' : 'Tạo playlist' ?></button>
                 </div>

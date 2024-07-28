@@ -26,25 +26,36 @@
                     if (! empty($categories)) {
                         foreach ($categories as $key => $category) {
                             $key++;
+                            $id = $category['id'];
+                            $parent_id = $category['parent_id'];
                             ?>
                                 <tr id="row-<?php echo $key ?>">
                                     <td>
                                         <div class="form-check form-check-01">
-                                            <input id="checkbox-<?php echo $key ?>" name="ids[]" value="<?php echo $category['id'] ?>" class="form-check-input cursor-pointer" type="checkbox">
+                                            <input id="checkbox-<?php echo $key ?>" name="ids[]" value="<?php echo $id ?>" class="form-check-input cursor-pointer" type="checkbox">
                                             <label for="checkbox-<?php echo $key ?>" class="form-check-label"></label>
                                         </div>
                                     </td>
                                     <td><?php echo $key ?></td>
-                                    <td><?php echo $category['name'] ?></td>
-                                    <td><?php echo $category['slug'] ?></td>
+                                    <td>
+                                        <?php
+                                            $color = null;
+                                            if ($category['parent_id'] == 0) $color = 'bg-color-blue';
+                                            else $color = 'bg-color-gray';
+                                        ?>
+                                        <div class="d-flex">
+                                            <div style="width:8px; height:8px; margin-top:8px" class="rounded-circle <?php echo $color ?>"></div>
+                                            <span class="ml-5"><?php echo $category['name'] ?></span>
+                                        </div>
+                                    </td>
                                     <td><?php echo date_format(date_create($category['created_at']), 'd-m-Y') ?></td>
                                     <td><?php echo date_format(date_create($category['updated_at']), 'd-m-Y | H:i') ?></td>
                                     <td>
                                         <div class="d-flex position-relative">
                                             <div row-id="<?php echo $key ?>" class="table-btn center-items show-options"><i class="fa-regular fa-ellipsis-vertical fw-600"></i></div>
-                                            <a href="<?php echo route('adm-edit-category', $category['id']) ?>" class="table-btn center-items ml-10"><i class="fa-regular fa-pen-to-square"></i></a>
-                                            <div data-url="<?php echo route('adm-delete-category', $category['id']) ?>" class="table-btn center-items ml-10 show-modal"><i class="fa-regular fa-trash-can"></i></div>
-                                            <?php _require('adm.components.dropdown-manager-categories', compact('key')) ?>
+                                            <a href="<?php echo route('adm-edit-category', $id) ?>" class="table-btn center-items ml-10"><i class="fa-regular fa-pen-to-square"></i></a>
+                                            <div data-url="<?php echo route('adm-delete-category', $id) ?>" class="table-btn center-items ml-10 show-modal"><i class="fa-regular fa-trash-can"></i></div>
+                                            <?php _require('adm.components.dropdown-manager-categories', compact('key', 'id', 'parent_id')) ?>
                                         </div>
                                     </td>
                                 </tr>

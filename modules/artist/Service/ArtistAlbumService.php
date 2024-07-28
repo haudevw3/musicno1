@@ -6,7 +6,7 @@ interface ArtistAlbumService
 {
     public function create(array $data);
 
-    public function updateAll($albumId, array $artistIds);
+    public function updateAll($id, array $albumIds);
 
     public function deleteOne($id);
 }

@@ -26,25 +26,25 @@
                     if (! empty($artists)) {
                         foreach ($artists as $key => $artist) {
                             $key++;
+                            $id = $artist['id'];
                             ?>
                                 <tr id="row-<?php echo $key ?>">
                                     <td>
                                         <div class="form-check form-check-01">
-                                            <input id="checkbox-<?php echo $key ?>" name="ids[]" value="<?php echo $artist['id'] ?>" class="form-check-input cursor-pointer" type="checkbox">
+                                            <input id="checkbox-<?php echo $key ?>" name="ids[]" value="<?php echo $id ?>" class="form-check-input cursor-pointer" type="checkbox">
                                             <label for="checkbox-<?php echo $key ?>" class="form-check-label"></label>
                                         </div>
                                     </td>
                                     <td><?php echo $key ?></td>
                                     <td><?php echo $artist['name'] ?></td>
-                                    <td><?php echo $artist['description'] ?></td>
                                     <td><?php echo date_format(date_create($artist['created_at']), 'd-m-Y') ?></td>
                                     <td><?php echo date_format(date_create($artist['updated_at']), 'd-m-Y | H:i') ?></td>
                                     <td>
                                         <div class="d-flex position-relative">
                                             <div row-id="<?php echo $key ?>" class="table-btn center-items show-options"><i class="fa-regular fa-ellipsis-vertical fw-600"></i></div>
-                                            <a href="<?php echo route('adm-edit-artist', $artist['id']) ?>" class="table-btn center-items ml-10"><i class="fa-regular fa-pen-to-square"></i></a>
-                                            <div data-url="<?php echo route('adm-delete-artist', $artist['id']) ?>" class="table-btn center-items ml-10 show-modal"><i class="fa-regular fa-trash-can"></i></div>
-                                            <?php _require('adm.components.dropdown-manager-artist', compact('key')) ?>
+                                            <a href="<?php echo route('adm-edit-artist', $id) ?>" class="table-btn center-items ml-10"><i class="fa-regular fa-pen-to-square"></i></a>
+                                            <div data-url="<?php echo route('adm-delete-artist', $id) ?>" class="table-btn center-items ml-10 show-modal"><i class="fa-regular fa-trash-can"></i></div>
+                                            <?php _require('adm.components.dropdown-manager-artist', compact('key', 'id')) ?>
                                         </div>
                                     </td>
                                 </tr>

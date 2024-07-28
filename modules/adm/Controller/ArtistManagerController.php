@@ -7,14 +7,22 @@ use Modules\Adm\Request\FormCreateArtist;
 use Modules\Adm\Request\FormUpdateArtist;
 use Modules\Artist\Service\ArtistService;
 use Foundation\Support\Str;
+use Modules\Album\Service\AlbumService;
+use Modules\Artist\Service\ArtistAlbumService;
 
 class ArtistManagerController
 {
     protected $artistService;
+    protected $artistAlbumService;
+    protected $albumService;
+    protected $albumSongService;
+    protected $songService;
 
-    public function __construct(ArtistService $artistService)
+    public function __construct(ArtistService $artistService, ArtistAlbumService $artistAlbumService, AlbumService $albumService)
     {
         $this->artistService = $artistService;
+        $this->artistAlbumService = $artistAlbumService;
+        $this->albumService = $albumService;
     }
 
     public function pageManagerArtist()
@@ -107,5 +115,39 @@ class ArtistManagerController
         $this->artistService->deleteAll(['id' => $ids]);
         return redirect()->route('adm-manager-artist', ['page' => 1])
                          ->with('success', config('adm.artist.MESSAGE.DELETE_SUCCESS'));
+    }
+
+    public function chooseAlbumForArtist(Request $request)
+    {
+        $id = $request->input('id');
+        $artist = $this->artistService->findOne(['id' => $id], ['id']);
+        $albums = $this->albumService->findAll(['id', 'name']);
+        $albumIds = [];
+        $artistAlbums = $this->artistAlbumService->findAll(['album_id'], ['artist_id' => $id]);
+        if (! empty($artistAlbums)) {
+            foreach ($artistAlbums as $artistAlbum) {
+                $albumIds[] = $artistAlbum['album_id'];
+            }
+        }
+        $data = [
+            'label' => 2,
+            'title' => 'Biểu mẫu chọn album cho nghệ sĩ',
+            'artist' => $artist,
+            'albums' => $albums,
+            'albumIds' => $albumIds,
+        ];
+        return view('adm.viewChooseAlbumForArtist', $data);
+    }
+
+    public function updateAlbumForArtist(Request $request)
+    {
+        $id = $request->input('id');
+        $albumIds = $request->input('album_ids');
+        if (empty($albumIds)) {
+            return back()->with('fail', config('adm.artist.MESSAGE.CHOOSE_ALBUM_FOR_ARTIST_FAIL'));
+        }
+        $this->artistAlbumService->updateAll($id, $albumIds);
+        return redirect()->route('adm-manager-artist', ['page' => 1])
+                         ->with('success', config('adm.artist.MESSAGE.CHOOSE_ALBUM_FOR_ARTIST_SUCCESS'));
     }
 }

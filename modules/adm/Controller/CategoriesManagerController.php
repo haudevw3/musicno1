@@ -5,9 +5,7 @@ namespace Modules\Adm\Controller;
 use Foundation\Http\Request;
 use Modules\Adm\Request\FormCreateCategory;
 use Modules\Adm\Request\FormUpdateCategory;
-use Modules\Artist\Service\ArtistService;
 use Modules\Categories\Service\CategoriesService;
-use Modules\Categories\Service\CategoryArtistService;
 use Modules\Categories\Service\CategoryPlaylistService;
 use Modules\Playlist\Service\PlaylistService;
 use Foundation\Support\Str;
@@ -20,14 +18,11 @@ class CategoriesManagerController
     protected $playlistService;
     protected $artistService;
 
-    public function __construct(CategoriesService $categoriesService, PlaylistService $playlistService, ArtistService $artistService,
-                                CategoryPlaylistService $categoryPlaylistService, CategoryArtistService $categoryArtistService)
+    public function __construct(CategoriesService $categoriesService, PlaylistService $playlistService, CategoryPlaylistService $categoryPlaylistService)
     {
         $this->categoriesService = $categoriesService;
         $this->categoryPlaylistService = $categoryPlaylistService;
-        $this->categoryArtistService = $categoryArtistService;
         $this->playlistService = $playlistService;
-        $this->artistService = $artistService;
     }
 
     public function pageManagerCategories()
@@ -47,19 +42,11 @@ class CategoriesManagerController
 
     public function pageAddCategory()
     {   
-        $categories = $this->categoriesService->findAll(['id','name', 'parent_id'], ['parent_id' => 0], ['priority' => 'desc']);
-        $playlists = $this->playlistService->findAll(['id', 'name']);
-        foreach ($playlists as $key => $playlist) {
-            $categoryPlaylist = $this->categoryPlaylistService->findOne(['playlist_id' => $playlist['id']]);
-            if (! is_null($categoryPlaylist)) {
-                unset($playlists[$key]);
-            }
-        }
+        $categories = $this->categoriesService->findAll(['id','name'], ['parent_id' => 0], ['priority' => 'desc']);
         $data = [
             'label' => 2,
             'title' => 'Biểu mẫu tạo danh mục',
             'categories' => $categories,
-            'playlists' => $playlists,
         ];
         return view('adm.viewCrudCategory', $data);
     }
@@ -73,19 +60,7 @@ class CategoriesManagerController
         }
         $data = $request->all();
         $data['category_id'] = Str::random(22);
-        $playlistIds = null;
-        if (isset($data['playlist_ids'])) {
-            $playlistIds = $data['playlist_ids'];
-            unset($data['playlist_ids']);
-        }
-        $category = tap($this->categoriesService, function ($subject) use ($data) {
-            $subject->create($data);
-        })->findOne(['category_id' => $data['category_id']]);
-        if (! is_null($playlistIds)) {
-            foreach ($playlistIds as $playlistId) {
-                $this->categoryPlaylistService->create(['category_id' => $category['id'], 'playlist_id' => $playlistId]);
-            }
-        }
+        $this->categoriesService->create($data);
         return redirect()->route('adm-manager-categories', ['page' => 1])
                          ->with('success', config('adm.categories.MESSAGE.CREATE_SUCCESS'));
     }
@@ -95,30 +70,11 @@ class CategoriesManagerController
         $id = $request->input('id');
         $category = $this->categoriesService->findOne(['id' => $id]);
         $categories = $this->categoriesService->findAll(['id','name', 'parent_id'], ['parent_id' => 0], ['priority' => 'desc']);
-        $categoryPlaylists = $this->categoryPlaylistService->findAll(['playlist_id'], ['category_id' => $id]);
-        $playlists = $this->playlistService->findAll(['id', 'name']);
-        $playlistIds = [];
-        if (! empty($categoryPlaylists)) {
-            foreach ($categoryPlaylists as $value) {
-                $playlistIds[] = $value['playlist_id'];
-            }
-        }
-        foreach ($playlists as $key => $playlist) {
-            $categoryPlaylist = $this->categoryPlaylistService->findOne(['playlist_id' => $playlist['id']]);
-            if (! is_null($categoryPlaylist)) {
-                if (in_array($categoryPlaylist['playlist_id'], $playlistIds)) {
-                    continue;
-                }
-                unset($playlists[$key]);
-            }
-        }
         $data = [
             'label' => 2,
             'title' => 'Cập nhật danh mục',
             'category' => $category,
             'categories' => $categories,
-            'playlists' => $playlists,
-            'playlistIds' => $playlistIds,
         ];
         return view('adm.viewCrudCategory', $data);
     }
@@ -133,13 +89,10 @@ class CategoriesManagerController
         $data = $request->all();
         $id = $data['id'];
         unset($data['id']);
-        $playlistIds = [];
-        if (isset($data['playlist_ids'])) {
-            $playlistIds = $data['playlist_ids'];
-            unset($data['playlist_ids']);
+        if (! isset($data['parent_id'])) {
+            $data['parent_id'] = 0;
         }
         $this->categoriesService->updateOne($id, $data);
-        $this->categoryPlaylistService->updateAll($id, $playlistIds);
         return redirect()->route('adm-manager-categories', ['page' => 1])
                          ->with('success', config('adm.categories.MESSAGE.UPDATE_SUCCESS'));
     }
@@ -155,8 +108,54 @@ class CategoriesManagerController
 
     public function deleteMultipleCategory(Request $request)
     {
-        $this->categoriesService->deleteAll(['id' => $request->all()['ids']]);
+        $ids = $request->input('ids');
+        $this->categoriesService->deleteAll(['id' => $ids]);
         return redirect()->route('adm-manager-categories', ['page' => 1])
                          ->with('success', config('adm.categories.MESSAGE.DELETE_SUCCESS'));
+    }
+
+    public function choosePlaylistForCategory(Request $request)
+    {
+        $id = $request->input('id');
+        $category = $this->categoriesService->findOne(['id' => $id], ['id']);
+        $playlists = $this->playlistService->findAll(['id', 'name']);
+        $playlistIds = [];
+        $categoryPlaylists = $this->categoryPlaylistService->findAll(['playlist_id'], ['category_id' => $id]);
+        if (! empty($categoryPlaylists)) {
+            foreach ($categoryPlaylists as $categoryPlaylist) {
+                $playlistIds[] = $categoryPlaylist['playlist_id'];
+            }
+        }
+        if (! empty($playlists)) {
+            foreach ($playlists as $key => $playlist) {
+                $categoryPlaylist = $this->categoryPlaylistService->findOne(['playlist_id' => $playlist['id']]);
+                if (! is_null($categoryPlaylist)) {
+                    if (in_array($categoryPlaylist['playlist_id'], $playlistIds)) {
+                        continue;
+                    }
+                    unset($playlists[$key]);
+                }
+            }
+        }
+        $data = [
+            'label' => 2,
+            'title' => 'Biểu mẫu chọn album cho playlist',
+            'category' => $category,
+            'playlists' => $playlists,
+            'playlistIds' => $playlistIds,
+        ];
+        return view('adm.viewChoosePlaylistForCategory', $data);
+    }
+
+    public function updatePlaylistForCategory(Request $request)
+    {
+        $id = $request->input('id');
+        $playlistIds = $request->input('playlist_ids');
+        if (empty($playlistIds)) {
+            return back()->with('fail', config('adm.categories.MESSAGE.CHOOSE_PLAYLIST_FOR_CATEGORY_FAIL'));
+        }
+        $this->categoryPlaylistService->updateAll($id, $playlistIds);
+        return redirect()->route('adm-manager-categories', ['page' => 1])
+                         ->with('success', config('adm.category.MESSAGE.CHOOSE_PLAYLIST_FOR_CATEGORY_SUCCESS'));
     }
 }

@@ -23,6 +23,10 @@ Route::prefix('adm')->middleware('auth.admin')->group(function () {
     Route::post('update-category', [CategoriesManagerController::class, 'updateCategory'])->name('adm-update-category');
     Route::get('delete-category/{id}', [CategoriesManagerController::class, 'deleteCategory'])->name('adm-delete-category');
     Route::post('delete-multiple-category', [CategoriesManagerController::class, 'deleteMultipleCategory'])->name('adm-delete-multiple-category');
+    Route::get('choose-playlist-for-category/{id?}', [CategoriesManagerController::class, 'choosePlaylistForCategory'])
+                ->where('id', '(\d+)')
+                ->name('adm-choose-playlist-for-category');
+    Route::post('update-playlist-for-category', [CategoriesManagerController::class, 'updatePlaylistForCategory'])->name('adm-update-playlist-for-category');
 
     Route::get('manager-playlist/{page?}', [PlaylistManagerController::class, 'pageManagerPlaylist'])
                 ->where('page', 'page-(\d+)')
@@ -35,6 +39,10 @@ Route::prefix('adm')->middleware('auth.admin')->group(function () {
     Route::post('update-playlist', [PlaylistManagerController::class, 'updatePlaylist'])->name('adm-update-playlist');
     Route::get('delete-playlist/{id}', [PlaylistManagerController::class, 'deletePlaylist'])->name('adm-delete-playlist');
     Route::post('delete-multiple-playlist', [PlaylistManagerController::class, 'deleteMultiplePlaylist'])->name('adm-delete-multiple-playlist');
+    Route::get('choose-album-for-playlist/{id?}', [PlaylistManagerController::class, 'chooseAlbumForPlaylist'])
+                ->where('id', '(\d+)')
+                ->name('adm-choose-album-for-playlist');
+    Route::post('update-album-for-playlist', [PlaylistManagerController::class, 'updateAlbumForPlaylist'])->name('adm-update-album-for-playlist');
 
     Route::get('manager-artist/{page?}', [ArtistManagerController::class, 'pageManagerArtist'])
                 ->where('page', 'page-(\d+)')
@@ -47,6 +55,10 @@ Route::prefix('adm')->middleware('auth.admin')->group(function () {
     Route::post('update-artist', [ArtistManagerController::class, 'updateArtist'])->name('adm-update-artist');
     Route::get('delete-artist/{id}', [ArtistManagerController::class, 'deleteArtist'])->name('adm-delete-artist');
     Route::post('delete-multiple-artist', [ArtistManagerController::class, 'deleteMultipleArtist'])->name('adm-delete-multiple-artist');
+    Route::get('choose-album-for-artist/{id?}', [ArtistManagerController::class, 'chooseAlbumForArtist'])
+                ->where('id', '(\d+)')
+                ->name('adm-choose-album-for-artist');
+    Route::post('update-album-for-artist', [ArtistManagerController::class, 'updateAlbumForArtist'])->name('adm-update-album-for-artist');
 
     Route::get('manager-album/{page?}', [AlbumManagerController::class, 'pageManagerAlbum'])
                 ->where('page', 'page-(\d+)')
@@ -59,6 +71,10 @@ Route::prefix('adm')->middleware('auth.admin')->group(function () {
     Route::post('update-album', [AlbumManagerController::class, 'updateAlbum'])->name('adm-update-album');
     Route::get('delete-album/{id}', [AlbumManagerController::class, 'deleteAlbum'])->name('adm-delete-album');
     Route::post('delete-multiple-album', [AlbumManagerController::class, 'deleteMultipleAlbum'])->name('adm-delete-multiple-album');
+    Route::get('choose-song-for-album/{id?}', [AlbumManagerController::class, 'chooseSongForAlbum'])
+                ->where('id', '(\d+)')
+                ->name('adm-choose-song-for-album');
+    Route::post('update-song-for-album', [AlbumManagerController::class, 'updateSongForAlbum'])->name('adm-update-song-for-album');
 
     Route::get('manager-song/{page?}', [SongManagerController::class, 'pageManagerSong'])
                 ->where('page', 'page-(\d+)')

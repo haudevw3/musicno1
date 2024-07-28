@@ -5,22 +5,22 @@ namespace Modules\Adm\Controller;
 use Foundation\Http\Request;
 use Modules\Adm\Request\FormCreateAlbum;
 use Modules\Album\Service\AlbumService;
-use Modules\Artist\Service\ArtistAlbumService;
-use Modules\Artist\Service\ArtistService;
 use Foundation\Support\Str;
 use Modules\Adm\Request\FormUpdateAlbum;
+use Modules\Album\Service\AlbumSongService;
+use Modules\Song\Service\SongService;
 
 class AlbumManagerController
 {
     protected $albumService;
-    protected $artistService;
-    protected $artistAlbumService;
+    protected $albumSongService;
+    protected $songService;
 
-    public function __construct(AlbumService $albumService, ArtistService $artistService, ArtistAlbumService $artistAlbumService)
+    public function __construct(AlbumService $albumService, AlbumSongService $albumSongService, SongService $songService)
     {
         $this->albumService = $albumService;
-        $this->artistService = $artistService;
-        $this->artistAlbumService = $artistAlbumService;
+        $this->albumSongService = $albumSongService;
+        $this->songService = $songService;
     }
 
     public function pageManagerAlbum()
@@ -40,11 +40,9 @@ class AlbumManagerController
 
     public function pageAddAlbum()
     {
-        $artists = $this->artistService->findAll(['id', 'name']);
         $data = [
             'label' => 2,
             'title' => 'Biểu mẫu tạo album',
-            'artists' => $artists,
         ];
         return view('adm.viewCrudAlbum', $data);
     }
@@ -52,7 +50,7 @@ class AlbumManagerController
     public function createAlbum(FormCreateAlbum $request)
     {
         $validated = $request->validated();
-        if (is_array($validated) || ! $request->hasFile('image') || empty($request->input('artist_ids'))) {
+        if (is_array($validated) || ! $request->hasFile('image')) {
             return back()->with('fail', config('adm.album.MESSAGE.CREATE_FAIL'))
                          ->withInput()->withErrors();
         }
@@ -60,13 +58,7 @@ class AlbumManagerController
         $data['album_id'] = Str::random(22);
         $fileName = $request->file('image')->hash()->move('public/uploads/images');
         $data['image'] = asset("uploads/images/$fileName");
-        $artistIds = $data['artist_ids'];
-        $album = tap($this->albumService, function ($subject) use ($data) {
-            $subject->create($data);
-        })->findOne(['album_id' => $data['album_id']]);
-        foreach ($artistIds as $artistId) {
-            $this->artistAlbumService->create(['artist_id' => $artistId, 'album_id' => $album['id']]);
-        }
+        $this->albumService->create($data);
         return redirect()->route('adm-manager-album', ['page' => 1])
                          ->with('success', config('adm.album.MESSAGE.CREATE_SUCCESS'));
     }
@@ -75,18 +67,10 @@ class AlbumManagerController
     {
         $id = $request->input('id');
         $album = $this->albumService->findOne(['id' => $id]);
-        $artists = $this->artistService->findAll(['id', 'name']);
-        $artistAlbums = $this->artistAlbumService->findAll(['artist_id'], ['album_id' => $id]);
-        $artistIds = [];
-        foreach ($artistAlbums as $value) {
-            $artistIds[] = $value['artist_id'];
-        }
         $data = [
             'label' => 2,
             'title' => 'Cập nhật album',
             'album' => $album,
-            'artists' => $artists,
-            'artistIds' => $artistIds,
         ];
         return view('adm.viewCrudAlbum', $data);
     }
@@ -94,7 +78,7 @@ class AlbumManagerController
     public function updateAlbum(FormUpdateAlbum $request)
     {
         $validated = $request->validated();
-        if (is_array($validated) || empty($request->input('artist_ids'))) {
+        if (is_array($validated)) {
             return back()->with('fail', config('adm.album.MESSAGE.UPDATE_FAIL'))
                          ->withInput()->withErrors();
         }
@@ -109,10 +93,7 @@ class AlbumManagerController
             $fileName = $file->hash()->move('public/uploads/images');
             $data['image'] = asset("uploads/images/$fileName");
         }
-        $artistIds = $data['artist_ids'];
-        unset($data['artist_ids']);
         $this->albumService->updateOne($id, $data);
-        $this->artistAlbumService->updateAll($id, $artistIds);
         return redirect()->route('adm-manager-album', ['page' => 1])
                          ->with('success', config('adm.album.MESSAGE.UPDATE_SUCCESS'));
     }
@@ -132,5 +113,40 @@ class AlbumManagerController
         $this->albumService->deleteAll(['id' => $ids]);
         return redirect()->route('adm-manager-album', ['page' => 1])
                          ->with('success', config('adm.album.MESSAGE.DELETE_SUCCESS'));
+    }
+
+    public function chooseSongForAlbum(Request $request)
+    {
+        $id = $request->input('id');
+        $album = $this->albumService->findOne(['id' => $id], ['id', 'type']);
+        $songs = $this->songService->findAll(['id', 'name']);
+        $songIds = [];
+        $albumSongs = $this->albumSongService->findAll(['song_id'], ['album_id' => $id]);
+        if (! empty($albumSongs)) {
+            foreach ($albumSongs as $albumSong) {
+                $songIds[] = $albumSong['song_id'];
+            }
+        }
+        $data = [
+            'label' => 2,
+            'title' => 'Biểu mẫu chọn bài hát cho album',
+            'album' => $album,
+            'songs' => $songs,
+            'songIds' => $songIds,
+        ];
+        return view('adm.viewChooseSongForAlbum', $data);
+    }
+
+    public function updateSongForAlbum(Request $request)
+    {
+        $id = $request->input('id');
+        $album = $this->albumService->findOne(['id' => $id], ['id', 'type']);
+        $songIds = $request->input('song_ids');
+        if (empty($songIds) && $album['type'] == 1) {
+            return back()->with('fail', config('adm.album.MESSAGE.CHOOSE_SONG_FOR_ALBUM_FAIL'));
+        }
+        $this->albumSongService->updateAll($id, empty($songIds) ? [] : $songIds);
+        return redirect()->route('adm-manager-album', ['page' => 1])
+                         ->with('success', config('adm.album.MESSAGE.CHOOSE_SONG_FOR_ALBUM_SUCCESS'));
     }
 }
