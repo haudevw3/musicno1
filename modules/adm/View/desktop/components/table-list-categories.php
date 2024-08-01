@@ -27,7 +27,6 @@
                         foreach ($categories as $key => $category) {
                             $key++;
                             $id = $category['id'];
-                            $parent_id = $category['parent_id'];
                             ?>
                                 <tr id="row-<?php echo $key ?>">
                                     <td>
@@ -55,7 +54,7 @@
                                             <div row-id="<?php echo $key ?>" class="table-btn center-items show-options"><i class="fa-regular fa-ellipsis-vertical fw-600"></i></div>
                                             <a href="<?php echo route('adm-edit-category', $id) ?>" class="table-btn center-items ml-10"><i class="fa-regular fa-pen-to-square"></i></a>
                                             <div data-url="<?php echo route('adm-delete-category', $id) ?>" class="table-btn center-items ml-10 show-modal"><i class="fa-regular fa-trash-can"></i></div>
-                                            <?php _require('adm.components.dropdown-manager-categories', compact('key', 'id', 'parent_id')) ?>
+                                            <?php _require('adm.components.dropdown-manager-categories', compact('key', 'id')) ?>
                                         </div>
                                     </td>
                                 </tr>

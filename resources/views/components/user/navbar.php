@@ -12,11 +12,10 @@
                     ?><div class="divider-01 mt-20 mb-20"></div><?php
                 }
                 ?>
-                    <a class="nav-link vertical-center-items rounded-6 fw-500
+                    <a class="nav-link vertical-center-items rounded-6 fw-500 mt-10
                         <?php
-                            echo (! auth()->user() && in_array($key, ['thu-vien', 'nghe-gan-day', 'bai-hat-yeu-thich', 'danh-sach-phat', 'thiet-lap']))
-                            ? 'text-color-dark-05' : 'text-color-white';
-                        ?> mt-10" href="<?php echo "/$key" ?>">
+                            echo (! auth()->user() && in_array($key, ['thu-vien', 'nghe-gan-day', 'bai-hat-yeu-thich', 'danh-sach-phat', 'thiet-lap'])) ? 'text-color-dark-05' : 'text-color-white';
+                        ?>" href="<?php echo ($key === 'trang-chu') ? "/" : "/$key" ?>">
                         <i class="<?php echo $value['icon'] ?>"></i>
                         <span class="ml-10"><?php echo $value['title'] ?></span>
                     </a>

@@ -3,16 +3,35 @@
 namespace Modules\Playlist\Service\Impl;
 
 use Core\Service\BaseServiceImpl;
+use Modules\Album\Service\AlbumService;
+use Modules\Album\Service\AlbumSongService;
+use Modules\Artist\Service\ArtistAlbumService;
+use Modules\Artist\Service\ArtistService;
 use Modules\Playlist\Repository\PlaylistRepository;
+use Modules\Playlist\Service\PlaylistAlbumService;
 use Modules\Playlist\Service\PlaylistService;
+use Modules\Song\Service\SongService;
 
 class PlaylistServiceImpl extends BaseServiceImpl implements PlaylistService
 {
     protected $baseRepo;
+    protected $playlistAlbumService;
+    protected $artistService;
+    protected $artistAlbumService;
+    protected $albumService;
+    protected $albumSongService;
+    protected $songService;
 
-    public function __construct(PlaylistRepository $baseRepo)
+    public function __construct(PlaylistRepository $baseRepo, PlaylistAlbumService $playlistAlbumService, ArtistService $artistService, ArtistAlbumService $artistAlbumService,
+                                AlbumService $albumService, AlbumSongService $albumSongService, SongService $songService)
     {
         parent::__construct($baseRepo);
+        $this->playlistAlbumService = $playlistAlbumService;
+        $this->artistService = $artistService;
+        $this->artistAlbumService = $artistAlbumService;
+        $this->albumService = $albumService;
+        $this->albumSongService = $albumSongService;
+        $this->songService = $songService;
     }
 
     public function create(array $data)
@@ -65,5 +84,31 @@ class PlaylistServiceImpl extends BaseServiceImpl implements PlaylistService
     public function listPlaylist(array $columns = [], array $conditions = [], array $sorted = ['created_at' => 'desc'], $perPage = 10)
     {
         return $this->baseRepo->list($columns, $conditions, $sorted, $perPage);
+    }
+
+    public function getListSongByPlaylistId($id, array $columns = [])
+    {
+        $albumIds = $this->playlistAlbumService->findAll(['album_id'], ['playlist_id' => $id]);
+        $songs = [];
+        foreach ($albumIds as $albumId) {
+            $songId = $this->albumSongService->findOne(['album_id' => $albumId['album_id']])['song_id'];
+            $song = $this->songService->findOne(['id' => $songId], $columns);
+            $song['album_id'] = $albumId['album_id'];
+            $songs[] = $song;
+        }
+        foreach ($songs as $key => $song) {
+            $artists = [];
+            $artistIds = $this->artistAlbumService->findAll(['artist_id'], ['album_id' => $song['album_id']]);
+            foreach ($artistIds as $artistId) {
+                $artists[] = $this->artistService->findOne(['id' => $artistId['artist_id']], ['artist_id', 'name']);
+            }
+            $song['artists'] = $artists;
+            $songs[$key] = $song;
+            $album = $this->albumService->findOne(['id' => $song['album_id']]);
+            $song['album_id'] = $album['album_id'];
+            $song['album_name'] = $album['name'];
+            $songs[$key] = $song;
+        }
+        return $songs;
     }
 }

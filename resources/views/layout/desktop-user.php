@@ -15,7 +15,15 @@
                 <?php include_one('components.user.header-right') ?>
             </div>
 
-            <div id="main-content" class="main-content"></div>
+            <div id="main-content" class="main-content">
+                <?php 
+                    if (isset($components)) { 
+                        foreach ($components as $component) {
+                            require $component;
+                        }
+                    }
+                ?>
+            </div>
         </div>
     </div>
 

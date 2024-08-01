@@ -156,6 +156,6 @@ class CategoriesManagerController
         }
         $this->categoryPlaylistService->updateAll($id, $playlistIds);
         return redirect()->route('adm-manager-categories', ['page' => 1])
-                         ->with('success', config('adm.category.MESSAGE.CHOOSE_PLAYLIST_FOR_CATEGORY_SUCCESS'));
+                         ->with('success', config('adm.categories.MESSAGE.CHOOSE_PLAYLIST_FOR_CATEGORY_SUCCESS'));
     }
 }

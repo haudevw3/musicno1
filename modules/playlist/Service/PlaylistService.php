@@ -13,4 +13,6 @@ interface PlaylistService
     public function deleteAll(array $condition = [], $forever = false);
 
     public function listPlaylist(array $columns = [], array $conditions = [], array $sorted = ['created_at' => 'desc'], $perPage = 10);
+
+    public function getListSongByPlaylistId($id, array $columns = []);
 }
