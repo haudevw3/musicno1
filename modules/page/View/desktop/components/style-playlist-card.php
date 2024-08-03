@@ -1,4 +1,4 @@
-<div id="style-playlist-card" class="style-playlist-card" <?php echo isset($data['remove_margin']) ? 'style="margin-top:0"' : null ?>>
+<div id="default-playlist" class="style-playlist-card" <?php echo isset($data['remove_margin']) ? 'style="margin-top:0"' : null ?>>
     <?php
         foreach ($data['third'] as $key => $category) {
             ?>
@@ -22,7 +22,9 @@
                                                 <div class="box-icon center-items rounded-circle text-color-white ml-20"><i class="fa-regular fa-ellipsis fs-20"></i></div>
                                             </div>
                                         </div>
-                                        <a href="<?php echo route('playlist-detail-page', $playlist['playlist_id']) ?>" class="card-link fw-600 text-color-dark-04 text-overflow-02 mt-5"><?php echo $playlist['name'] ?></a>
+                                        <a class="card-link cursor-pointer fw-600 text-color-dark-04 text-overflow-02 mt-5"
+                                           data-id="<?php echo $playlist['playlist_id'] ?>"
+                                           data-position="<?php echo $key ?>"><?php echo $playlist['name'] ?></a>
                                     </div>
                                 <?php
                             }

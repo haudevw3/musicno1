@@ -1,0 +1,51 @@
+$colors: (
+    'white': #ffffff,
+    'red':   #e81500,
+    'transparent': #09090980,
+) !default;
+
+$theme-dark: (
+    'dark-body': #121212,
+    'dark': #000000,
+    'dark-01': #1f1f1f,
+    'dark-02': #242424,
+    'dark-03': #3f3f3f,
+    'dark-04': #a7a7a7,
+    'dark-05': #878787,
+) !default;
+
+$transitions: (
+    '01': all 0.5s ease,
+    '02': all 0.2s ease-in-out,
+    '03': all 0.1s ease-in-out
+) !default;
+
+$font-sizes: (
+    10: 10px,
+    12: 12px,
+    14: 14px,
+    16: 16px,
+    18: 18px,
+    20: 20px,
+    22: 22px,
+    24: 24px,
+) !default;
+
+$mps: (
+    5: 5px,
+    10: 10px,
+    15: 15px,
+    20: 20px,
+) !default;
+
+$font-weights: (
+    400: 400,
+    500: 500,
+    600: 600,
+) !default;
+
+$roundeds: (
+    4: 4px,
+    6: 6px,
+    8: 8px,
+) !default;

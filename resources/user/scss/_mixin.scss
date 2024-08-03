@@ -1,0 +1,10 @@
+@mixin dark-hover-01 {
+    transition: var(--bs-transition-01);
+    background-color: var(--bs-color-dark-03);
+}
+
+@mixin dark-hover-02 {
+    transition: var(--bs-transition-01);
+    background-color: #5c5858;
+}
+

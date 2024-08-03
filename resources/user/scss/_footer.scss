@@ -1,0 +1,167 @@
+@mixin footer-box-icon {
+    width: 32px;
+    height: 32px;
+}
+
+.footer {
+    width: 100%;
+    height: 100px;
+
+    .music-container {
+        width: inherit;
+        height: 100px;
+
+        .music-left {
+            width: 30%;
+            height: 100px;
+    
+            .song-info {
+                width: 75%;
+                height: 80px;
+
+                .song-image {
+                    
+                    img {
+                        width: 80px;
+                        height: 80px;
+                    }
+                }
+
+                .song-text {
+                    width: calc(100% - 90px);
+
+                    a:hover {
+                        text-decoration: underline;
+                    }
+                }
+            }
+    
+            .song-interact {
+                width: 25%;
+                height: 80px;
+    
+                .box-icon {
+                    @include footer-box-icon;
+    
+                    &:hover {
+                        @include dark-hover-01;
+                    }
+                }
+            }
+        }
+
+        .music-center {
+            width: 40%;
+            height: 100px;
+    
+            .music-wrapper {
+                width: 100%;
+            }
+    
+            .music-control{
+                width: 100%;
+                height: 40px;
+    
+                .box-icon {
+                    width: 40px;
+                    height: 40px;
+    
+                    &:hover {
+                       @include dark-hover-01;
+                    }
+                }
+            }
+    
+            .music-progress {
+                width: 100%;
+                height: 40px;
+    
+                .progress-wrapper {
+                    width: 100%;
+                    
+                    .progress-root {
+                        width: 100%;
+                        height: 5px;
+                        border-radius: 50px;
+                        background-color: var(--bs-color-dark-03);
+    
+                        .progress-custom {
+                            width: 0;
+                            height: 5px;
+                            border-radius: 50px;
+                            background-color: var(--bs-color-white);
+                        }
+
+                        .progress-thumb {
+                            width: 10px;
+                            height: 10px;
+                            margin: -2.5px 0 0 -2.5px;
+                            background-color: var(--bs-color-white);
+                            display: none;
+                        }
+
+                        &:hover .progress-thumb {
+                            display: block;
+                            transform: scale(1.2);
+                        }
+                    }
+                }
+            }
+        }
+
+        .music-right {
+            width: 30%;
+            height: 100px;
+    
+            .box-icon {
+                @include footer-box-icon;
+    
+                &:hover {
+                    @include dark-hover-01;
+                }
+            }
+    
+            .volume-control {
+                width: 100px;
+                height: 32px;
+    
+                .volume-wrapper {
+                    width: 100px;
+
+                    .volume-root {
+                        width: 100px;
+                        height: 5px;
+                        border-radius: 50px;
+                        background-color: var(--bs-color-dark-03);
+
+                        .volume-custom {
+                            width: 80px;
+                            height: 5px;
+                            border-radius: 50px;
+                            background-color: var(--bs-color-white);
+                        }
+
+                        .volume-thumb {
+                            width: 10px;
+                            height: 10px;
+                            margin: -2.5px 0 0 -2.5px;
+                            background-color: var(--bs-color-white);
+                            display: none;
+                        }
+
+                        &:hover .volume-thumb {
+                            display: block;
+                            transform: scale(1.2);
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    .ads {
+        width: inherit;
+        height: 100px;
+        display: none !important;
+    }
+}

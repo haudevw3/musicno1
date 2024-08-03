@@ -1,4 +1,4 @@
-<div id="style-playlist-detail" class="style-playlist-detail mt-20">
+<div id="detail-playlist" class="style-playlist-detail mt-20">
     <div class="card-container d-flex p-20 rounded-8">
         <div class="card-image">
             <img class="rounded-6" src="<?php echo $playlist['image'] ?>">
@@ -21,7 +21,7 @@
     </div>
 
     <div class="card-interact d-flex pl-20 pr-20">
-        <div class="play-music btn-md-01 center-items text-color-white bg-color-dark-03 cursor-pointer"><i class="fa-solid fa-play"></i><span class="ml-10">Phát bài hát</span></div>
+        <div id="play-random-music" class="btn-md-01 center-items text-color-white bg-color-dark-03 cursor-pointer"><i class="fa-solid fa-play"></i><span class="ml-10">Phát ngẫu nhiên</span></div>
         <div class="box-icon center-items text-color-white rounded-circle cursor-pointer bg-color-dark-03 fs-18 ml-20"><i class="fa-regular fa-heart"></i></div>
         <div class="box-icon center-items text-color-white rounded-circle cursor-pointer bg-color-dark-03 fs-18 ml-20"><i class="fa-regular fa-ellipsis"></i></div>
     </div>
@@ -44,7 +44,8 @@
                         <div class="card-wrapper rounded-6 d-flex mt-10 card-<?php echo $key ?>">
                             <div class="card-column-1 center-items">
                                 <div class="box-text fw-500 text-color-dark-04"><?php echo $i ?></div>
-                                <div class="play-music box-icon center-items text-color-white cursor-pointer fs-16"><i class="fa-solid fa-play"></i></div>
+                                <div class="play-music box-icon center-items text-color-white cursor-pointer fs-16"
+                                     data-position="<?php echo $key ?>" data-id="<?php echo $playlist['playlist_id'] ?>"><i class="fa-solid fa-play"></i></div>
                             </div>
                             <div class="card-column-2">
                                 <div class="card-info d-flex">

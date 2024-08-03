@@ -1,4 +1,4 @@
-<div id="style-playlist-song" class="style-playlist-song">
+<div id="song-playlist" class="style-playlist-song">
     <div class="card-header d-flex justify-content-between">
         <div class="text-color-white fw-600 fs-20"><?php echo $data['second']['name'] ?></div>
     </div>

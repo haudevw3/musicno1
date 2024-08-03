@@ -1,4 +1,4 @@
-<div id="style-playlist-top" class="style-playlist-top">
+<div id="top-playlist" class="style-playlist-top">
     <div class="card-container d-flex justify-content-between">
         <?php
             foreach ($data['first'] as $key => $playlist) {

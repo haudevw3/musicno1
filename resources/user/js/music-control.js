@@ -12,7 +12,8 @@ const MUSIC_CONTROL = (function () {
     var showControl = false;
     var shuffleItems = null;
     var shufflePosition = null;
-    var data = null;
+    var songs = null;
+    var styles = null;
 
     var bindControl = function () {
         var self = {};
@@ -56,10 +57,12 @@ const MUSIC_CONTROL = (function () {
             isPlay = true;
             showControl = true;
             ctrls.playMusic.find("i").attr("class", "fa-solid fa-pause");
+            toogleButtonPlayMusicForCurrentStyles(true);
         } else {
             AUDIO.pauseAudio();
             isPlay = false;
             ctrls.playMusic.find("i").attr("class", "fa-solid fa-play");
+            toogleButtonPlayMusicForCurrentStyles(false);
         }
         if (showControl) {
             ctrls.ads.addClass("d-none");
@@ -116,7 +119,6 @@ const MUSIC_CONTROL = (function () {
             shufflePosition = -1;
             isShuffle = true;
             shuffleItems = shuffleArray();
-            console.log(shuffleItems);
             ctrls.shuffleMusic.removeClass("text-color-dark-05").addClass("text-color-white");
         } else {
             shufflePosition = null;
@@ -227,17 +229,16 @@ const MUSIC_CONTROL = (function () {
         }
     }
 
-    const eventOnclickCardMusic = function (subject, songs = {}) {
-        if (data == null) {
-            data = songs;
-            length = data.length - 1;
-        }
-        position = $(subject).attr("data-position");
+    const prepare = function (pos, data = {}, _styles = {}) {
+        songs = data.songs;
+        length = songs.length - 1;
+        styles = _styles;
+        position = pos;
         bootMusic(position);
     }
 
     const bootMusic = function (pos) {
-        var song = data[pos];
+        var song = songs[pos];
         if (isPlay) {
             isPlay = false;
             AUDIO.pauseAudio();
@@ -246,15 +247,57 @@ const MUSIC_CONTROL = (function () {
             prepareMusic(song);
             eventOnclickButtonPlayMusic();
             AUDIO.endedAudio();
+            SESSION.set("song_pos", pos);
+            focusCurrentCard(pos);
         }, 100);
     }
 
     const prepareMusic = function (song = {}) {
-        ctrls.musicControl.find(".song-image img").attr("src", song.image);
-        ctrls.musicControl.find(".song-name").text(song.name);
-        ctrls.musicControl.find(".song-composer").text(song.artist_name);
+        var html = "";
+        var artists = song.artists;
+        for (let i = 0; i < artists.length; i++) {
+            html += `<a class="text-color-dark-05" href="http://">${artists[i].name}</a>`;
+            if (i < artists.length - 1) {
+                html += `<span class="text-color-dark-05">, </span>`;
+            }
+        }
+        ctrls.musicControl.find("#song-image img").attr("src", song.image);
+        ctrls.musicControl.find("#song-name").text(song.name);
         ctrls.durationMusic.text(song.duration);
+        ctrls.musicControl.find("#artist-name").html(html);
         AUDIO.prepareAudio(song.audio);
+    }
+
+    const focusCurrentCard = function (pos) {
+        if (styles != null) {
+            pos = ! styles.isFocus ? SESSION.get("playlist_pos") : pos;
+            if (styles.isFocus) {
+                $(styles.current).find(styles.card).removeClass(styles.class[0]);
+                $(styles.current).find(styles.prefix + pos).addClass(styles.class[0]);
+            }
+            $(styles.current).find(styles.card + " " + styles.tags[0]).attr("class", styles.icons[0] + " " + styles.class[1])
+            $(styles.current).find(styles.prefix + pos + " " + styles.tags[0]).attr("class", styles.icons[1] + " " + styles.class[1]);
+        }
+    }
+
+    const toogleButtonPlayMusicForCurrentStyles = function (status) {
+        var icon = null;
+        var text = null;
+        if (status) {
+            icon = styles.icons[1];
+            text = "Tạm dừng";
+        } else {
+            icon = styles.icons[0];
+            text = "Tiếp tục phát";
+        }
+        
+        if (styles != null) {
+            var pos = ! styles.isFocus ? SESSION.get("playlist_pos") : position;
+            $(styles.current).find(styles.prefix + pos + " " + styles.tags[0]).attr("class", styles.class[1] + " " + icon);
+            if (styles.current == UI_CONTROL.styles.id[3]) {
+                $(styles.current).find(styles.button[1] + " i").attr("class", icon).end().find(styles.button[1] + " span").text(text);
+            }
+        }
     }
 
     const isPlayMusic = function () {
@@ -281,12 +324,20 @@ const MUSIC_CONTROL = (function () {
         return ctrls.nextMusic;
     }
 
+    const getPreviousMusic = function () {
+        return ctrls.previousMusic;
+    }
+
     const getShuffleItems = function () {
         return shuffleItems;
     }
 
     const setIsPlay = function (status) {
         isPlay = status;
+    }
+
+    const setStyles = function (_styles) {
+        styles = _styles;
     }
 
     function init() {
@@ -296,20 +347,20 @@ const MUSIC_CONTROL = (function () {
 
     return {
         init: init,
+        prepare: prepare,
         isPlayMusic: isPlayMusic,
         isLoopMusic: isLoopMusic,
         isDragMusic: isDragMusic,
         isShuffleMusic: isShuffleMusic,
         getPlayMusic: getPlayMusic,
         getNextMusic: getNextMusic,
+        getPreviousMusic: getPreviousMusic,
         getShuffleItems: getShuffleItems,
         setIsPlay: setIsPlay,
-        eventOnclickCardMusic: eventOnclickCardMusic,
+        setStyles: setStyles,
         updateProgressCurrentMusic: updateProgressCurrentMusic,
     }
 
 })();
 
-setTimeout(function () {
-    MUSIC_CONTROL.init();
-}, 1000);
+MUSIC_CONTROL.init();
