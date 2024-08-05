@@ -18,13 +18,13 @@
                                             <div class="card-interact center-items position-absolute bg-color-transparent">
                                                 <div class="box-icon center-items rounded-circle text-color-white"><i class="fa-regular fa-heart fs-20"></i></div>
                                                 <div class="play-music box-icon center-items rounded-circle text-color-white ml-20"
-                                                     data-position="<?php echo $key ?>" data-id="<?php echo $playlist['playlist_id'] ?>"><i class="fa-solid fa-play fs-20"></i></div>
+                                                     data-pos="<?php echo $key ?>" data-id="<?php echo $playlist['playlist_id'] ?>"><i class="fa-solid fa-play fs-20"></i></div>
                                                 <div class="box-icon center-items rounded-circle text-color-white ml-20"><i class="fa-regular fa-ellipsis fs-20"></i></div>
                                             </div>
                                         </div>
                                         <a class="card-link cursor-pointer fw-600 text-color-dark-04 text-overflow-02 mt-5"
                                            data-id="<?php echo $playlist['playlist_id'] ?>"
-                                           data-position="<?php echo $key ?>"><?php echo $playlist['name'] ?></a>
+                                           data-pos="<?php echo $key ?>"><?php echo $playlist['name'] ?></a>
                                     </div>
                                 <?php
                             }

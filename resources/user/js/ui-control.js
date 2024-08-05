@@ -3,15 +3,24 @@ const UI_CONTROL = (function () {
     var ctrls = {};
 
     const styles = {
-        "current": null,
-        "isFocus": true,
         "id": ["#top-playlist", "#song-playlist", "#default-playlist", "#detail-playlist"],
-        "card": ".card-wrapper",
-        "prefix": ".card-",
-        "button": [".play-music", "#play-random-music"],
         "tags": [".play-music i"],
-        "icons": ["fa-solid fa-play", "fa-solid fa-pause"],
         "class": ["bg-color-dark-03", "text-color-white fs-18"],
+        "card": {"wrap": ".card-wrapper", "prefix": ".card-"},
+        "button": {"play": ".play-music", "playRandom": "#play-random-music"},
+        "icons": {"play": "fa-solid fa-play", "pause": "fa-solid fa-pause"},
+    }
+
+    const repo = {
+        "id": null,
+        "isFocus": true,
+        "currentStyle": null,
+        "playlistPos": null,
+        "previousPos": null,
+        "currentPos": 0,
+        "nextPos": null,
+        "data": null,
+        "length": 0,
     }
 
     const bindControl = function () {
@@ -34,8 +43,7 @@ const UI_CONTROL = (function () {
         await renderContent(url);
         eventOnclickButtonPlayMusic();
         eventOnclickLinkPlaylistMusic();
-        focusCurrentCard();
-        
+        trackingHistoryState();
     }
 
     const renderContent = async function (url) {
@@ -49,7 +57,7 @@ const UI_CONTROL = (function () {
 
     const renderData = async function (url) {
         await _apiGet(url).then(function (response) {
-            SESSION.set("df_songs", JSON.stringify(response.data));
+            SESSION.set("data", JSON.stringify(response.data));
         }).catch(function (error) {
             console.log(error);
         });
@@ -57,86 +65,73 @@ const UI_CONTROL = (function () {
 
     const setStateAndData = async function (subject, options = {}) {
         var id = $(subject).attr("data-id");
-        var pos = $(subject).attr("data-position");
-        var url = BASE_URL + "render-list-song/" + id;
-        var status = false;
-        styles.current = options.current;
-        styles.isFocus = (options.isFocus != undefined) ? options.isFocus : true;
-
-        if (SESSION.get("current_style") != options.current) {
-            SESSION.set("current_style", options.current);
-            SESSION.remove("song_pos");
-            await renderData(url);
-        }
-
-        if (options.current == styles.id[1]) {
-            SESSION.remove("playlist_id");
-            SESSION.remove("playlist_pos");
-            SESSION.remove("tracking_song_pos");
-            if (SESSION.get("song_pos") == pos)  {
-                status = true;
-            } else {
-                SESSION.set("song_pos", pos);
-            }
-            resetFoucusedState(status, pos, 2);
-
-        } else if (options.current == styles.id[2]) {
-            if (SESSION.get("playlist_id") != id) {
-                SESSION.set("playlist_id", id);
+        var pos = parseInt($(subject).attr("data-pos"));
+        var url = BASE_URL + ((options.path != undefined) ? options.path : "render-list-song/") + id;
+        var status = true;
+        repo.isFocus = (options.isFocus != undefined) ? options.isFocus : true;
+        
+        if (options.needRenderContent) {
+            STATE.push({}, url);
+            await renderContent(url);
+        } else {
+            if (repo.id != id) {
+                status = false;
+                repo.id = id;
                 await renderData(url);
+                repo.data = JSON.parse(SESSION.get("data"));
+                repo.length = repo.data.length;
+                repo.currentPos = 0;
+                if (options.currentStyle == styles.id[1]) {
+                    repo.playlistPos = null;
+                }
+                if (options.currentStyle == styles.id[2]) {
+                    repo.playlistPos = pos;
+                }
+                if (options.currentStyle == styles.id[3]) {
+                    repo.playlistPos = options.pos;
+                }
             }
-            
-            if (SESSION.get("playlist_pos") == pos) {
-                status = true;
+    
+            if (repo.currentStyle != options.currentStyle) {
+                $(repo.currentStyle).find(styles.card.wrap).removeClass(styles.class[0]);
+                $(repo.currentStyle).find(styles.card.wrap + " " + styles.tags[0]).attr("class", styles.icons.play + " " + styles.class[1]);
+                repo.currentStyle = options.currentStyle;
+            }
+    
+            if (status && ((options.currentStyle == styles.id[1] && repo.currentPos == pos) ||
+                (options.currentStyle == styles.id[2] && repo.playlistPos == pos) ||
+                (options.currentStyle == styles.id[3] && repo.currentPos == pos))) {
+                MUSIC_CONTROL.getPlayMusic().click();
             } else {
-                SESSION.set("playlist_pos", pos);
+                MUSIC_CONTROL.setData({pos: pos, repo: repo, styles: styles});
+                MUSIC_CONTROL.prepareDataAndBootMusic(pos);
             }
-            
-            if (SESSION.get("tracking_playlist_pos") == SESSION.get("playlist_pos")) {
-                pos = SESSION.get("_pos");
-            }
-            resetFoucusedState(status, pos, 1);
-
-        } else if (options.current == styles.id[3]) {
-
-            if (SESSION.get("playlist_id") != id) {
-                SESSION.set("playlist_id", id);
-                SESSION.remove("tracking_song_pos");
-                await renderData(url);
-            }
-
-            if (SESSION.get("tracking_playlist_pos") != SESSION.get("playlist_pos")) {
-                SESSION.set("playlist_pos", SESSION.get("tracking_playlist_pos"));
-            }
-
-            if (SESSION.get("tracking_song_pos") == pos) {
-                status = true;
-            } else {
-                SESSION.set("tracking_song_pos", pos);
-            }
-            resetFoucusedState(status, pos);
         }
     }
 
-    const resetFoucusedState = function (status, pos, key = null) {
-        if (status) {
-            MUSIC_CONTROL.getPlayMusic().click();
+    const setPosForRepo = function (pos) {
+        repo.currentPos = pos;
+
+        if (pos > 0) {
+            repo.previousPos = pos - 1;
         } else {
-            MUSIC_CONTROL.prepare(pos, {songs: JSON.parse(SESSION.get("df_songs"))}, styles);
-            if (key != null) {
-                $(styles.id[key]).find(styles.card).removeClass(styles.class[0]);
-                $(styles.id[key]).find(styles.card + " " + styles.tags[0]).attr("class", styles.class[1] + " " + styles.icons[0]);
-            }
+            repo.previousPos = null;
+        }
+
+        if (pos >= 0 && pos < repo.length - 1) {
+            repo.nextPos = pos + 1;
+        } else {
+            repo.nextPos = null;
         }
     }
 
     const eventOnclickButtonPlayMusic = function () {
-        $(styles.id[1]).find(styles.button[0]).on("click", function () {
-            setStateAndData(this, {current: styles.id[1]});
+        $(styles.id[1]).find(styles.button.play).on("click", function () {
+            setStateAndData(this, {currentStyle: styles.id[1]});
         });
 
-        $(styles.id[2]).find(styles.button[0]).on("click", function () {
-            setStateAndData(this, {current: styles.id[2], isFocus: false});
+        $(styles.id[2]).find(styles.button.play).on("click", function () {
+            setStateAndData(this, {currentStyle: styles.id[2], isFocus: false});
         });
     }
 
@@ -144,66 +139,54 @@ const UI_CONTROL = (function () {
         $(styles.id[2]).find(".card-link").on("click", async function (e) {
             e.preventDefault();
             var id = $(this).attr("data-id");
-            var pos = $(this).attr("data-position");
-            var url = BASE_URL + "playlist/" + id;
-            STATE.push({}, url);
-            await renderContent(url);
-            styles.isFocus = true;
-            styles.current = styles.id[3];
-            MUSIC_CONTROL.setStyles(styles);
+            var pos = parseInt($(this).attr("data-pos"));
+            console.log(pos);
+            await setStateAndData(this, {needRenderContent: true, path: "playlist/", currentStyle: styles.id[2], isFocus: true});
+            repo.currentStyle = styles.id[3];
+            MUSIC_CONTROL.setRepo(repo);
 
-            if (SESSION.get("tracking_playlist_pos") != pos) {
-                SESSION.set("tracking_playlist_pos", pos);
-            }
-
-            if (SESSION.get("playlist_id") == id) {
-                var songPos = (SESSION.get("song_pos") != null) ? SESSION.get("song_pos") : pos;
-                $(styles.id[3]).find(styles.prefix + songPos).addClass(styles.class[0]);
+            if (repo.id == id) {
+                $(styles.id[3]).find(styles.card.prefix + repo.currentPos).addClass(styles.class[0]);
                 if (MUSIC_CONTROL.isPlayMusic()) {
-                    SESSION.set("tracking_song_pos", songPos);
-                    $(styles.id[3]).find(styles.prefix + songPos + " " + styles.tags[0]).attr("class", styles.class[1] + " " + styles.icons[1]);
-                    $(styles.id[3]).find(styles.button[1] + " i").attr("class", styles.icons[1]).end().find(styles.button[1] + " span").text("Tạm dừng");
+                    $(styles.id[3]).find(styles.card.prefix + repo.currentPos + " " + styles.tags[0]).attr("class",  styles.icons.pause + " " + styles.class[1]);
+                    $(styles.id[3]).find(styles.button.playRandom + " i").attr("class", styles.icons.pause).end().find(styles.button.playRandom + " span").text("Tạm dừng");
                 } else {
-                    $(styles.id[3]).find(styles.button[1] + " i").attr("class", styles.icons[0]).end().find(styles.button[1] + " span").text("Tiếp tục phát");
+                    $(styles.id[3]).find(styles.button.playRandom + " i").attr("class", styles.icons.play).end().find(styles.button.playRandom + " span").text("Tiếp tục phát");
                 }
             }
 
-            $(styles.id[3]).find(styles.button[1]).on("click", async function () {
-                if (SESSION.get("playlist_id") == null || SESSION.get("playlist_id") != id) {
-                    var _pos = SESSION.get("tracking_playlist_pos");
-                    $(styles.id[3]).find(styles.prefix + _pos + " " + styles.button[0]).click();
+            $(styles.id[3]).find(styles.button.playRandom).on("click", function () {
+                if (repo.id == null || repo.id != id) {
+                    setStateAndData(this, {currentStyle: styles.id[3], isFocus: true, pos: pos});
                 } else {
                     MUSIC_CONTROL.getPlayMusic().click();
                 }
             });
 
-            $(styles.id[3]).find(styles.button[0]).on("click", function () {
-                setStateAndData(this, {current: styles.id[3], isFocus: true});
+            $(styles.id[3]).find(styles.button.play).on("click", function () {
+                setStateAndData(this, {currentStyle: styles.id[3], isFocus: true, pos: pos});
             });
         });
     }
 
-    const focusCurrentCard = function () {
-        if (SESSION.get("current_style") != null) {
-            var position = 0;
-            var currentStyle = SESSION.get("current_style");
-
-            if (currentStyle == styles.id[1]) {
-                position = SESSION.get("song_pos");
-                $(styles.id[1]).find(styles.prefix + position).addClass(styles.class[0]);
-            }
-
-            if (currentStyle == styles.id[2] || currentStyle == styles.id[3]) {
-                currentStyle = styles.id[2];
-                position = SESSION.get("playlist_pos");
-                styles.isFocus = false;
-                styles.current = styles.id[2];
-                MUSIC_CONTROL.setStyles(styles);
-            }
-            
-            if (MUSIC_CONTROL.isPlayMusic()) {
-                $(currentStyle).find(styles.prefix + position + " " + styles.tags[0]).attr("class", styles.icons[1] + " " + styles.class[1]);
-            }
+    const trackingHistoryState = function () {
+        var pos = 0;
+        var currentStyle = repo.currentStyle;
+        
+        if (currentStyle == styles.id[1]) {
+            pos = repo.currentPos;
+            $(styles.id[1]).find(styles.card.prefix + pos).addClass(styles.class[0]);
+        }
+        if (currentStyle == styles.id[2] || currentStyle == styles.id[3]) {
+            pos = repo.playlistPos;
+            currentStyle = styles.id[2];
+            repo.isFocus = false;
+            repo.currentStyle = currentStyle;
+            MUSIC_CONTROL.setRepo(repo);
+            console.log(repo);
+        }
+        if (MUSIC_CONTROL.isPlayMusic()) {
+            $(currentStyle).find(styles.card.prefix + pos + " " + styles.tags[0]).attr("class", styles.icons.pause + " " + styles.class[1]);
         }
     }
 
@@ -213,12 +196,7 @@ const UI_CONTROL = (function () {
     });
 
     $(window).on("beforeunload", function() {
-        SESSION.remove("playlist_id");
-        SESSION.remove("playlist_pos");
-        SESSION.remove("tracking_playlist_pos");
-        SESSION.remove("tracking_song_pos");
-        SESSION.remove("current_style");
-        SESSION.remove("song_pos");
+        
     });
 
     function init() {
@@ -228,7 +206,9 @@ const UI_CONTROL = (function () {
 
     return {
         init: init,
+        repo: repo,
         styles: styles,
+        setPosForRepo: setPosForRepo,
     }
 
 })();

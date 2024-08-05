@@ -11,7 +11,7 @@
                             <div class="card-image position-relative">
                                 <img class="rounded-6" src="<?php echo $song['image'] ?>">
                                 <div class="play-music box-icon position-absolute center-items rounded-6 bg-color-transparent"
-                                     data-position="<?php echo $key ?>" data-id="<?php echo $data['second']['playlist_id'] ?>">
+                                     data-pos="<?php echo $key ?>" data-id="<?php echo $data['second']['playlist_id'] ?>">
                                     <i class="fa-solid fa-play text-color-white fs-18"></i>
                                 </div>
                             </div>

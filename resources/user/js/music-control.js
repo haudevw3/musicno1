@@ -12,7 +12,7 @@ const MUSIC_CONTROL = (function () {
     var showControl = false;
     var shuffleItems = null;
     var shufflePosition = null;
-    var songs = null;
+    var repo = null;
     var styles = null;
 
     var bindControl = function () {
@@ -57,12 +57,12 @@ const MUSIC_CONTROL = (function () {
             isPlay = true;
             showControl = true;
             ctrls.playMusic.find("i").attr("class", "fa-solid fa-pause");
-            toogleButtonPlayMusicForCurrentStyles(true);
+            toogleStateForButtonPlayMusic(true);
         } else {
             AUDIO.pauseAudio();
             isPlay = false;
             ctrls.playMusic.find("i").attr("class", "fa-solid fa-play");
-            toogleButtonPlayMusicForCurrentStyles(false);
+            toogleStateForButtonPlayMusic(false);
         }
         if (showControl) {
             ctrls.ads.addClass("d-none");
@@ -83,7 +83,7 @@ const MUSIC_CONTROL = (function () {
             }
         }
         setTimeout(function () {
-            bootMusic(isShuffle ? shuffleItems[shufflePosition] : position);
+            prepareDataAndBootMusic(isShuffle ? shuffleItems[shufflePosition] : position);
         }, 100);
     }
 
@@ -100,7 +100,7 @@ const MUSIC_CONTROL = (function () {
             }
         }
         setTimeout(function () {
-            bootMusic(isShuffle ? shuffleItems[shufflePosition] : position);
+            prepareDataAndBootMusic(isShuffle ? shuffleItems[shufflePosition] : position);
         }, 100);
     }
 
@@ -229,26 +229,25 @@ const MUSIC_CONTROL = (function () {
         }
     }
 
-    const prepare = function (pos, data = {}, _styles = {}) {
-        songs = data.songs;
-        length = songs.length - 1;
-        styles = _styles;
-        position = pos;
-        bootMusic(position);
+    const setData = function (data = {}) {
+        repo = data.repo;
+        styles = data.styles;
+        position = data.pos;
+        length = repo.length - 1;
     }
 
-    const bootMusic = function (pos) {
-        var song = songs[pos];
+    const prepareDataAndBootMusic = function (pos) {
+        var song = repo.data[pos];
+        UI_CONTROL.setPosForRepo(pos);
         if (isPlay) {
             isPlay = false;
             AUDIO.pauseAudio();
         }
         setTimeout(function () {
             prepareMusic(song);
+            prepareFocus(repo.currentStyle, repo.currentPos, repo.isFocus);
             eventOnclickButtonPlayMusic();
             AUDIO.endedAudio();
-            SESSION.set("song_pos", pos);
-            focusCurrentCard(pos);
         }, 100);
     }
 
@@ -268,35 +267,31 @@ const MUSIC_CONTROL = (function () {
         AUDIO.prepareAudio(song.audio);
     }
 
-    const focusCurrentCard = function (pos) {
-        if (styles != null) {
-            pos = ! styles.isFocus ? SESSION.get("playlist_pos") : pos;
-            if (styles.isFocus) {
-                $(styles.current).find(styles.card).removeClass(styles.class[0]);
-                $(styles.current).find(styles.prefix + pos).addClass(styles.class[0]);
-            }
-            $(styles.current).find(styles.card + " " + styles.tags[0]).attr("class", styles.icons[0] + " " + styles.class[1])
-            $(styles.current).find(styles.prefix + pos + " " + styles.tags[0]).attr("class", styles.icons[1] + " " + styles.class[1]);
+    const prepareFocus = function (currentStyle, pos, isFocus) {
+        pos = ! repo.isFocus ? repo.playlistPos : pos;
+        
+        if (isFocus) {
+            $(currentStyle).find(styles.card.wrap).removeClass(styles.class[0]);
+            $(currentStyle).find(styles.card.prefix + pos).addClass(styles.class[0]);
         }
+        $(currentStyle).find(styles.card.wrap + " " + styles.tags[0]).attr("class", styles.icons.play + " " + styles.class[1]);
+        $(currentStyle).find(styles.card.prefix + pos + " " + styles.tags[0]).attr("class", styles.icons.pause + " " + styles.class[1]);
     }
 
-    const toogleButtonPlayMusicForCurrentStyles = function (status) {
+    const toogleStateForButtonPlayMusic = function (status) {
         var icon = null;
         var text = null;
         if (status) {
-            icon = styles.icons[1];
+            icon = styles.icons.pause;
             text = "Tạm dừng";
         } else {
-            icon = styles.icons[0];
+            icon = styles.icons.play;
             text = "Tiếp tục phát";
         }
-        
-        if (styles != null) {
-            var pos = ! styles.isFocus ? SESSION.get("playlist_pos") : position;
-            $(styles.current).find(styles.prefix + pos + " " + styles.tags[0]).attr("class", styles.class[1] + " " + icon);
-            if (styles.current == UI_CONTROL.styles.id[3]) {
-                $(styles.current).find(styles.button[1] + " i").attr("class", icon).end().find(styles.button[1] + " span").text(text);
-            }
+        var pos = ! repo.isFocus ? repo.playlistPos : position;
+        $(repo.currentStyle).find(styles.card.prefix + pos + " " + styles.tags[0]).attr("class", icon + " " + styles.class[1]);
+        if (repo.currentStyle == styles.id[3]) {
+            $(repo.currentStyle).find(styles.button.playRandom + " i").attr("class", icon).end().find(styles.button.playRandom + " span").text(text);
         }
     }
 
@@ -336,8 +331,8 @@ const MUSIC_CONTROL = (function () {
         isPlay = status;
     }
 
-    const setStyles = function (_styles) {
-        styles = _styles;
+    const setRepo = function (_repo) {
+        repo = _repo;
     }
 
     function init() {
@@ -347,7 +342,6 @@ const MUSIC_CONTROL = (function () {
 
     return {
         init: init,
-        prepare: prepare,
         isPlayMusic: isPlayMusic,
         isLoopMusic: isLoopMusic,
         isDragMusic: isDragMusic,
@@ -356,8 +350,10 @@ const MUSIC_CONTROL = (function () {
         getNextMusic: getNextMusic,
         getPreviousMusic: getPreviousMusic,
         getShuffleItems: getShuffleItems,
+        setData:setData,
         setIsPlay: setIsPlay,
-        setStyles: setStyles,
+        setRepo: setRepo,
+        prepareDataAndBootMusic: prepareDataAndBootMusic,
         updateProgressCurrentMusic: updateProgressCurrentMusic,
     }
 

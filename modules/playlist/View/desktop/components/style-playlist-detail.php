@@ -21,7 +21,8 @@
     </div>
 
     <div class="card-interact d-flex pl-20 pr-20">
-        <div id="play-random-music" class="btn-md-01 center-items text-color-white bg-color-dark-03 cursor-pointer"><i class="fa-solid fa-play"></i><span class="ml-10">Phát ngẫu nhiên</span></div>
+        <div id="play-random-music" class="btn-md-01 center-items text-color-white bg-color-dark-03 cursor-pointer"
+             data-pos="<?php echo rand(0, count($playlist['songs']) - 1) ?>" data-id="<?php echo $playlist['playlist_id'] ?>"><i class="fa-solid fa-play"></i><span class="ml-10">Phát ngẫu nhiên</span></div>
         <div class="box-icon center-items text-color-white rounded-circle cursor-pointer bg-color-dark-03 fs-18 ml-20"><i class="fa-regular fa-heart"></i></div>
         <div class="box-icon center-items text-color-white rounded-circle cursor-pointer bg-color-dark-03 fs-18 ml-20"><i class="fa-regular fa-ellipsis"></i></div>
     </div>
@@ -45,7 +46,7 @@
                             <div class="card-column-1 center-items">
                                 <div class="box-text fw-500 text-color-dark-04"><?php echo $i ?></div>
                                 <div class="play-music box-icon center-items text-color-white cursor-pointer fs-16"
-                                     data-position="<?php echo $key ?>" data-id="<?php echo $playlist['playlist_id'] ?>"><i class="fa-solid fa-play"></i></div>
+                                     data-pos="<?php echo $key ?>" data-id="<?php echo $playlist['playlist_id'] ?>"><i class="fa-solid fa-play"></i></div>
                             </div>
                             <div class="card-column-2">
                                 <div class="card-info d-flex">
