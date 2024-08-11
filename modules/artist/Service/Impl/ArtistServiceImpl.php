@@ -41,6 +41,18 @@ class ArtistServiceImpl extends BaseServiceImpl implements ArtistService
         if (array_key_exists('description', $data)) {
             $attributes['description'] = $data['description'];
         }
+        if (array_key_exists('album_ids', $data) && $artist['album_ids'] !== $data['album_ids']) {
+            $attributes['album_ids'] = $data['album_ids'];
+        }
+        if (array_key_exists('album_id', $data)) {
+            $albumIds = null;
+            if (is_null($artist['album_ids'])) {
+                $albumIds = $data['album_id'];
+            } else {
+                $albumIds = $artist['album_ids'].','.$data['album_id'];
+            }
+            $attributes['album_ids'] = $albumIds;
+        }
         if (empty($attributes)) {
             return;
         }

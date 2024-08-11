@@ -56,7 +56,7 @@
                 <select class="form-select" name="role">
                     <option value="0" selected disabled hidden>Chọn vai trò</option>
                     <?php
-                        foreach (config('user.roles') as $key => $value) {
+                        foreach (config('adm.user.roles') as $key => $value) {
                             ?>
                                 <option value="<?php echo $key ?>"
                                 <?php echo isset($user) ? (($user['role'] == $key) ? 'selected' : null) 

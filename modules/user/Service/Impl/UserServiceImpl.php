@@ -58,7 +58,7 @@ class UserServiceImpl extends BaseServiceImpl implements UserService
         if (empty($attributes)) {
             return;
         }
-        return $this->baseRepo->updateOne($id, $data);
+        return $this->baseRepo->updateOne($id, $attributes);
     }
 
     public function deleteOne($id)
@@ -76,7 +76,7 @@ class UserServiceImpl extends BaseServiceImpl implements UserService
         }
     }
 
-    public function listUser(array $columns = [], array $conditions = [], array $sorted = [], $perPage = 10)
+    public function listUser(array $columns = [], array $conditions = [], array $sorted = ['created_at' => 'desc'], $perPage = 10)
     {
         return $this->baseRepo->list($columns, $conditions, $sorted, $perPage);
     }

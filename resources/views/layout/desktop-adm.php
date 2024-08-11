@@ -12,7 +12,7 @@
         <?php include_one('components.adm.navbar') ?>
 
         <div class="content">
-            <?php include_one('components.adm.content-top', isset($label) ? compact('label') : null) ?>
+            <?php include_one('components.adm.head-content', isset($label) ? compact('label') : null) ?>
             <div class="content-body">
                 <?php if (isset($component)) { require $component; } ?>
             </div>

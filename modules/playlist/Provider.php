@@ -16,9 +16,7 @@ class Provider extends ServiceProvider
     {
         $this->mergeConfigFrom('modules/playlist/config.php', 'playlist');
         $this->app->singleton('Modules\Playlist\Repository\PlaylistRepository', 'Modules\Playlist\Repository\Impl\PlaylistRepositoryImpl');
-        $this->app->singleton('Modules\Playlist\Repository\PlaylistAlbumRepository', 'Modules\Playlist\Repository\Impl\PlaylistAlbumRepositoryImpl');
 
         $this->app->singleton('Modules\Playlist\Service\PlaylistService', 'Modules\Playlist\Service\Impl\PlaylistServiceImpl');
-        $this->app->singleton('Modules\Playlist\Service\PlaylistAlbumService', 'Modules\Playlist\Service\Impl\PlaylistAlbumServiceImpl');
     }
 }

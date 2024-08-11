@@ -14,8 +14,8 @@ class FormUpdateArtist extends FormRequest
     public function rules()
     {
         return [
-            'name' => 'required|except:artist,name|min:6|max:255',
-            'slug' => 'required|except:artist,slug|min:6|max:255',
+            'name' => 'required|except:artists,name|min:6|max:255',
+            'slug' => 'required|except:artists,slug|min:6|max:255',
         ];
     }
 

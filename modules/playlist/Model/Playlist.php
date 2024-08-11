@@ -6,11 +6,12 @@ use Foundation\Database\Eloquent\Model;
 
 class Playlist extends Model
 {
-    protected $table = 'playlist';
+    protected $table = 'playlists';
 
     protected $fillable = [
         'id',
-        'play_id',
+        'playlist_id',
+        'album_ids',
         'name',
         'slug',
         'description',
@@ -20,7 +21,8 @@ class Playlist extends Model
     ];
 
     protected $attributes = [
-        'play_id' => '',
+        'playlist_id' => '',
+        'album_ids' => '',
         'name' => '',
         'slug' => '',
         'description' => '',

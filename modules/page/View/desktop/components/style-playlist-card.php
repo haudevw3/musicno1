@@ -23,8 +23,9 @@
                                             </div>
                                         </div>
                                         <a class="card-link cursor-pointer fw-600 text-color-dark-04 text-overflow-02 mt-5"
+                                           data-pos="<?php echo $key ?>"
                                            data-id="<?php echo $playlist['playlist_id'] ?>"
-                                           data-pos="<?php echo $key ?>"><?php echo $playlist['name'] ?></a>
+                                           data-url="<?php echo route('playlist-detail-page', $playlist['playlist_id']) ?>"><?php echo $playlist['name'] ?></a>
                                     </div>
                                 <?php
                             }

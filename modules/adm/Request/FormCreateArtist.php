@@ -14,8 +14,8 @@ class FormCreateArtist extends FormRequest
     public function rules()
     {
         return [
-            'name' => 'required|exists:artist,name|min:6|max:255',
-            'slug' => 'required|exists:artist,slug|min:6|max:255',
+            'name' => 'required|exists:artists,name|min:6|max:255',
+            'slug' => 'required|exists:artists,slug|min:6|max:255',
         ];
     }
 

@@ -14,8 +14,8 @@ class FormCreateSong extends FormRequest
     public function rules()
     {
         return [
-            'name' => 'required|exists:song,name|min:6|max:255',
-            'slug' => 'required|exists:song,slug|min:6|max:255',
+            'name' => 'required|exists:songs,name|min:6|max:255',
+            'slug' => 'required|exists:songs,slug|min:6|max:255',
         ];
     }
 

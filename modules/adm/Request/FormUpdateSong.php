@@ -14,8 +14,8 @@ class FormUpdateSong extends FormRequest
     public function rules()
     {
         return [
-            'name' => 'required|except:song,name|min:6|max:255',
-            'slug' => 'required|except:song,slug|min:6|max:255',
+            'name' => 'required|except:songs,name|min:6|max:255',
+            'slug' => 'required|except:songs,slug|min:6|max:255',
         ];
     }
 

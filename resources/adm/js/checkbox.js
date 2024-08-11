@@ -11,10 +11,10 @@ const CHECKBOX = (function () {
     }
 
     const bindFunction = function () {
-        ctrls.checkboxOnce.on("click", eventOnclickChecboxOnce);
+        ctrls.checkboxOnce.on("click", eventOnclickCheckboxOnce);
     }
 
-    const eventOnclickChecboxOnce = function () {
+    const eventOnclickCheckboxOnce = function () {
         var key = $(this).attr("data-key");
         for (var i = 1; i <= rows; i++) {
             if (key == i) {

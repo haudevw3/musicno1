@@ -14,8 +14,8 @@ class FormCreateAlbum extends FormRequest
     public function rules()
     {
         return [
-            'name' => 'required|exists:album,name|min:6|max:255',
-            'slug' => 'required|exists:album,slug|min:6|max:255',
+            'name' => 'required|exists:albums,name|min:6|max:255',
+            'slug' => 'required|exists:albums,slug|min:6|max:255',
         ];
     }
 

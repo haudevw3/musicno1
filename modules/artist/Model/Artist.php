@@ -6,7 +6,7 @@ use Foundation\Database\Eloquent\Model;
 
 class Artist extends Model
 {
-    protected $table = 'artist';
+    protected $table = 'artists';
 
     protected $fillable = [
         'id',
@@ -15,6 +15,7 @@ class Artist extends Model
         'slug',
         'image',
         'description',
+        'album_ids',
         'created_at',
         'updated_at',
     ];

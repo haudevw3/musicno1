@@ -12,5 +12,5 @@ interface UserService
 
     public function deleteAll(array $condition = [], $forever = false);
 
-    public function listUser(array $columns = [], array $conditions = [], array $sorted = [], $perPage = 10);
+    public function listUser(array $columns = [], array $conditions = [], array $sorted = ['created_at' => 'desc'], $perPage = 10);
 }

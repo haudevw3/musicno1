@@ -8,7 +8,6 @@ const ALERT = (function () {
 
     const bindControl = function () {
         var self = {};
-        self.alertData = $(".alert-data");
         self.alert = $(".alert");
         return self;
     }
@@ -18,8 +17,8 @@ const ALERT = (function () {
     }
 
     const set = function () {
-        var key = ctrls.alertData.data("key");
-        var message = ctrls.alertData.data("message");
+        var key = ctrls.alert.data("key");
+        var message = ctrls.alert.data("message");
         if (key != '' && message != '') {
             show(key, message);
         }

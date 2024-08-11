@@ -28,7 +28,7 @@ class PlaylistController
         return view('playlist.viewPlaylistDetailPage', compact('playlist'));
     }
 
-    public function renderListSong(Request $request)
+    public function getListSongForPlaylist(Request $request)
     {
         $id = $request->input('id');
         $id = $this->playlistService->findOne(['playlist_id' => $id])['id'];

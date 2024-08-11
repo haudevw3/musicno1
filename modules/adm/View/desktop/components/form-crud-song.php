@@ -6,6 +6,12 @@
         </div>
         <div class="form-body p-20">
             <form method="post" action="<?php echo isset($song) ? route('adm-update-song') : route('adm-create-song') ?>" enctype="multipart/form-data">
+                <input name="<?php echo isset($albumId) ? 'album_id' : null ?>" type="text" class="d-none"
+                       value="<?php echo isset($albumId) ? $albumId : null ?>" />
+
+                <input name="<?php echo isset($artistId) ? 'artist_id' : null ?>" type="text" class="d-none"
+                       value="<?php echo isset($artistId) ? $artistId : null ?>" />
+
                 <input name="<?php echo isset($song) ? 'id' : null ?>" type="text" class="d-none"
                        value="<?php echo isset($song) ? $song['id'] : null ?>" />
 
@@ -51,6 +57,25 @@
                     <div class="form-group input-md-01">
                         <i class="fa-sharp fa-regular fa-volume"></i>
                         <input name="audio" type="file" class="col-12 file-upload" id="audio-upload">
+                    </div>
+                </div>
+
+                <div class="mb-3">
+                    <label class="form-label fw-600">Chọn nghệ sĩ đóng góp: ( được bỏ trống )</label>
+                    <div style="display: grid; grid-template-columns: repeat(2, 1fr);">
+                        <?php
+                            $contributingArtistId = isset($contributingArtistId) ? $contributingArtistId : (old('contributing_artist_id') ?? []);
+                            foreach ($artists as $key => $artist) {
+                                $key++;
+                                ?>
+                                    <div class="form-check form-check-01">
+                                        <input name="contributing_artist_ids[]" type="checkbox" id="checkbox-<?php echo $key ?>" class="form-check-input"
+                                                value="<?php echo $artist['id'] ?>" <?php echo in_array($artist['id'], $contributingArtistId) ? 'checked' : null ?>>
+                                        <label class="form-check-label fw-600" for="checkbox-<?php echo $key ?>"><?php echo $artist['name'] ?></label>
+                                    </div>
+                                <?php
+                            }
+                        ?>
                     </div>
                 </div>
 

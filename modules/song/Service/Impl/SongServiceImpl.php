@@ -19,11 +19,14 @@ class SongServiceImpl extends BaseServiceImpl implements SongService
     {
         $attributes = [
             'song_id' => $data['song_id'],
+            'album_id' => $data['album_id'],
+            'artist_id' => $data['artist_id'],
             'name' => ucwords(trim($data['name'])),
             'slug' => trim($data['slug']),
             'audio' => trim($data['audio']),
             'image' => trim($data['image']),
             'duration' => trim($data['duration']),
+            'contributing_artist_ids' => implode(',', $data['contributing_artist_ids']),
         ];
         return $this->baseRepo->create($attributes);
     }
@@ -32,7 +35,7 @@ class SongServiceImpl extends BaseServiceImpl implements SongService
     {
         $attributes = [];
         $song = $this->baseRepo->findOne(['id' => $id]);
-        if (array_key_exists('name', $data) && $song['name'] !== $data['name']) {
+        if (array_key_exists('name', $data) && $song['name'] !== ucwords(trim($data['name']))) {
             $attributes['name'] = $data['name'];
             $attributes['slug'] = $data['slug'];
         }
@@ -42,6 +45,9 @@ class SongServiceImpl extends BaseServiceImpl implements SongService
         if (array_key_exists('audio', $data) && $song['audio'] !== $data['audio']) {
             $attributes['audio'] = $data['audio'];
             $attributes['duration'] = $data['duration'];
+        }
+        if(array_key_exists('contributing_artist_ids', $data) && $song['contributing_artist_ids'] !== $data['contributing_artist_ids']) {
+            $attributes['contributing_artist_ids'] = $data['contributing_artist_ids'];
         }
         if (empty($attributes)) {
             return;

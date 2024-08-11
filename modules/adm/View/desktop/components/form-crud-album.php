@@ -6,6 +6,9 @@
         </div>
         <div class="form-body p-20">
             <form method="post" action="<?php echo isset($album) ? route('adm-update-album') : route('adm-create-album') ?>" enctype="multipart/form-data">
+                <input name="<?php echo isset($artistId) ? 'artist_id' : null ?>" type="text" class="d-none"
+                       value="<?php echo isset($artistId) ? $artistId : null ?>" />
+
                 <input name="<?php echo isset($album) ? 'id' : null ?>" type="text" class="d-none"
                        value="<?php echo isset($album) ? $album['id'] : null ?>" />
 
@@ -36,7 +39,7 @@
                     <label class="form-label fw-600">Loại album:</label>
                     <select class="form-select" name="type">
                         <?php
-                            foreach (config('album.types') as $key => $value) {
+                            foreach (config('adm.album.types') as $key => $value) {
                                 ?>
                                     <option value="<?php echo $key ?>" <?php echo isset($album)
                                     ? (($album['type'] == $key) ? 'selected' : null)
@@ -49,7 +52,7 @@
                 </div>
 
                 <div class="mb-3">
-                    <label for="file-upload" class="form-label fw-600">Ảnh album:</label>
+                    <label for="file-upload" class="form-label fw-600">Ảnh album: ( được bỏ trống )</label>
                     <div class="form-group input-md-01">
                         <i class="fa-regular fa-camera"></i>
                         <input name="image" type="file" class="col-12 file-upload" id="file-upload">

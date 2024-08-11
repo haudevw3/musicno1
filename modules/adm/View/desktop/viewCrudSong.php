@@ -1,12 +1,12 @@
 <?php
 
-push('adm.viewCrudSong');
+$_namespace = 'adm.viewCrudSong';
+
+push($_namespace);
 
 echo asset('adm/js/convert-slug.js');
 
 endpush();
-
-$_namespace = 'adm.viewCrudSong';
 
 $component = _namespace('adm.components.form-crud-song');
 

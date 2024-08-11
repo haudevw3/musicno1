@@ -13,7 +13,8 @@
                 </div>
                 <div class="ml-10">&bull;</div>
                 <div class="vertical-center-items">
-                    <div class="ml-10 fw-600"><span><?php echo count($playlist['songs']) ?> bài hát</span> - <span class="text-color-dark-05"><?php echo $playlist['duration'] ?></span></div>
+                    <div class="ml-10 fw-600"><span><?php echo count($playlist['songs']) ?> bài hát</span> - <span class="text-color-dark-05">
+                                                    <?php echo $playlist['duration'] ?></span></div>
                 </div>
             </div>
             <div class="mt-10 text-overflow-03"><?php echo $playlist['description'] ?></div>
@@ -22,7 +23,9 @@
 
     <div class="card-interact d-flex pl-20 pr-20">
         <div id="play-random-music" class="btn-md-01 center-items text-color-white bg-color-dark-03 cursor-pointer"
-             data-pos="<?php echo rand(0, count($playlist['songs']) - 1) ?>" data-id="<?php echo $playlist['playlist_id'] ?>"><i class="fa-solid fa-play"></i><span class="ml-10">Phát ngẫu nhiên</span></div>
+             data-pos="<?php echo rand(0, count($playlist['songs']) - 1) ?>"
+             data-id="<?php echo $playlist['playlist_id'] ?>"
+             data-url="<?php echo route('get-list-song-for-playlist', $playlist['playlist_id']) ?>"><i class="fa-solid fa-play"></i><span class="ml-10">Phát ngẫu nhiên</span></div>
         <div class="box-icon center-items text-color-white rounded-circle cursor-pointer bg-color-dark-03 fs-18 ml-20"><i class="fa-regular fa-heart"></i></div>
         <div class="box-icon center-items text-color-white rounded-circle cursor-pointer bg-color-dark-03 fs-18 ml-20"><i class="fa-regular fa-ellipsis"></i></div>
     </div>
@@ -46,7 +49,9 @@
                             <div class="card-column-1 center-items">
                                 <div class="box-text fw-500 text-color-dark-04"><?php echo $i ?></div>
                                 <div class="play-music box-icon center-items text-color-white cursor-pointer fs-16"
-                                     data-pos="<?php echo $key ?>" data-id="<?php echo $playlist['playlist_id'] ?>"><i class="fa-solid fa-play"></i></div>
+                                     data-pos="<?php echo $key ?>"
+                                     data-id="<?php echo $playlist['playlist_id'] ?>"
+                                     data-url="<?php echo route('get-list-song-for-playlist', $playlist['playlist_id']) ?>"><i class="fa-solid fa-play"></i></div>
                             </div>
                             <div class="card-column-2">
                                 <div class="card-info d-flex">
@@ -80,7 +85,12 @@
                             <div class="card-column-3">
                                 <div class="card-text vertical-center-items">
                                     <div class="fw-500 text-overflow-01">
-                                        <a class="text-color-dark-05" href="http://"><?php echo $song['album_name'] ?></a>
+                                        <a class="card-link text-color-dark-05 cursor-pointer"
+                                           data-pos="<?php echo $key ?>"
+                                           data-id="<?php echo $playlist['playlist_id'] ?>"
+                                           data-url="<?php echo route('album-detail-page', $song['album_id']) ?>">
+                                           <?php echo $song['album_name'].' ('.config('album.types')[$song['album_type']]['name'].')' ?>
+                                        </a>
                                     </div>
                                 </div>
                             </div>

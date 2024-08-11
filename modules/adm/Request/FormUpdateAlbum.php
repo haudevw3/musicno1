@@ -14,8 +14,8 @@ class FormUpdateAlbum extends FormRequest
     public function rules()
     {
         return [
-            'name' => 'required|except:album,name|min:6|max:255',
-            'slug' => 'required|except:album,slug|min:6|max:255',
+            'name' => 'required|except:albums,name|min:6|max:255',
+            'slug' => 'required|except:albums,slug|min:6|max:255',
         ];
     }
 

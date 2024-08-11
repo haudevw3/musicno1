@@ -13,10 +13,10 @@
                        value="<?php echo isset($playlist) ? $playlist['image'] : null ?>" />
 
                 <div class="mb-3">
-                    <label for="name" class="form-label fw-600">Tên playlist:</label>
+                    <label for="name" class="form-label fw-600">Tên danh sách phát:</label>
                     <div class="form-group input-md-01">
                         <i class="fa-regular fa-pen"></i>
-                        <input name="name" type="text" id="name" class="form-control need-convert-to-slug" placeholder="Nhập tên playlist"
+                        <input name="name" type="text" id="name" class="form-control need-convert-to-slug" placeholder="Nhập tên danh sách phát"
                                value="<?php echo isset($playlist) ? $playlist['name'] : old('name') ?>">
                     </div>
                     <div class="form-text text-color-red"><?php echo error('name') ?></div>
@@ -33,7 +33,7 @@
                 </div>
 
                 <div class="mb-3">
-                    <label for="file-upload" class="form-label fw-600">Ảnh playlist:</label>
+                    <label for="file-upload" class="form-label fw-600">Ảnh danh sách phát:</label>
                     <div class="form-group input-md-01">
                         <i class="fa-regular fa-camera"></i>
                         <input name="image" type="file" class="col-12 file-upload" id="file-upload">
@@ -42,13 +42,13 @@
                 </div>
 
                 <div class="mb-3">
-                    <label for="description" class="form-label fw-600">Mô tả playlist: ( được bỏ trống )</label>
+                    <label for="description" class="form-label fw-600">Mô tả danh sách phát: ( được bỏ trống )</label>
                     <textarea name="description" type="text" id="description" class="form-control" placeholder="Nhập nội dung giới thiệu, mô tả"><?php
                     echo isset($playlist) ? $playlist['description'] : old('description') ?></textarea>
                 </div>
 
                 <div class="form-bottom mt-20 col-12 d-flex justify-content-end">
-                    <button type="submit" class="btn btn-md-01 bg-color-blue-01"><?php echo isset($playlist) ? 'Cập nhật playlist' : 'Tạo playlist' ?></button>
+                    <button type="submit" class="btn btn-md-01 bg-color-blue-01"><?php echo isset($playlist) ? 'Cập nhật danh sách phát' : 'Tạo danh sách phát' ?></button>
                 </div>
             </form>
         </div>

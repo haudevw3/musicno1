@@ -14,7 +14,7 @@ interface CategoriesService
 
     public function listCategories(array $columns = [], array $conditions = [], array $sorted = ['created_at' => 'desc'], $perPage = 10);
 
-    public function getPlaylistByCategoryId($id, array $columns = []);
+    //public function getPlaylistByCategoryId($id, array $columns = []);
 
     public function getTreeCategories(array $columns = [], array $condition = []);
 }

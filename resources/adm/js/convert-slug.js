@@ -10,10 +10,10 @@ const CONVERT_SLUG = (function () {
     }
 
     const bindFunction = function () {
-        ctrls.name.on("change", handleNameChange);
+        ctrls.name.on("change", eventOnChangeName);
     }
 
-    const handleNameChange = function () {
+    const eventOnChangeName = function () {
         var val = $(this).val();
         ctrls.slug.val(convertSlug(val));
     }

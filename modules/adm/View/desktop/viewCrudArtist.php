@@ -1,12 +1,12 @@
 <?php
 
-push('adm.viewCrudArtist');
+$_namespace = 'adm.viewCrudArtist';
+
+push($_namespace);
 
 echo asset('adm/js/convert-slug.js');
 
 endpush();
-
-$_namespace = 'adm.viewCrudArtist';
 
 $component = _namespace('adm.components.form-crud-artist');
 

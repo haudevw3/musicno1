@@ -1,12 +1,12 @@
 <?php
 
-push('adm.viewCrudPlaylist');
+$_namespace = 'adm.viewCrudPlaylist';
+
+push($_namespace);
 
 echo asset('adm/js/convert-slug.js');
 
 endpush();
-
-$_namespace = 'adm.viewCrudPlaylist';
 
 $component = _namespace('adm.components.form-crud-playlist');
 
