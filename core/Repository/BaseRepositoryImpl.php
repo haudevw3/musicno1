@@ -61,7 +61,7 @@ abstract class BaseRepositoryImpl implements BaseRepository
             }
         }
         if (count($options) > 0) {
-            if (isset($options['sorted'])) {
+            if (array_key_exists('sorted', $options)) {
                 $query->orderBy(array_keys($options['sorted'])[0], array_values($options['sorted'])[0]);
             }
         }
@@ -71,17 +71,27 @@ abstract class BaseRepositoryImpl implements BaseRepository
     public function findOne(array $conditions = [], array $columns = [])
     {
         $query = $this->buildQuery($columns, $conditions);
-        return ! is_null($query->get($columns)) ? $query->get($columns)[0] : null;
+        return is_null($query->get($columns)) ? null : $query->get($columns)[0];
     }
 
-    public function findAll(array $columns = [], array $conditions = [], array $sorted = ['created_at' => 'asc'])
+    public function findAll(array $columns = [], array $conditions = [], array $sorted = [])
     {
-        return $this->buildQuery($columns, $conditions, ['sorted' => $sorted])->get();
+        $sorted = ! empty($sorted) ? $sorted : ['created_at' => 'asc'];
+        $query = $this->buildQuery($columns, $conditions, ['sorted' => $sorted]);
+        return $query->get();
     }
 
-    public function list(array $columns = [], array $conditions = [], array $sorted = ['created_at' => 'desc'], $perPage = 10)
+    public function list(array $columns = [], array $conditions = [], array $sorted = [], $perPage = 10)
     {
-        $items = $this->findAll($columns, $conditions, $sorted);
+        $items = [];
+        $sorted = ! empty($sorted) ? $sorted : ['created_at' => 'desc'];
+        if (array_key_exists('no_supported', $conditions)) {
+            foreach ($conditions['ids'] as $id) {
+                $items[] = $this->findOne(['id' => $id], $columns);
+            }
+        } else {
+            $items = $this->findAll($columns, $conditions, $sorted);
+        }
         $paginator = new Paginator($items, $perPage, [], app('request'));
         return $paginator->toArray();
     }
@@ -93,7 +103,8 @@ abstract class BaseRepositoryImpl implements BaseRepository
 
     public function update(array $condition, array $data)
     {
-        return $this->buildQuery($condition)->update($data);
+        $query = $this->buildQuery($condition);
+        return $query->update($data);
     }
 
     public function updateOne($id, array $data)

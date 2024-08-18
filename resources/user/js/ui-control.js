@@ -1,26 +1,45 @@
 const UI_CONTROL = (function () {
 
     var ctrls = {};
+    var navlink = null;
 
     const styles = {
-        "id": ["#top-playlist", "#song-playlist", "#default-playlist", "#detail-playlist"],
-        "tags": [".play-music i"],
-        "class": ["bg-color-dark-03", "text-color-white fs-18"],
-        "card": {"wrap": ".card-wrapper", "prefix": ".card-"},
-        "button": {"play": ".play-music", "playRandom": "#play-random-music"},
-        "icons": {"play": "fa-solid fa-play", "pause": "fa-solid fa-pause"},
+        "id": [
+            "#top-card-container",
+            "#song-card-container",
+            "#playlist-card-container",
+            "#playlist-detail",
+            "#album-detail",
+        ],
+        "btn": {
+            "play": ".play-music",
+            "playFollowingSchedule": "#play-following-schedule-music",
+        },
+        "tags": {
+            "iplay": ".play-music i",
+            "iplayFollowingSchedule": "#play-following-schedule-music i",
+            "spanplayFollowingSchedule": "#play-following-schedule-music span",
+        },
+        "card": {
+            "wrap": ".card-wrapper",
+            "text": ".card-text",
+            "prefix": ".card-",
+            "first": "#card-first",
+        },
+        "icons": {
+            "play": "fa-solid fa-play text-color-white fs-18",
+            "pause": "fa-solid fa-pause text-color-white fs-18",
+        },
+        "bgColor": {
+            "dark": "bg-color-dark-01",
+            "darkGray": "bg-color-dark-03",
+        },
     }
 
-    const repo = {
+    const trackState = {
         "id": null,
-        "isFocus": true,
-        "currentStyle": null,
-        "playlistPos": null,
-        "previousPos": null,
-        "currentPos": 0,
-        "nextPos": null,
-        "data": null,
-        "length": 0,
+        "styleId": null,
+        "needFocusAtPos": true,
     }
 
     const bindControl = function () {
@@ -31,19 +50,20 @@ const UI_CONTROL = (function () {
     }
 
     const bindFunction = function () {
-        ctrls.navbar.find(".nav-link").on("click", eventOnclickNavlink); 
+        ctrls.navbar.find(".nav-link").on("click", eventOnclickNavlink);
     }
 
-    const eventOnclickNavlink = async function (e) {
-        e.preventDefault();
-        ctrls.navbar.find(".nav-link").removeClass(styles.class[0]);
-        $(this).addClass(styles.class[0]);
+    const eventOnclickNavlink = async function () {
+        ctrls.navbar.find(".nav-link").removeClass("bg-color-dark-03");
+        $(this).addClass("bg-color-dark-03");
         var url = BASE_URL + $(this).attr("data-url").replace("/", "");
-        STATE.push({}, url);
-        await renderContent(url);
-        eventOnclickButtonPlayMusic();
-        eventOnclickLinkPlaylistMusic();
-        trackingHistoryState();
+        // if (navlink != url) {
+        //     navlink = url;
+            history.pushState({}, "", url);
+            await renderContent(url);
+        //}
+        manageEvent();
+        updateStateForCurrentPage();
     }
 
     const renderContent = async function (url) {
@@ -64,135 +84,162 @@ const UI_CONTROL = (function () {
     }
 
     const setStateAndData = async function (subject, options = {}) {
-        var id = $(subject).attr("data-id");
-        var pos = parseInt($(subject).attr("data-pos"));
-        var url = BASE_URL + ((options.path != undefined) ? options.path : "render-list-song/") + id;
         var status = true;
-        repo.isFocus = (options.isFocus != undefined) ? options.isFocus : true;
-        
-        if (options.needRenderContent) {
-            STATE.push({}, url);
-            await renderContent(url);
-        } else {
-            if (repo.id != id) {
-                status = false;
-                repo.id = id;
-                await renderData(url);
-                repo.data = JSON.parse(SESSION.get("data"));
-                repo.length = repo.data.length;
-                repo.currentPos = 0;
-                if (options.currentStyle == styles.id[1]) {
-                    repo.playlistPos = null;
-                }
-                if (options.currentStyle == styles.id[2]) {
-                    repo.playlistPos = pos;
-                }
-                if (options.currentStyle == styles.id[3]) {
-                    repo.playlistPos = options.pos;
-                }
-            }
-    
-            if (repo.currentStyle != options.currentStyle) {
-                $(repo.currentStyle).find(styles.card.wrap).removeClass(styles.class[0]);
-                $(repo.currentStyle).find(styles.card.wrap + " " + styles.tags[0]).attr("class", styles.icons.play + " " + styles.class[1]);
-                repo.currentStyle = options.currentStyle;
-            }
-    
-            if (status && ((options.currentStyle == styles.id[1] && repo.currentPos == pos) ||
-                (options.currentStyle == styles.id[2] && repo.playlistPos == pos) ||
-                (options.currentStyle == styles.id[3] && repo.currentPos == pos))) {
-                MUSIC_CONTROL.getPlayMusic().click();
-            } else {
-                MUSIC_CONTROL.setData({pos: pos, repo: repo, styles: styles});
-                MUSIC_CONTROL.prepareDataAndBootMusic(pos);
-            }
+        var dataOfSubject = getDataOfSubject(subject);
+        trackState.needFocusAtPos = (options.needFocusAtPos != undefined) ? options.needFocusAtPos : true;
+
+        if (trackState.styleId != options.styleId) {
+            removeStateOfCard();
+            trackState.styleId = options.styleId;
         }
+
+        if (trackState.id != dataOfSubject.id) {
+            status = false;
+            trackState.id = dataOfSubject.id;
+            await renderData(dataOfSubject.url);
+            MUSIC_CONTROL.setDataForRepo({data: JSON.parse(SESSION.get("data"))});
+        }
+
+        if (status && ((options.styleId == styles.id[1] && MUSIC_CONTROL.repo.currentPos == dataOfSubject.pos) ||
+                       (options.styleId == styles.id[2] && trackState.id == dataOfSubject.id) ||
+                       (options.styleId == styles.id[3] && MUSIC_CONTROL.repo.currentPos == dataOfSubject.pos) ||
+                       (options.styleId == styles.id[4] && MUSIC_CONTROL.repo.currentPos == dataOfSubject.pos))) {
+            MUSIC_CONTROL.getPlayMusic().click();
+        } else {
+            MUSIC_CONTROL.prepareDataAtPosAndBootMusic(dataOfSubject.pos);
+        }
+
     }
 
-    const setPosForRepo = function (pos) {
-        repo.currentPos = pos;
-
-        if (pos > 0) {
-            repo.previousPos = pos - 1;
-        } else {
-            repo.previousPos = null;
-        }
-
-        if (pos >= 0 && pos < repo.length - 1) {
-            repo.nextPos = pos + 1;
-        } else {
-            repo.nextPos = null;
-        }
-    }
-
-    const eventOnclickButtonPlayMusic = function () {
-        $(styles.id[1]).find(styles.button.play).on("click", function () {
-            setStateAndData(this, {currentStyle: styles.id[1]});
+    const manageEvent = function () {
+        $(styles.id[1]).find(styles.btn.play).on("click", function () {
+            setStateAndData(this, {styleId: styles.id[1]});
         });
 
-        $(styles.id[2]).find(styles.button.play).on("click", function () {
-            setStateAndData(this, {currentStyle: styles.id[2], isFocus: false});
+        $(styles.id[2]).find(styles.btn.play).on("click", function () {
+            setStateAndData(this, {styleId: styles.id[2], needFocusAtPos: false});
         });
-    }
 
-    const eventOnclickLinkPlaylistMusic = function () {
-        $(styles.id[2]).find(".card-link").on("click", async function (e) {
-            e.preventDefault();
-            var id = $(this).attr("data-id");
-            var pos = parseInt($(this).attr("data-pos"));
-            console.log(pos);
-            await setStateAndData(this, {needRenderContent: true, path: "playlist/", currentStyle: styles.id[2], isFocus: true});
-            repo.currentStyle = styles.id[3];
-            MUSIC_CONTROL.setRepo(repo);
+        $(styles.id[2]).find(styles.card.text).on("click", async function () {
+            var dataOfSubject = getDataOfSubject(this);
+            history.pushState({}, "", dataOfSubject.url);
+            await renderContent(dataOfSubject.url);
 
-            if (repo.id == id) {
-                $(styles.id[3]).find(styles.card.prefix + repo.currentPos).addClass(styles.class[0]);
-                if (MUSIC_CONTROL.isPlayMusic()) {
-                    $(styles.id[3]).find(styles.card.prefix + repo.currentPos + " " + styles.tags[0]).attr("class",  styles.icons.pause + " " + styles.class[1]);
-                    $(styles.id[3]).find(styles.button.playRandom + " i").attr("class", styles.icons.pause).end().find(styles.button.playRandom + " span").text("Tạm dừng");
-                } else {
-                    $(styles.id[3]).find(styles.button.playRandom + " i").attr("class", styles.icons.play).end().find(styles.button.playRandom + " span").text("Tiếp tục phát");
-                }
+            trackState.styleId = styles.id[3];
+            trackState.needFocusAtPos = true;
+            if (trackState.id == dataOfSubject.id) {
+                setStateOfCard({status: MUSIC_CONTROL.isPlayMusic(), pos: MUSIC_CONTROL.repo.currentPos});
+                setStateOfButton({status: MUSIC_CONTROL.isPlayMusic()});
             }
 
-            $(styles.id[3]).find(styles.button.playRandom).on("click", function () {
-                if (repo.id == null || repo.id != id) {
-                    setStateAndData(this, {currentStyle: styles.id[3], isFocus: true, pos: pos});
+            $(styles.id[3]).find(styles.btn.playFollowingSchedule).on("click", function () {
+                var dataOfSubject = getDataOfSubject(this);
+                if (trackState.id == null || trackState.id != dataOfSubject.id) {
+                    setStateAndData(this, {styleId: styles.id[3]});
                 } else {
                     MUSIC_CONTROL.getPlayMusic().click();
                 }
             });
 
-            $(styles.id[3]).find(styles.button.play).on("click", function () {
-                setStateAndData(this, {currentStyle: styles.id[3], isFocus: true, pos: pos});
+            $(styles.id[3]).find(styles.btn.play).on("click", function () {
+                setStateAndData(this, {styleId: styles.id[3]});
+            });
+
+            $(styles.id[3]).find(".album-name").on("click", async function () {
+                var dataOfSubject = getDataOfSubject(this);
+                var albumUrl = BASE_URL + $(this).attr("album-url").replace("/", "");
+                history.pushState({}, "", albumUrl);
+                await renderContent(albumUrl);
+
+                trackState.styleId = styles.id[4];
+                trackState.needFocusAtPos = true;
+                var attr = {
+                    "data-pos": dataOfSubject.pos,
+                    "data-id": dataOfSubject.id,
+                    "data-url": dataOfSubject.url.replace(BASE_URL, "/"),
+                };
+
+                $(styles.id[4]).find(styles.btn.playFollowingSchedule).attr(attr);
+                $(styles.id[4]).find(styles.card.first + " " + styles.btn.play).attr(attr);
+                $(styles.id[4]).find(styles.card.first).addClass("card-" + dataOfSubject.pos);
+
+                if (trackState.id == dataOfSubject.id && dataOfSubject.pos == MUSIC_CONTROL.repo.currentPos) {
+                    setStateOfCard({status: MUSIC_CONTROL.isPlayMusic(), pos: MUSIC_CONTROL.repo.currentPos});
+                    setStateOfButton({status: MUSIC_CONTROL.isPlayMusic()});
+                }
+
+                $(styles.id[4]).find(styles.btn.playFollowingSchedule).on("click", function () {
+                    var dataOfSubject = getDataOfSubject(this);
+                    if (trackState.id == null || trackState.id != dataOfSubject.id ||
+                       (trackState.id == dataOfSubject.id && dataOfSubject.pos != MUSIC_CONTROL.repo.currentPos)) {
+                        setStateAndData(this, {styleId: styles.id[4]});
+                    } else {
+                        MUSIC_CONTROL.getPlayMusic().click();
+                    }
+                });
+    
+                $(styles.id[4]).find(styles.btn.play).on("click", function () {
+                    setStateAndData(this, {styleId: styles.id[4]});
+                });
             });
         });
     }
 
-    const trackingHistoryState = function () {
-        var pos = 0;
-        var currentStyle = repo.currentStyle;
-        
-        if (currentStyle == styles.id[1]) {
-            pos = repo.currentPos;
-            $(styles.id[1]).find(styles.card.prefix + pos).addClass(styles.class[0]);
+    const getDataOfSubject = function (subject) {
+        var id = $(subject).attr("data-id");
+        var pos = parseInt($(subject).attr("data-pos"));
+        var url = BASE_URL + $(subject).attr("data-url").replace("/", "");
+        return {id: id, pos: pos, url: url};
+    }
+
+    const setStateOfCard = function (options = {}) {
+        var icon = options.status ? styles.icons.pause : styles.icons.play;
+        var focusId = trackState.needFocusAtPos ? (styles.card.prefix + options.pos) : ("#" + trackState.id);
+        var bgColor = (trackState.styleId == styles.id[1] || trackState.styleId == styles.id[2]) ? styles.bgColor.dark : styles.bgColor.darkGray;
+        $(trackState.styleId).find(focusId).addClass(bgColor).end()
+                             .find(focusId + " " + styles.tags.iplay).attr("class", icon);
+    }
+
+    const removeStateOfCard = function () {
+        var bgColor = (trackState.styleId == styles.id[1] || trackState.styleId == styles.id[2]) ? styles.bgColor.dark : styles.bgColor.darkGray;
+        $(trackState.styleId).find(styles.card.wrap).removeClass(bgColor).end()
+                             .find(styles.card.wrap + " " + styles.tags.iplay).attr("class", styles.icons.play);
+    }
+
+    const setStateOfButton = function (options = {}) {
+        if (trackState.styleId == styles.id[3] || trackState.styleId == styles.id[4]) {
+            var icon = options.status ? styles.icons.pause : styles.icons.play;
+            var text = options.status ? "Tạm dừng" : "Tiếp tục phát";
+            $(trackState.styleId).find(styles.tags.iplayFollowingSchedule).attr("class", icon).end()
+                                 .find(styles.tags.spanplayFollowingSchedule).text(text);
         }
-        if (currentStyle == styles.id[2] || currentStyle == styles.id[3]) {
-            pos = repo.playlistPos;
-            currentStyle = styles.id[2];
-            repo.isFocus = false;
-            repo.currentStyle = currentStyle;
-            MUSIC_CONTROL.setRepo(repo);
-            console.log(repo);
+    }
+
+    const updateStateForCurrentPage = function () {
+        if (trackState.styleId == styles.id[1]) {
+            trackState.needFocusAtPos = true;
+            setStateOfCard({
+                status: MUSIC_CONTROL.isPlayMusic(),
+                pos: MUSIC_CONTROL.repo.currentPos,
+            });
         }
-        if (MUSIC_CONTROL.isPlayMusic()) {
-            $(currentStyle).find(styles.card.prefix + pos + " " + styles.tags[0]).attr("class", styles.icons.pause + " " + styles.class[1]);
+
+        if (trackState.styleId == styles.id[2] ||
+            trackState.styleId == styles.id[3] ||
+            trackState.styleId == styles.id[4]) {
+            
+            trackState.styleId = styles.id[2];
+            trackState.needFocusAtPos = false;
+            setStateOfCard({status: MUSIC_CONTROL.isPlayMusic()});
         }
     }
 
     $(document).ready(function () {
-        eventOnclickButtonPlayMusic();
-        eventOnclickLinkPlaylistMusic();
+        if (navlink == null) {
+            navlink = BASE_URL;
+            ctrls.navbar.find(".nav-link").first().addClass(styles.bgColor.darkGray);
+        }
+        manageEvent();
     });
 
     $(window).on("beforeunload", function() {
@@ -206,9 +253,11 @@ const UI_CONTROL = (function () {
 
     return {
         init: init,
-        repo: repo,
         styles: styles,
-        setPosForRepo: setPosForRepo,
+        trackState: trackState,
+        setStateOfCard: setStateOfCard,
+        setStateOfButton: setStateOfButton,
+        removeStateOfCard: removeStateOfCard,
     }
 
 })();

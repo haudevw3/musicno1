@@ -16,11 +16,11 @@
 <div class="music-center vertical-center-items">
     <div class="music-wrapper">
         <div class="music-control d-flex center-items">
-            <div id="shuffle-music" class="box-icon center-items rounded-circle cursor-pointer text-color-dark-05 fs-20"><i class="fa-light fa-shuffle"></i></div>
-            <div id="previous-music" class="box-icon center-items rounded-circle cursor-pointer text-color-white fs-20 ml-20"><i class="fa-solid fa-backward-step"></i></div>
-            <div id="play-music" class="box-icon center-items rounded-circle cursor-pointer text-color-white fs-18 ml-20 bg-color-dark-03"><i class="fa-solid fa-play"></i></div>
-            <div id="next-music" class="box-icon center-items rounded-circle cursor-pointer text-color-white fs-20 ml-20"><i class="fa-solid fa-forward-step"></i></div>
-            <div id="loop-music" class="box-icon center-items rounded-circle cursor-pointer text-color-dark-05 fs-20 ml-20"><i class="fa-light fa-arrows-repeat"></i></div>
+            <div id="shuffle-music" class="box-icon center-items rounded-circle cursor-pointer"><i class="fa-light fa-shuffle text-color-dark-05 fs-20"></i></div>
+            <div id="previous-music" class="box-icon center-items rounded-circle cursor-pointer ml-20"><i class="fa-solid fa-backward-step text-color-white fs-20"></i></div>
+            <div id="play-music" class="box-icon center-items rounded-circle cursor-pointer ml-20 bg-color-dark-03"><i class="fa-solid fa-play text-color-white fs-18"></i></div>
+            <div id="next-music" class="box-icon center-items rounded-circle cursor-pointer ml-20"><i class="fa-solid fa-forward-step text-color-white fs-20"></i></div>
+            <div id="loop-music" class="box-icon center-items rounded-circle cursor-pointer ml-20"><i class="fa-light fa-arrows-repeat text-color-dark-05 fs-20"></i></div>
         </div>
         <div class="music-progress center-items">
             <div id="current-time-music" class="fw-500 text-color-white">00:00</div>

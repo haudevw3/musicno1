@@ -1,4 +1,4 @@
-const BASE_URL = "https://musicno1.xyz/";
+const BASE_URL = "https://musicno1.online/";
 
 var _apiGet = async function (url, data, _options = {}) {
     var result;

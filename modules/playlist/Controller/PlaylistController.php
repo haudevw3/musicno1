@@ -17,22 +17,14 @@ class PlaylistController
     public function playlistDetailPage(Request $request)
     {
         $id = $request->input('id');
-        $playlist = $this->playlistService->findOne(['playlist_id' => $id]);
-        $songs = $this->playlistService->getListSongByPlaylistId($playlist['id']);
-        $duration = 0;
-        foreach ($songs as $song) {
-            $duration += convertToDuration($song['duration']);
-        }
-        $playlist['duration'] = convertSecondsToTime($duration);
-        $playlist['songs'] = $songs;
+        $playlist = $this->playlistService->getListAlbumAndSongById(['playlist_id' => $id], ['playlist_id', 'name', 'image', 'description']);
         return view('playlist.viewPlaylistDetailPage', compact('playlist'));
     }
 
     public function getListSongForPlaylist(Request $request)
     {
         $id = $request->input('id');
-        $id = $this->playlistService->findOne(['playlist_id' => $id])['id'];
-        $data = $this->playlistService->getListSongByPlaylistId($id);
+        $data = $this->playlistService->getListAlbumAndSongById(['playlist_id' => $id], ['playlist_id'], true);
         return response()->json($data);
     }
 }

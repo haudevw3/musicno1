@@ -61,17 +61,34 @@
                 </div>
 
                 <div class="mb-3">
+                    <label class="form-label fw-600">Gắn thẻ cho bài hát: ( được bỏ trống )</label>
+                    <div style="display: grid; grid-template-columns: repeat(2, 1fr);">
+                        <?php
+                            $tags = isset($tags) ? $tags : (old('tags') ?? []);
+                            foreach (config('adm.song.tags') as $key => $value) {
+                                ?>
+                                    <div class="form-check form-check-01">
+                                        <input name="tags[]" type="checkbox" id="checkbox-<?php echo $key ?>" class="form-check-input"
+                                            value="<?php echo $key ?>" <?php echo in_array($key, $tags) ? 'checked' : null ?>>
+                                        <label class="form-check-label fw-600" for="checkbox-<?php echo $key ?>"><?php echo $value ?></label>
+                                    </div>
+                                <?php
+                            }
+                        ?>
+                    </div>
+                </div>
+
+                <div class="mb-3">
                     <label class="form-label fw-600">Chọn nghệ sĩ đóng góp: ( được bỏ trống )</label>
                     <div style="display: grid; grid-template-columns: repeat(2, 1fr);">
                         <?php
-                            $contributingArtistId = isset($contributingArtistId) ? $contributingArtistId : (old('contributing_artist_id') ?? []);
+                            $artistIds = isset($artistIds) ? $artistIds : (old('artist_ids') ?? []);
                             foreach ($artists as $key => $artist) {
-                                $key++;
                                 ?>
-                                    <div class="form-check form-check-01">
-                                        <input name="contributing_artist_ids[]" type="checkbox" id="checkbox-<?php echo $key ?>" class="form-check-input"
-                                                value="<?php echo $artist['id'] ?>" <?php echo in_array($artist['id'], $contributingArtistId) ? 'checked' : null ?>>
-                                        <label class="form-check-label fw-600" for="checkbox-<?php echo $key ?>"><?php echo $artist['name'] ?></label>
+                                    <div class="form-check form-check-01 <?php echo ($key == 0) ? 'd-none' : null ?>">
+                                        <input name="artist_ids[]" type="checkbox" id="_checkbox-<?php echo $key ?>" class="form-check-input"
+                                                value="<?php echo $artist['id'] ?>" <?php echo in_array($artist['id'], $artistIds) ? 'checked' : null ?>>
+                                        <label class="form-check-label fw-600" for="_checkbox-<?php echo $key ?>"><?php echo $artist['name'] ?></label>
                                     </div>
                                 <?php
                             }

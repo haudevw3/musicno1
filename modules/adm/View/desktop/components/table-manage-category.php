@@ -37,12 +37,15 @@
                                     <td><?php echo $key ?></td>
                                     <td>
                                         <?php
-                                            $color = null;
-                                            if ($category['parent_id'] == 0) $color = 'bg-color-blue';
-                                            else $color = 'bg-color-gray';
+                                            $bg = null;
+                                            if ($category['parent_id'] == 0) {
+                                                $bg = 'bg-color-blue';
+                                            } else {
+                                                $bg = 'bg-color-gray';
+                                            }
                                         ?>
                                         <div class="d-flex">
-                                            <div style="width:8px; height:8px; margin-top:8px" class="rounded-circle <?php echo $color ?>"></div>
+                                            <div style="width:8px; height:8px; margin-top:8px" class="rounded-circle <?php echo $bg ?>"></div>
                                             <span class="ml-5"><?php echo $category['name'] ?></span>
                                         </div>
                                     </td>

@@ -9,11 +9,7 @@
         <?php include_one('components.user.navbar') ?>
 
         <div class="music-content position-relative">
-            <div class="header bg-color-dark-01 d-flex fixed-top">
-                <?php include_one('components.user.header-left') ?>
-                <?php include_one('components.user.header-center') ?>
-                <?php include_one('components.user.header-right') ?>
-            </div>
+            <?php include_one('components.user.header') ?>
 
             <div id="main-content" class="main-content">
                 <?php 

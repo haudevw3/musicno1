@@ -5,9 +5,12 @@
             <div class="divider-01"></div>
         </div>
         <div class="form-body p-20">
-            <form method="post" action="<?php echo isset($category) ? route('adm-update-category') : route('adm-create-category') ?>">
+            <form method="post" action="<?php echo isset($category) ? route('adm-update-category') : route('adm-create-category') ?>" enctype="multipart/form-data">
                 <input name="<?php echo isset($category) ? 'id' : null ?>" type="text" class="d-none"
                        value="<?php echo isset($category) ? $category['id'] : null ?>" />
+
+                <input name="<?php echo isset($category) ? 'image_url' : null ?>" type="text" class="d-none"
+                       value="<?php echo isset($category) ? $category['image'] : null ?>" />
 
                 <div class="mb-3">
                     <label for="name" class="form-label fw-600">Tên danh mục:</label>
@@ -37,6 +40,33 @@
                                value="<?php echo isset($category) ? $category['priority'] : (old('priority') ?? 0) ?>">
                     </div>
                     <div class="form-text text-color-red"><?php echo error('priority') ?></div>
+                </div>
+
+                <div class="mb-3">
+                    <label for="file-upload" class="form-label fw-600">Ảnh danh mục: ( được bỏ trống )</label>
+                    <div class="form-group input-md-01">
+                        <i class="fa-regular fa-camera"></i>
+                        <input name="image" type="file" class="col-12 file-upload" id="file-upload">
+                    </div>
+                    <div class="form-text text-color-red"></div>
+                </div>
+
+                <div class="mb-3">
+                    <label class="form-label fw-600">Gắn thẻ cho danh mục: ( được bỏ trống )</label>
+                    <div style="display: grid; grid-template-columns: repeat(2, 1fr);">
+                        <?php
+                            $tags = isset($tags) ? $tags : (old('tags') ?? []);
+                            foreach (config('adm.categories.tags') as $key => $value) {
+                                ?>
+                                    <div class="form-check form-check-01">
+                                        <input name="tags[]" type="checkbox" id="_checkbox-<?php echo $key ?>" class="form-check-input"
+                                            value="<?php echo $key ?>" <?php echo in_array($key, $tags) ? 'checked' : null ?>>
+                                        <label class="form-check-label fw-600" for="_checkbox-<?php echo $key ?>"><?php echo $value ?></label>
+                                    </div>
+                                <?php
+                            }
+                        ?>
+                    </div>
                 </div>
 
                 <div class="mb-3">

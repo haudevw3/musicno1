@@ -52,6 +52,28 @@
                 </div>
 
                 <div class="mb-3">
+                    <label class="form-label fw-600">Năm phát hành album:</label>
+                    <select class="form-select" name="release_year">
+                        <?php
+                            $years = config('adm.album.years');
+                            
+                            ?><option value="<?php echo $years[0] ?>" selected><?php echo $years[0] ?></option><?php
+
+                            foreach ($years as $key => $value) {
+                                if ($key == 0) {
+                                    continue;
+                                }
+                                ?>
+                                    <option value="<?php echo $value ?>"
+                                    <?php echo isset($album) ? (($album['release_year'] == $value) ? 'selected' : null)
+                                    : ((old('release_year') == $value) ? 'selected' : null) ?>><?php echo $value ?></option>
+                                <?php
+                            }
+                        ?>
+                    </select>
+                </div>
+
+                <div class="mb-3">
                     <label for="file-upload" class="form-label fw-600">Ảnh album: ( được bỏ trống )</label>
                     <div class="form-group input-md-01">
                         <i class="fa-regular fa-camera"></i>
@@ -64,6 +86,24 @@
                     <label for="description" class="form-label fw-600">Mô tả album: ( được bỏ trống )</label>
                     <textarea name="description" type="text" id="description" class="form-control" placeholder="Nhập nội dung giới thiệu, mô tả"><?php
                     echo isset($album) ? $album['description'] : old('description') ?></textarea>
+                </div>
+
+                <div class="mb-3">
+                    <label class="form-label fw-600">Gắn thẻ cho album: ( được bỏ trống )</label>
+                    <div style="display: grid; grid-template-columns: repeat(2, 1fr);">
+                        <?php
+                            $tags = isset($tags) ? $tags : (old('tags') ?? []);
+                            foreach (config('adm.album.tags') as $key => $value) {
+                                ?>
+                                    <div class="form-check form-check-01">
+                                        <input name="tags[]" type="checkbox" id="checkbox-<?php echo $key ?>" class="form-check-input"
+                                            value="<?php echo $key ?>" <?php echo in_array($key, $tags) ? 'checked' : null ?>>
+                                        <label class="form-check-label fw-600" for="checkbox-<?php echo $key ?>"><?php echo $value ?></label>
+                                    </div>
+                                <?php
+                            }
+                        ?>
+                    </div>
                 </div>
 
                 <div class="form-bottom mt-20 col-12 d-flex justify-content-end">

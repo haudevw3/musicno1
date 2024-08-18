@@ -10,11 +10,9 @@ interface CategoriesService
 
     public function deleteOne($id);
 
-    public function deleteAll(array $condition = [], $forever = false);
+    public function buildTreeCategories($parentId = 0, array $categories);
 
-    public function listCategories(array $columns = [], array $conditions = [], array $sorted = ['created_at' => 'desc'], $perPage = 10);
+    public function getPlaylistOfCategoryByTags(array $tags, array $columns = []);
 
-    //public function getPlaylistByCategoryId($id, array $columns = []);
-
-    public function getTreeCategories(array $columns = [], array $condition = []);
+    public function getPlaylistOfSubCategoryByParentId($id, array $columns = []);
 }

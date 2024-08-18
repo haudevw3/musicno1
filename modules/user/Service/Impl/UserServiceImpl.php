@@ -24,8 +24,8 @@ class UserServiceImpl extends BaseServiceImpl implements UserService
             'password' => password_hash($data['password'], PASSWORD_DEFAULT),
             'email' => trim($data['email']),
             'role' => $data['role'],
-            'tel' => ! empty($data['tel']) ? trim($data['tel']) : null,
-            'image' => ! empty($data['image']) ? trim($data['image']) : null,
+            'image' => $data['image'],
+            'tel' => empty($data['tel']) ? null : trim($data['tel']),
         ];
         return $this->baseRepo->create($attributes);
     }
@@ -34,50 +34,58 @@ class UserServiceImpl extends BaseServiceImpl implements UserService
     {
         $attributes = [];
         $user = $this->baseRepo->findOne(['id' => $id]);
-        if (array_key_exists('fullname', $data) && $user['fullname'] !== $data['fullname']) {
+
+        if (array_key_exists('fullname', $data) &&
+            $user['fullname'] !== ($data['fullname'] = ucwords(trim($data['fullname'])))) {
+
             $attributes['fullname'] = $data['fullname'];
         }
-        if (array_key_exists('username', $data) && $user['username'] !== $data['username']) {
+
+        if (array_key_exists('username', $data) &&
+            $user['username'] !== $data['username']) {
+
             $attributes['username'] = $data['username'];
         }
-        if (array_key_exists('email', $data) && $user['email'] !== $data['email']) {
+
+        if (array_key_exists('email', $data) &&
+            $user['email'] !== $data['email']) {
+
             $attributes['email'] = $data['email'];
         }
-        if (array_key_exists('role', $data) && $user['role'] !== $data['role']) {
+
+        if (array_key_exists('role', $data) &&
+            $user['role'] !== $data['role']) {
+
             $attributes['role'] = $data['role'];
         }
-        if (array_key_exists('tel', $data) && $user['tel'] !== $data['tel']) {
+
+        if (array_key_exists('tel', $data) &&
+            $user['tel'] !== $data['tel']) {
+
             $attributes['tel'] = $data['tel'];
         }
-        if (array_key_exists('image', $data) && $user['image'] !== $data['image']) {
+
+        if (array_key_exists('image', $data) &&
+            $user['image'] !== $data['image']) {
+
             $attributes['image'] = $data['image'];
         }
-        if (array_key_exists('password', $data) && $data['password'] !== 'musicno1') {
+
+        if (array_key_exists('password', $data) &&
+            $data['password'] !== 'musicno1') {
+
             $attributes['password'] = password_hash($data['password'], PASSWORD_DEFAULT);
         }
+
         if (empty($attributes)) {
             return;
         }
+        
         return $this->baseRepo->updateOne($id, $attributes);
     }
 
     public function deleteOne($id)
     {
         return $this->baseRepo->deleteOne($id);
-    }
-
-    public function deleteAll(array $condition = [], $forever = false)
-    {
-        $column = array_keys($condition)[0];
-        $values = array_values($condition)[0];
-        $values = is_array($values) ? $values : [$values];
-        foreach ($values as $value) {
-            $this->baseRepo->delete([$column => $value]);
-        }
-    }
-
-    public function listUser(array $columns = [], array $conditions = [], array $sorted = ['created_at' => 'desc'], $perPage = 10)
-    {
-        return $this->baseRepo->list($columns, $conditions, $sorted, $perPage);
     }
 }

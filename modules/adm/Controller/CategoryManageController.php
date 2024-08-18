@@ -22,7 +22,7 @@ class CategoryManageController
 
     public function pageManageCategory()
     {
-        $pagination = $this->categoriesService->listCategories();
+        $pagination = $this->categoriesService->getListPagination(['id', 'name', 'parent_id', 'created_at', 'updated_at']);
         $categories = $pagination['data'];
         unset($pagination['data']);
         $data = [
@@ -55,6 +55,12 @@ class CategoryManageController
         }
         $data = $request->all();
         $data['category_id'] = Str::random(22);
+        $data['image'] = null;
+        $data['tags'] = isset($data['tags']) ? implode(',', $data['tags']) : null;
+        if ($request->hasFile('image')) {
+            $fileName = $request->file('image')->hash()->move('public/uploads/images');
+            $data['image'] = asset("uploads/images/$fileName");
+        }
         $this->categoriesService->create($data);
         return redirect()->route('adm-manage-category', ['page' => 1])
                          ->with('success', config('adm.categories.MESSAGES.CREATE_SUCCESS'));
@@ -65,11 +71,13 @@ class CategoryManageController
         $id = $request->input('id');
         $category = $this->categoriesService->findOne(['id' => $id]);
         $categories = $this->categoriesService->findAll(['id','name', 'parent_id'], ['parent_id' => 0], ['priority' => 'desc']);
+        $tags = is_null($category['tags']) ? [] : explode(',', $category['tags']);
         $data = [
             'label' => 2,
             'title' => 'Cập nhật danh mục',
             'category' => $category,
             'categories' => $categories,
+            'tags' => $tags,
         ];
         return view('adm.viewCrudCategory', $data);
     }
@@ -83,10 +91,15 @@ class CategoryManageController
         }
         $data = $request->all();
         $id = $data['id'];
-        unset($data['id']);
-        if (! isset($data['parent_id'])) {
-            $data['parent_id'] = 0;
+        $data['parent_id'] = isset($data['parent_id']) ? $data['parent_id'] : 0;
+        if ($request->hasFile('image')) {
+            $fileName = $request->file('image')->hash()->move('public/uploads/images');
+            $data['image'] = asset("uploads/images/$fileName");
+        } else {
+            $data['image'] = $data['image_url'];
         }
+        unset($data['id'], $data['image_url']);
+        $data['tags'] = isset($data['tags']) ? implode(',', $data['tags']) : null;
         $this->categoriesService->updateOne($id, $data);
         return redirect()->route('adm-manage-category', ['page' => 1])
                          ->with('success', config('adm.categories.MESSAGES.UPDATE_SUCCESS'));
@@ -104,7 +117,7 @@ class CategoryManageController
     public function deleteMultipleCategory(Request $request)
     {
         $ids = $request->input('category_ids');
-        $this->categoriesService->deleteAll(['id' => $ids]);
+        $this->categoriesService->delete(['id' => $ids]);
         return redirect()->route('adm-manage-category', ['page' => 1])
                          ->with('success', config('adm.categories.MESSAGES.DELETE_SUCCESS'));
     }
@@ -113,12 +126,18 @@ class CategoryManageController
     {
         $id = $request->input('id');
         $category = $this->categoriesService->findOne(['id' => $id]);
-        $categories = $this->categoriesService->findAll(['id', 'name', 'playlist_ids'], ['!=' => ['id' => $id]]);
         $playlists = $this->playlistService->findAll(['id', 'name']);
-        foreach ($categories as $cate) {
-            foreach ($playlists as $key => $playlist) {
-                if (in_array($playlist['id'], is_null($cate['playlist_ids']) ? [] : explode(',', $cate['playlist_ids']))) {
-                    unset($playlists[$key]);
+        $playlistIds = explode(',', $category['playlist_ids']);
+        if ($category['parent_id'] > 0) {
+            $categories = $this->categoriesService->findAll(['id', 'name', 'parent_id', 'playlist_ids'], ['!=' => ['id' => $id]]);
+            foreach ($categories as $cate) {
+                if ($cate['parent_id'] == 0) {
+                    continue;
+                }
+                foreach ($playlists as $key => $playlist) {
+                    if (in_array($playlist['id'], is_null($cate['playlist_ids']) ? [] : explode(',', $cate['playlist_ids']))) {
+                        unset($playlists[$key]);
+                    }
                 }
             }
         }
@@ -127,7 +146,7 @@ class CategoryManageController
             'title' => 'Biểu mẫu chọn danh sách phát cho danh mục',
             'id' => $id,
             'playlists' => $playlists,
-            'playlistIds' => explode(',', $category['playlist_ids']),
+            'playlistIds' => $playlistIds,
         ];
         return view('adm.viewChoosePlaylistForCategory', $data);
     }

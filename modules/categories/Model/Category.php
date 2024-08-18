@@ -14,6 +14,8 @@ class Category extends Model
         'playlist_ids',
         'name',
         'slug',
+        'image',
+        'tags',
         'priority',
         'parent_id',
         'created_at',
@@ -25,6 +27,8 @@ class Category extends Model
         'playlist_ids' => '',
         'name' => '',
         'slug' => '',
+        'image' => '',
+        'tags' => '',
         'priority' => 0,
         'parent_id' => 0,
     ];

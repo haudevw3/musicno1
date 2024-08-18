@@ -11,20 +11,23 @@ class Artist extends Model
     protected $fillable = [
         'id',
         'artist_id',
+        'album_ids',
         'name',
         'slug',
         'image',
+        'tags',
         'description',
-        'album_ids',
         'created_at',
         'updated_at',
     ];
 
     protected $attributes = [
         'artist_id' => '',
+        'album_ids' => '',
         'name' => '',
         'slug' => '',
         'image' => '',
+        'tags' => '',
         'description' => '',
     ];
 }

@@ -4,7 +4,7 @@
         <div class="divider-01"></div>
     </div>
     <div class="form-body p-20">
-        <form method="post" action="<?php echo isset($user) ? route('adm-update-user') : route('adm-create-user') ?>">
+        <form method="post" action="<?php echo isset($user) ? route('adm-update-user') : route('adm-create-user') ?>" enctype="multipart/form-data">
             <input name="<?php echo isset($user) ? 'id' : null ?>" type="text" class="d-none"
                    value="<?php echo isset($user) ? $user['id'] : null ?>" />
 

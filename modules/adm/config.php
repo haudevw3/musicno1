@@ -14,7 +14,18 @@ return [
         ],
 
         'options' => [
-            ['title' => 'Chọn danh sách phát cho danh mục', 'icon' => 'fa-regular fa-list-music fs-16', 'class' => '', 'route' => ['name' => 'adm-choose-playlist-for-category']],
+            ['title' => 'Chọn danh sách phát', 'icon' => 'fa-regular fa-list-music fs-16', 'class' => '', 'route' => ['name' => 'adm-choose-playlist-for-category']],
+            ['title' => 'Quản lý danh sách phát', 'icon' => 'fa-regular fa-list-music fs-16', 'class' => '', 'route' => ['name' => 'adm-manage-playlist', 'params' => ['page' => 1]]],
+        ],
+
+        'tags' => [
+            1 => 'Trang chủ',
+            2 => 'Top bài hát',
+            3 => 'Chủ đề & Thể loại',
+            4 => 'Thư viện',
+            5 => 'Nghe gần đây',
+            6 => 'Bài hát yêu thích',
+            7 => 'Danh sách phát',
         ],
 
         'MESSAGES' => [
@@ -44,6 +55,10 @@ return [
             ['title' => 'Chọn album cho danh sách phát', 'icon' => 'fa-regular fa-album-collection fs-16', 'class' => '', 'route' => ['name' => 'adm-choose-album-for-playlist']],
         ],
 
+        'tags' => [
+            1 => 'Nổi bật',
+        ],
+
         'MESSAGES' => [
             'CREATE_SUCCESS' => 'Tạo danh sách phát thành công.',
             'CREATE_FAIL' => 'Tạo danh sách phát thất bại. Vui lòng kiểm tra lại các thông tin.',
@@ -69,7 +84,11 @@ return [
 
         'options' => [
             ['title' => 'Thêm album', 'icon' => 'fa-regular fa-album fs-16', 'class' => '', 'route' => ['name' => 'adm-add-album']],
-            ['title' => 'Danh sách các album', 'icon' => 'fa-regular fa-album-collection fs-16', 'class' => '', 'route' => ['name' => 'adm-manage-album', 'params' => ['page' => 1]]],
+            ['title' => 'Quản lý các album', 'icon' => 'fa-regular fa-album-collection fs-16', 'class' => '', 'route' => ['name' => 'adm-manage-album', 'params' => ['page' => 1]]],
+        ],
+
+        'tags' => [
+            1 => 'Nổi bật',
         ],
 
         'MESSAGES' => [
@@ -94,13 +113,24 @@ return [
 
         'options' => [
             ['title' => 'Thêm bài hát', 'icon' => 'fa-regular fa-compact-disc fs-16', 'class' => '', 'route' => ['name' => 'adm-add-song']],
-            ['title' => 'Danh sách các bài hát', 'icon' => 'fa-regular fa-list-music fs-16', 'class' => '', 'route' => ['name' => 'adm-manage-song', 'params' => ['page' => 1]]],
+            ['title' => 'Quản lý bài hát', 'icon' => 'fa-regular fa-list-music fs-16', 'class' => '', 'route' => ['name' => 'adm-manage-song', 'params' => ['page' => 1]]],
         ],
 
         'types' => [
             1 => ['name' => 'Single', 'describe' => '1 bài hát duy nhất'],
             2 => ['name' => 'EP', 'describe' => 'từ 3 đến 6 bài hát'],
             3 => ['name' => 'Compilation', 'describe' => 'từ 7 bài hát trở lên'],
+        ],
+
+        'tags' => [
+            1 => 'Nổi bật',
+            2 => 'Mới phát hành',
+        ],
+
+        'years' => [
+            2024, 2023, 2022, 2021, 2020,
+            2019, 2018, 2017, 2016, 2015,
+            2014, 2013, 2012, 2011, 2010,
         ],
 
         'MESSAGES' => [
@@ -125,6 +155,11 @@ return [
         'actions' => [],
 
         'options' => [],
+
+        'tags' => [
+            1 => 'Nổi bật',
+            2 => 'Nổi bật trên trang chủ',
+        ],
 
         'MESSAGES' => [
             'CREATE_SUCCESS' => 'Tạo bài hát thành công.',

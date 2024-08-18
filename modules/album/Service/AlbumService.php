@@ -10,9 +10,5 @@ interface AlbumService
 
     public function deleteOne($id);
 
-    public function deleteAll(array $condition = [], $forever = false);
-
-    public function listAlbum(array $columns = [], array $conditions = [], array $sorted = ['created_at' => 'desc'], $perPage = 10);
-
-    public function getListSongByAlbumId($id, array $columns = []);
+    public function getListSongById(array $condition, array $columns = [], $justNeedSong = false);
 }

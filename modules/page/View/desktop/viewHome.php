@@ -1,8 +1,8 @@
 <?php
 
 $components = [
-    _namespace('page.components.style-playlist-top'),
-    _namespace('page.components.style-playlist-song'),
+    _namespace('page.components.style-top-card'),
+    _namespace('page.components.style-song-card'),
     _namespace('page.components.style-playlist-card'),
 ];
 

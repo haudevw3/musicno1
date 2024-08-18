@@ -46,6 +46,24 @@
                     <textarea name="description" type="text" id="description" class="form-control" placeholder="Nhập nội dung tiểu sử, mô tả"><?php echo isset($artist) ? $artist['description'] : old('description') ?></textarea>
                 </div>
 
+                <div class="mb-3">
+                    <label class="form-label fw-600">Gắn thẻ cho nghệ sĩ: ( được bỏ trống )</label>
+                    <div style="display: grid; grid-template-columns: repeat(2, 1fr);">
+                        <?php
+                            $tags = isset($tags) ? $tags : (old('tags') ?? []);
+                            foreach (config('adm.artist.tags') as $key => $value) {
+                                ?>
+                                    <div class="form-check form-check-01">
+                                        <input name="tags[]" type="checkbox" id="checkbox-<?php echo $key ?>" class="form-check-input"
+                                            value="<?php echo $key ?>" <?php echo in_array($key, $tags) ? 'checked' : null ?>>
+                                        <label class="form-check-label fw-600" for="checkbox-<?php echo $key ?>"><?php echo $value ?></label>
+                                    </div>
+                                <?php
+                            }
+                        ?>
+                    </div>
+                </div>
+
                 <div class="form-bottom mt-20 col-12 d-flex justify-content-end">
                     <button type="submit" class="btn btn-md-01 bg-color-blue-01"><?php echo isset($artist) ? 'Cập nhật nghệ sĩ' : 'Tạo nghệ sĩ' ?></button>
                 </div>

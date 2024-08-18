@@ -23,7 +23,7 @@ class ArtistManageController
 
     public function pageManageArtist()
     {
-        $pagination = $this->artistService->listArtist();
+        $pagination = $this->artistService->getListPagination(['id', 'name', 'created_at', 'updated_at']);
         $artists = $pagination['data'];
         unset($pagination['data']);
         $data = [
@@ -56,6 +56,7 @@ class ArtistManageController
         $data['artist_id'] = Str::random(22);
         $fileName = $request->file('image')->hash()->move('public/uploads/images');
         $data['image'] = asset("uploads/images/$fileName");
+        $data['tags'] = isset($data['tags']) ? implode(',', $data['tags']) : null;
         $this->artistService->create($data);
         return redirect()->route('adm-manage-artist', ['page' => 1])
                          ->with('success', config('adm.artist.MESSAGES.CREATE_SUCCESS'));
@@ -65,10 +66,12 @@ class ArtistManageController
     {
         $id = $request->input('id');
         $artist = $this->artistService->findOne(['id' => $id]);
+        $tags = is_null($artist['tags']) ? [] : explode(',', $artist['tags']);
         $data = [
             'label' => 2,
             'title' => 'Cập nhật nghệ sĩ',
             'artist' => $artist,
+            'tags' => $tags,
         ];
         return view('adm.viewCrudArtist', $data);
     }
@@ -82,14 +85,14 @@ class ArtistManageController
         }
         $data = $request->all();
         $id = $data['id'];
-        unset($data['id']);
         if ($request->hasFile('image')) {
             $fileName = $request->file('image')->hash()->move('public/uploads/images');
             $data['image'] = asset("uploads/images/$fileName");
         } else {
             $data['image'] = $data['image_url'];
         }
-        unset($data['image_url']);
+        unset($data['id'], $data['image_url']);
+        $data['tags'] = isset($data['tags']) ? implode(',', $data['tags']) : null;
         $this->artistService->updateOne($id, $data);
         return redirect()->route('adm-manage-artist', ['page' => 1])
                          ->with('success', config('adm.artist.MESSAGES.UPDATE_SUCCESS'));
@@ -107,7 +110,7 @@ class ArtistManageController
     public function deleteMultipleArtist(Request $request)
     {
         $ids = $request->input('artist_ids');
-        $this->artistService->deleteAll(['id' => $ids]);
+        $this->artistService->delete(['id' => $ids]);
         return redirect()->route('adm-manage-artist', ['page' => 1])
                          ->with('success', config('adm.artist.MESSAGES.DELETE_SUCCESS'));
     }
@@ -133,6 +136,7 @@ class ArtistManageController
         $data = $request->all();
         $data['album_id'] = Str::random(22);
         $data['image'] = null;
+        $data['tags'] = isset($data['tags']) ? implode(',', $data['tags']) : null;
         if ($request->hasFile('image')) {
             $fileName = $request->file('image')->hash()->move('public/uploads/images');
             $data['image'] = asset("uploads/images/$fileName");

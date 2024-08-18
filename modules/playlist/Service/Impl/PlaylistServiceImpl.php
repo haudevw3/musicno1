@@ -31,7 +31,9 @@ class PlaylistServiceImpl extends BaseServiceImpl implements PlaylistService
             'playlist_id' => $data['playlist_id'],
             'name' => ucwords(trim($data['name'])),
             'slug' => trim($data['slug']),
-            'image' => trim($data['image']),
+            'image' => $data['image'],
+            'tags' => $data['tags'],
+            'priority' => $data['priority'],
             'description' => ! empty($data['description']) ? trim($data['description']) : null,
         ];
         return $this->baseRepo->create($attributes);
@@ -41,22 +43,46 @@ class PlaylistServiceImpl extends BaseServiceImpl implements PlaylistService
     {
         $attributes = [];
         $playlist = $this->baseRepo->findOne(['id' => $id]);
-        if (array_key_exists('name', $data) && $playlist['name'] !== ucwords(trim($data['name']))) {
+
+        if (array_key_exists('name', $data) &&
+            $playlist['name'] !== ($data['name'] = ucwords(trim($data['name'])))) {
+
             $attributes['name'] = $data['name'];
-            $attributes['slug'] = $data['slug'];
+            $attributes['slug'] = trim($data['slug']);
         }
-        if (array_key_exists('image', $data) && $playlist['image'] !== $data['image']) {
+
+        if (array_key_exists('image', $data) &&
+            $playlist['image'] !== $data['image']) {
+
             $attributes['image'] = $data['image'];
         }
-        if (array_key_exists('album_ids', $data) && $playlist['album_ids'] !== $data['album_ids']) {
+
+        if (array_key_exists('tags', $data) &&
+            $playlist['tags'] !== $data['tags']) {
+
+            $attributes['tags'] = $data['tags'];
+        }
+
+        if (array_key_exists('priority', $data) &&
+            $playlist['priority'] !== $data['priority']) {
+
+            $attributes['priority'] = $data['priority'];
+        }
+
+        if (array_key_exists('album_ids', $data) &&
+            $playlist['album_ids'] !== $data['album_ids']) {
+
             $attributes['album_ids'] = $data['album_ids'];
         }
+
         if (! empty($data['description'])) {
             $attributes['description'] = $data['description'];
         }
+
         if (empty($attributes)) {
             return;
         }
+
         return $this->baseRepo->updateOne($id, $attributes);
     }
 
@@ -65,45 +91,38 @@ class PlaylistServiceImpl extends BaseServiceImpl implements PlaylistService
         return $this->baseRepo->deleteOne($id);
     }
 
-    public function deleteAll(array $condition = [], $forever = false)
+    public function getListAlbumAndSongById(array $condition, array $columns = [], $justNeedSong = false)
     {
-        $column = array_keys($condition)[0];
-        $values = array_values($condition)[0];
-        $values = is_array($values) ? $values : [$values];
-        foreach ($values as $value) {
-            $this->baseRepo->delete([$column => $value]);
+        $columns =  array_key_exists('album_ids', $columns) ? $columns : array_merge($columns, ['album_ids']);
+        $playlist = $this->baseRepo->findOne([array_keys($condition)[0] => array_values($condition)[0]], $columns);
+        if (is_null($playlist['album_ids'])) {
+            return null;
         }
-    }
-
-    public function listPlaylist(array $columns = [], array $conditions = [], array $sorted = ['created_at' => 'desc'], $perPage = 10)
-    {
-        return $this->baseRepo->list($columns, $conditions, $sorted, $perPage);
-    }
-
-    public function getListSongByPlaylistId($id, array $columns = [])
-    {
-        // $albumIds = $this->playlistAlbumService->findAll(['album_id'], ['playlist_id' => $id]);
-        // $songs = [];
-        // foreach ($albumIds as $albumId) {
-        //     $songId = $this->albumSongService->findOne(['album_id' => $albumId['album_id']])['song_id'];
-        //     $song = $this->songService->findOne(['id' => $songId], $columns);
-        //     $song['album_id'] = $albumId['album_id'];
-        //     $songs[] = $song;
-        // }
-        // foreach ($songs as $key => $song) {
-        //     $artists = [];
-        //     $artistIds = $this->artistAlbumService->findAll(['artist_id'], ['album_id' => $song['album_id']]);
-        //     foreach ($artistIds as $artistId) {
-        //         $artists[] = $this->artistService->findOne(['id' => $artistId['artist_id']], ['artist_id', 'name']);
-        //     }
-        //     $song['artists'] = $artists;
-        //     $songs[$key] = $song;
-        //     $album = $this->albumService->findOne(['id' => $song['album_id']]);
-        //     $song['album_id'] = $album['album_id'];
-        //     $song['album_name'] = $album['name'];
-        //     $song['album_type'] = $album['type'];
-        //     $songs[$key] = $song;
-        // }
-        // return $songs;
+        $songs = [];
+        $duration = 0;
+        $albumIds = explode(',', $playlist['album_ids']);
+        foreach ($albumIds as $albumId) {
+            $album = $this->albumService->findOne(['id' => $albumId], ['album_id', 'name', 'type', 'song_ids']);
+            $songIds = explode(',', $album['song_ids']);
+            $song = $this->songService->findOne(['id' => $songIds[0]], ['name', 'image', 'audio', 'duration', 'artist_ids']);
+            $artistIds = explode(',', $song['artist_ids']);
+            foreach ($artistIds as $artistId) {
+                $song['artists'][] = $this->artistService->findOne(['id' => $artistId], ['artist_id', 'name']);
+            }
+            if ($justNeedSong) {
+                unset($song['artist_ids']);
+            } else {
+                $song['album'] = $album;
+                $duration += convertToDuration($song['duration']);
+            }
+            $songs[] = $song;
+        }
+        if ($justNeedSong) {
+            return $songs;
+        }
+        $playlist['total'] = count($songs);
+        $playlist['duration'] = convertSecondsToTime($duration);
+        $playlist['songs'] = $songs;
+        return $playlist;
     }
 }

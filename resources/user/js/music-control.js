@@ -1,9 +1,7 @@
 const MUSIC_CONTROL = (function () {
 
     var ctrls = {};
-    var position = 0;
     var currentTime = 0;
-    var length = 0;
     var isPlay = false;
     var isLoop = false;
     var isDrag = false;
@@ -12,8 +10,13 @@ const MUSIC_CONTROL = (function () {
     var showControl = false;
     var shuffleItems = null;
     var shufflePosition = null;
-    var repo = null;
-    var styles = null;
+    const repo = {
+        "nextPos": null,
+        "currentPos": null,
+        "previousPos": null,
+        "data": null,
+        "length": 0,
+    }
 
     var bindControl = function () {
         var self = {};
@@ -56,13 +59,15 @@ const MUSIC_CONTROL = (function () {
             });
             isPlay = true;
             showControl = true;
-            ctrls.playMusic.find("i").attr("class", "fa-solid fa-pause");
-            toogleStateForButtonPlayMusic(true);
+            UI_CONTROL.setStateOfCard({status: true, pos: repo.currentPos});
+            UI_CONTROL.setStateOfButton({status: true, pos: repo.currentPos});
+            ctrls.playMusic.find("i").attr("class", UI_CONTROL.styles.icons.pause);
         } else {
-            AUDIO.pauseAudio();
             isPlay = false;
-            ctrls.playMusic.find("i").attr("class", "fa-solid fa-play");
-            toogleStateForButtonPlayMusic(false);
+            AUDIO.pauseAudio();
+            UI_CONTROL.setStateOfCard({status: false, pos: repo.currentPos});
+            UI_CONTROL.setStateOfButton({status: false, pos: repo.currentPos});
+            ctrls.playMusic.find("i").attr("class", UI_CONTROL.styles.icons.play);
         }
         if (showControl) {
             ctrls.ads.addClass("d-none");
@@ -73,17 +78,12 @@ const MUSIC_CONTROL = (function () {
     const eventOnclickButtonNextMusic = function () {
         if (isShuffle) {
             shufflePosition++;
-            if (shufflePosition > length) {
+            if (shufflePosition > repo.length) {
                 shufflePosition = 0;
-            }
-        } else {
-            position++;
-            if (position > length) {
-                position = 0;
             }
         }
         setTimeout(function () {
-            prepareDataAndBootMusic(isShuffle ? shuffleItems[shufflePosition] : position);
+            prepareDataAtPosAndBootMusic(isShuffle ? shuffleItems[shufflePosition] : repo.nextPos);
         }, 100);
     }
 
@@ -91,16 +91,11 @@ const MUSIC_CONTROL = (function () {
         if (isShuffle) {
             shufflePosition--;
             if (shufflePosition < 0) {
-                shufflePosition = length;
-            }
-        } else {
-            position--;
-            if (position < 0) {
-                position = length;
+                shufflePosition = repo.length;
             }
         }
         setTimeout(function () {
-            prepareDataAndBootMusic(isShuffle ? shuffleItems[shufflePosition] : position);
+            prepareDataAtPosAndBootMusic(isShuffle ? shuffleItems[shufflePosition] : repo.previousPos);
         }, 100);
     }
 
@@ -229,23 +224,27 @@ const MUSIC_CONTROL = (function () {
         }
     }
 
-    const setData = function (data = {}) {
-        repo = data.repo;
-        styles = data.styles;
-        position = data.pos;
-        length = repo.length - 1;
+    const setDataForRepo = function (options = {}) {
+        repo.data = options.data;
+        repo.length = options.data.length - 1;
     }
 
-    const prepareDataAndBootMusic = function (pos) {
+    const setPosForRepo = function (pos) {
+        repo.currentPos = pos;
+        repo.previousPos = (pos > 0) ? pos - 1 : repo.length;
+        repo.nextPos = (pos >= 0 && pos < repo.length) ? pos + 1 : 0;
+    }
+
+    const prepareDataAtPosAndBootMusic = function (pos) {
         var song = repo.data[pos];
-        UI_CONTROL.setPosForRepo(pos);
+        setPosForRepo(pos);
+        
         if (isPlay) {
             isPlay = false;
             AUDIO.pauseAudio();
         }
         setTimeout(function () {
             prepareMusic(song);
-            prepareFocus(repo.currentStyle, repo.currentPos, repo.isFocus);
             eventOnclickButtonPlayMusic();
             AUDIO.endedAudio();
         }, 100);
@@ -265,34 +264,7 @@ const MUSIC_CONTROL = (function () {
         ctrls.durationMusic.text(song.duration);
         ctrls.musicControl.find("#artist-name").html(html);
         AUDIO.prepareAudio(song.audio);
-    }
-
-    const prepareFocus = function (currentStyle, pos, isFocus) {
-        pos = ! repo.isFocus ? repo.playlistPos : pos;
-        
-        if (isFocus) {
-            $(currentStyle).find(styles.card.wrap).removeClass(styles.class[0]);
-            $(currentStyle).find(styles.card.prefix + pos).addClass(styles.class[0]);
-        }
-        $(currentStyle).find(styles.card.wrap + " " + styles.tags[0]).attr("class", styles.icons.play + " " + styles.class[1]);
-        $(currentStyle).find(styles.card.prefix + pos + " " + styles.tags[0]).attr("class", styles.icons.pause + " " + styles.class[1]);
-    }
-
-    const toogleStateForButtonPlayMusic = function (status) {
-        var icon = null;
-        var text = null;
-        if (status) {
-            icon = styles.icons.pause;
-            text = "Tạm dừng";
-        } else {
-            icon = styles.icons.play;
-            text = "Tiếp tục phát";
-        }
-        var pos = ! repo.isFocus ? repo.playlistPos : position;
-        $(repo.currentStyle).find(styles.card.prefix + pos + " " + styles.tags[0]).attr("class", icon + " " + styles.class[1]);
-        if (repo.currentStyle == styles.id[3]) {
-            $(repo.currentStyle).find(styles.button.playRandom + " i").attr("class", icon).end().find(styles.button.playRandom + " span").text(text);
-        }
+        UI_CONTROL.removeStateOfCard();
     }
 
     const isPlayMusic = function () {
@@ -327,12 +299,8 @@ const MUSIC_CONTROL = (function () {
         return shuffleItems;
     }
 
-    const setIsPlay = function (status) {
-        isPlay = status;
-    }
-
-    const setRepo = function (_repo) {
-        repo = _repo;
+    const setIsPlay = function (_isPlay) {
+        isPlay = _isPlay;
     }
 
     function init() {
@@ -342,6 +310,7 @@ const MUSIC_CONTROL = (function () {
 
     return {
         init: init,
+        repo: repo,
         isPlayMusic: isPlayMusic,
         isLoopMusic: isLoopMusic,
         isDragMusic: isDragMusic,
@@ -350,11 +319,10 @@ const MUSIC_CONTROL = (function () {
         getNextMusic: getNextMusic,
         getPreviousMusic: getPreviousMusic,
         getShuffleItems: getShuffleItems,
-        setData:setData,
         setIsPlay: setIsPlay,
-        setRepo: setRepo,
-        prepareDataAndBootMusic: prepareDataAndBootMusic,
+        setDataForRepo: setDataForRepo,
         updateProgressCurrentMusic: updateProgressCurrentMusic,
+        prepareDataAtPosAndBootMusic: prepareDataAtPosAndBootMusic,
     }
 
 })();

@@ -3,41 +3,45 @@
 namespace Modules\Page\Controller;
 
 use Foundation\Http\Request;
+use Modules\Album\Service\AlbumService;
+use Modules\Artist\Service\ArtistService;
 use Modules\Categories\Service\CategoriesService;
 use Modules\Playlist\Service\PlaylistService;
+use Modules\Song\Service\SongService;
 
 class PageController
 {
     protected $categoriesService;
     protected $playlistService;
+    protected $artistService;
+    protected $albumService;
+    protected $songService;
 
-    public function __construct(CategoriesService $categoriesService, PlaylistService $playlistService)
+    public function __construct(CategoriesService $categoriesService, PlaylistService $playlistService,
+                                ArtistService $artistService, AlbumService $albumService, SongService $songService)
     {
         $this->categoriesService = $categoriesService;
         $this->playlistService = $playlistService;
+        $this->artistService = $artistService;
+        $this->albumService = $albumService;
+        $this->songService = $songService;
     }
 
     public function home()
     {
-        $result = [];
-        $categories = $this->categoriesService->getTreeCategories(['id', 'name', 'slug']);
-        $result['first'] = $this->categoriesService->getPlaylistByCategoryId($categories[0]['id'], ['playlist_id', 'name', 'image']);
-        $playlistId = $this->categoriesService->getPlaylistByCategoryId($categories[1]['id'], ['id'])['id'];
-        $result['second'] = $this->playlistService->findOne(['id' => $playlistId], ['playlist_id', 'name']);
-        $result['second']['songs'] = $this->playlistService->getListSongByPlaylistId($playlistId, ['song_id', 'name', 'duration', 'image']);
-        unset($categories[0], $categories[1]);
-        foreach ($categories as $key => $category) {
-            $categoryId = null;
-            if (isset($category['subs'])) {
-                $categoryId = $category['subs'][0]['id'];
-                unset($category['subs']);
-            } else {
-                $categoryId = $category['id'];
-            }
-            $category['playlists'] = $this->categoriesService->getPlaylistByCategoryId($categoryId);
-            $result['third'][] = $category;
-        }
-        return view('page.viewHome', ['data' => $result]);
+        $playlists = $this->playlistService->getListByTags([2], ['playlist_id', 'name', 'image']);
+        $songs = $this->songService->getListSongByTags([2], ['song_id', 'artist_ids', 'name', 'image']);
+        $categories = $this->categoriesService->getPlaylistOfCategoryByTags([1], ['playlist_id', 'name', 'image']);
+        $data = [
+            0 => $playlists,
+            1 => [
+                'id' => 'Rk8dOsoNG0I5OhLhE9YlaQ',
+                'name' => 'Bài hát nổi bật',
+                'songs' => $songs
+            ],
+            2 => $categories,
+        ];
+        return view('page.viewHome', $data);
     }
 
     public function dashboard()
@@ -49,20 +53,14 @@ class PageController
     {
         $data = [];
         $slug = $request->input('slug');
-        if ($slug == 'top-100') {
-            $data['third'] = $this->top100()['subs'];
-            $data['remove_margin'] = 0;
-            return view('page.viewTop100', compact('data'));
+        $category = $this->categoriesService->findOne(['slug' => $slug]);
+        if ($slug == 'top-100' || $slug == 'chill') {
+            $data = [
+                'show_all' => false,
+                'remove_margin' => 0,
+                2 => $this->categoriesService->getPlaylistOfSubCategoryByParentId($category['id'], ['playlist_id', 'name', 'image']),
+            ];
+            return view('page.viewShowPlaylist', compact('data'));
         }
-    }
-
-    protected function top100()
-    {
-        $categories = $this->categoriesService->getTreeCategories(['id', 'name', 'slug'], ['slug' => 'top-100']);
-        foreach ($categories['subs'] as $key => $category) {
-            $category['playlists'] = $this->categoriesService->getPlaylistByCategoryId($category['id']);
-            $categories['subs'][$key] = $category;
-        }
-        return $categories;
     }
 }

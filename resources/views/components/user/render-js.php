@@ -1,6 +1,5 @@
 <?php include_one('components.script') ?>
 <script src="<?php echo asset('user/js/global.js?=').time() ?>"></script>
-<script src="<?php echo asset('user/js/state.js?=').time() ?>"></script>
 <script src="<?php echo asset('user/js/session.js?=').time() ?>"></script>
 <script src="<?php echo asset('user/js/header.js?=').time() ?>"></script>
 <script src="<?php echo asset('user/js/ui-control.js?=').time() ?>"></script>

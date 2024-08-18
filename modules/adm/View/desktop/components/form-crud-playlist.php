@@ -36,15 +36,43 @@
                     <label for="file-upload" class="form-label fw-600">Ảnh danh sách phát:</label>
                     <div class="form-group input-md-01">
                         <i class="fa-regular fa-camera"></i>
-                        <input name="image" type="file" class="col-12 file-upload" id="file-upload">
+                        <input name="image[]" type="file" class="col-12 file-upload" id="file-upload" multiple>
                     </div>
                     <div class="form-text text-color-red"></div>
+                </div>
+
+                <div class="mb-3">
+                    <label for="priority" class="form-label fw-600">Độ ưu tiên cho danh sách phát:</label>
+                    <div class="form-group input-md-01">
+                        <i class="fa-regular fa-flag"></i>
+                        <input name="priority" type="number" id="priority" class="form-control" placeholder="Nhập độ ưu tiên cho danh sách phát"
+                               value="<?php echo isset($playlist) ? $playlist['priority'] : (old('priority') ?? 0) ?>">
+                    </div>
+                    <div class="form-text text-color-red"><?php echo error('priority') ?></div>
                 </div>
 
                 <div class="mb-3">
                     <label for="description" class="form-label fw-600">Mô tả danh sách phát: ( được bỏ trống )</label>
                     <textarea name="description" type="text" id="description" class="form-control" placeholder="Nhập nội dung giới thiệu, mô tả"><?php
                     echo isset($playlist) ? $playlist['description'] : old('description') ?></textarea>
+                </div>
+
+                <div class="mb-3">
+                    <label class="form-label fw-600">Gắn thẻ cho danh sách phát: ( được bỏ trống )</label>
+                    <div style="display: grid; grid-template-columns: repeat(2, 1fr);">
+                        <?php
+                            $tags = isset($tags) ? $tags : (old('tags') ?? []);
+                            foreach (config('adm.playlist.tags') as $key => $value) {
+                                ?>
+                                    <div class="form-check form-check-01">
+                                        <input name="tags[]" type="checkbox" id="checkbox-<?php echo $key ?>" class="form-check-input"
+                                            value="<?php echo $key ?>" <?php echo in_array($key, $tags) ? 'checked' : null ?>>
+                                        <label class="form-check-label fw-600" for="checkbox-<?php echo $key ?>"><?php echo $value ?></label>
+                                    </div>
+                                <?php
+                            }
+                        ?>
+                    </div>
                 </div>
 
                 <div class="form-bottom mt-20 col-12 d-flex justify-content-end">

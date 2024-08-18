@@ -12,13 +12,13 @@ class Song extends Model
         'id',
         'song_id',
         'album_id',
-        'artist_id',
-        'contributing_artist_ids',
+        'artist_ids',
         'name',
         'slug',
         'image',
-        'duration',
         'audio',
+        'duration',
+        'tags',
         'created_at',
         'updated_at',
     ];
@@ -26,12 +26,12 @@ class Song extends Model
     protected $attributes = [
         'song_id' => '',
         'album_id' => 0,
-        'artist_id' => 0,
-        'contributing_artist_ids' => '',
+        'artist_ids' => '',
         'name' => '',
         'slug' => '',
         'image' => '',
-        'duration' => '',
         'audio' => '',
+        'duration' => '',
+        'tags' => '',
     ];
 }

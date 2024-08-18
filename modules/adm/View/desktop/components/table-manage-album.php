@@ -37,13 +37,17 @@
                                     <td><?php echo $key ?></td>
                                     <td>
                                         <?php
-                                            $color = null;
-                                            if ($album['type'] == 1) $color = 'bg-color-red';
-                                            elseif ($album['type'] == 2) $color = 'bg-color-yellow';
-                                            else $color = 'bg-color-blue';
+                                            $bg = null;
+                                            if ($album['type'] == 1) {
+                                                $bg = 'bg-color-red';
+                                            } elseif ($album['type'] == 2) {
+                                                $bg = 'bg-color-yellow';
+                                            } else {
+                                                $bg = 'bg-color-blue';
+                                            }
                                         ?>
                                         <div class="d-flex">
-                                            <div style="width:8px; height:8px; margin-top:8px" class="rounded-circle <?php echo $color ?>"></div>
+                                            <div style="width:8px; height:8px; margin-top:8px" class="rounded-circle <?php echo $bg ?>"></div>
                                             <span class="ml-5"><?php echo $album['name'] ?></span>
                                         </div>
                                     </td>

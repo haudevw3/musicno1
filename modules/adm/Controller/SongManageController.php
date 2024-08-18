@@ -25,7 +25,10 @@ class SongManageController
     public function pageManageSong(Request $request)
     {
         $albumId = $request->input('album_id');
-        $pagination = $this->songService->listSong([], ! empty($albumId) ? ['album_id' => $albumId] : []);
+        $pagination = $this->songService->getListPagination(
+            ['id', 'name', 'duration', 'created_at', 'updated_at'],
+            empty($albumId) ? [] : ['album_id' => $albumId]
+        );
         $songs = $pagination['data'];
         unset($pagination['data']);
         $data = [
@@ -42,12 +45,14 @@ class SongManageController
     {
         $id = $request->input('id');
         $song = $this->songService->findOne(['id' => $id]);
-        $artist = $this->artistService->findOne(['id' => $song['artist_id']]);
+        $tags = is_null($song['tags']) ? [] : explode(',', $song['tags']);
         $artists = $this->artistService->findAll(['id', 'name']);
-        foreach ($artists as $key => $value) {
-            if ($value['id'] == $artist['id']) {
-                unset($artists[$key]);
-                break;
+        $artistIds = explode(',', $song['artist_ids']);
+        foreach ($artists as $key => $artist) {
+            if ($artist['id'] == $artistIds[0] && $key > 0) {
+                $temp = $artists[0];
+                $artists[0] = $artist;
+                $artists[$key] = $temp;
             }
         }
         $data = [
@@ -55,7 +60,8 @@ class SongManageController
             'title' => 'Cập nhật bài hát',
             'song' => $song,
             'artists' => $artists,
-            'contributingArtistId' => explode(',', $song['contributing_artist_ids']),
+            'artistIds' => $artistIds,
+            'tags' => $tags,
         ];
         return view('adm.viewCrudSong', $data);
     }
@@ -69,7 +75,6 @@ class SongManageController
         }
         $data = $request->all();
         $id = $data['id'];
-        unset($data['id']);
         if ($request->hasFile('image')) {
             $fileName = $request->file('image')->hash()->move('public/uploads/images');
             $data['image'] = asset("uploads/images/$fileName");
@@ -80,19 +85,15 @@ class SongManageController
             $fileName = $request->file('audio')->hash()->move('public/uploads/audio');
             $data['audio'] = asset("uploads/audio/$fileName");
             $duration = 0;
-            $mp3 = tap(new MP3(public_path("uploads/audio/$fileName")), function ($mp3) use (&$duration) {
+            $data['duration'] = tap(new MP3(public_path("uploads/audio/$fileName")), function ($mp3) use (&$duration) {
                 $duration = $mp3->duration();
-            });
-            $data['duration'] = $mp3->format($duration);
+            })->format($duration);
         } else {
             $data['audio'] = $data['audio_url'];
         }
-        unset($data['image_url'], $data['audio_url']);
-        if (! isset($data['contributing_artist_ids'])) {
-            $data['contributing_artist_ids'] = null;
-        } else {
-            $data['contributing_artist_ids'] = implode(',', $data['contributing_artist_ids']);
-        }
+        unset($data['id'], $data['image_url'], $data['audio_url']);
+        $data['artist_ids'] = implode(',', $data['artist_ids']);
+        $data['tags'] = isset($data['tags']) ? implode(',', $data['tags']) : null;
         $this->songService->updateOne($id, $data);
         return redirect()->route('adm-manage-song', ['page' => 1])
                          ->with('success', config('adm.song.MESSAGES.UPDATE_SUCCESS'));

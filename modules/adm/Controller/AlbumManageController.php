@@ -27,7 +27,7 @@ class AlbumManageController
     public function pageManageAlbum(Request $request)
     {
         $artistId = $request->input('artist_id');
-        $pagination = $this->albumService->listAlbum([], ! empty($artistId) ? ['artist_id' => $artistId] : []);
+        $pagination = $this->albumService->getListPagination(['id', 'name', 'type', 'created_at', 'updated_at'], ! empty($artistId) ? ['artist_id' => $artistId] : []);
         $albums = $pagination['data'];
         unset($pagination['data']);
         $data = [
@@ -44,10 +44,12 @@ class AlbumManageController
     {
         $id = $request->input('id');
         $album = $this->albumService->findOne(['id' => $id]);
+        $tags = is_null($album['tags']) ? [] : explode(',', $album['tags']);
         $data = [
             'label' => 2,
             'title' => 'Cập nhật album',
             'album' => $album,
+            'tags' => $tags,
         ];
         return view('adm.viewCrudAlbum', $data);
     }
@@ -61,14 +63,14 @@ class AlbumManageController
         }
         $data = $request->all();
         $id = $data['id'];
-        unset($data['id']);
         if ($request->hasFile('image')) {
             $fileName = $request->file('image')->hash()->move('public/uploads/images');
             $data['image'] = asset("uploads/images/$fileName");
         } else {
             $data['image'] = $data['image_url'];
         }
-        unset($data['image_url']);
+        unset($data['id'], $data['image_url']);
+        $data['tags'] = isset($data['tags']) ? implode(',', $data['tags']) : null;
         $this->albumService->updateOne($id, $data);
         return redirect()->route('adm-manage-album', ['page' => 1])
                          ->with('success', config('adm.album.MESSAGES.UPDATE_SUCCESS'));
@@ -124,19 +126,21 @@ class AlbumManageController
         }
         $data = $request->all();
         $data['song_id'] = Str::random(22);
+        $data['artist_ids'] = isset($data['artist_ids']) ? implode(',', array_merge([$data['artist_id']], $data['artist_ids'])) : $data['artist_id'];
+        $data['tags'] = isset($data['tags']) ? implode(',', $data['tags']) : null;
+        unset($data['artist_id']);
         $fileImage = $request->file('image')->hash()->move('public/uploads/images');
         $data['image'] = asset("uploads/images/$fileImage");
         $fileAudio = $request->file('audio')->hash()->move('public/uploads/audio');
         $data['audio'] = asset("uploads/audio/$fileAudio");
         $duration = 0;
-        $mp3 = tap(new MP3(public_path("uploads/audio/$fileAudio")), function ($mp3) use (&$duration) {
+        $data['duration'] = tap(new MP3(public_path("uploads/audio/$fileAudio")), function ($mp3) use (&$duration) {
             $duration = $mp3->duration();
-        });
-        $data['duration'] = $mp3->format($duration);
+        })->format($duration);
         $song = tap($this->songService, function ($subject) use ($data) {
             $subject->create($data);
         })->findOne(['song_id' => $data['song_id']]);
-        $this->albumService->updateOne($data['album_id'], ['song_id' => $song['id']]);
+        $this->albumService->updateOne($data['album_id'], ['song_id' => $song['id'], 'song_image' => $data['image']]);
         return redirect()->route('adm-manage-album', ['page' => 1])
                          ->with('success', config('adm.song.MESSAGES.CREATE_SUCCESS'));
     }

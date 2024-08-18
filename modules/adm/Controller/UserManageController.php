@@ -18,7 +18,7 @@ class UserManageController
 
     public function pageManageUser()
     {
-        $pagination = $this->userService->listUser(['id', 'fullname', 'username', 'email', 'tel', 'created_at', 'updated_at']);
+        $pagination = $this->userService->getListPagination(['id', 'fullname', 'username', 'email', 'tel', 'created_at', 'updated_at']);
         $users = $pagination['data'];
         unset($pagination['data']);
         $data = [
@@ -48,6 +48,7 @@ class UserManageController
                          ->withInput()->withErrors();
         }
         $data = $request->all();
+        $data['image'] = null;
         if ($request->hasFile('image')) {
             $fileName = $request->file('image')->hash()->move('public/uploads/images');
             $data['image'] = asset("uploads/images/$fileName");
@@ -102,7 +103,7 @@ class UserManageController
     public function deleteMultipleUser(Request $request)
     {
         $ids = $request->input('user_ids');
-        $this->userService->deleteAll(['id' => $ids]);
+        $this->userService->delete(['id' => $ids]);
         return redirect()->route('adm-manage-user', ['page' => 1])
                          ->with('success', config('adm.user.MESSAGES.DELETE_SUCCESS'));
     }

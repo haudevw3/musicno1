@@ -2,6 +2,10 @@ const SESSION = (function () {
 
     var ctrls = {};
 
+    const trackingHistory = {
+        
+    }
+
     const bindControl = function () {
 
     }

@@ -68,7 +68,6 @@ const AUDIO = (function () {
         $(instance).off("ended");
         $(instance).on("ended", function () {
             MUSIC_CONTROL.setIsPlay(false);
-            // $(MUSIC_CONTROL.getPlayMusic()).find("i").attr("class", "fa-solid fa-play");
             if (MUSIC_CONTROL.isLoopMusic()) {
                 MUSIC_CONTROL.getPlayMusic().click();
             } else {

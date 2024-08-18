@@ -14,8 +14,8 @@ class FormUpdateCategory extends FormRequest
     public function rules()
     {
         return [
-            'name' => 'required|except:categories,name|min:6|max:255',
-            'slug' => 'required|except:categories,slug|min:6|max:255',
+            'name' => 'required|except:categories,name|min:5|max:255',
+            'slug' => 'required|except:categories,slug|min:5|max:255',
         ];
     }
 

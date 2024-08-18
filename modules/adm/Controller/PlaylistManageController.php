@@ -8,21 +8,29 @@ use Modules\Playlist\Service\PlaylistService;
 use Foundation\Support\Str;
 use Modules\Adm\Request\FormUpdatePlaylist;
 use Modules\Album\Service\AlbumService;
+use Modules\Categories\Service\CategoriesService;
 
 class PlaylistManageController
 {
     protected $playlistService;
     protected $albumService;
+    protected $categoriesService;
 
-    public function __construct(PlaylistService $playlistService, AlbumService $albumService)
+    public function __construct(PlaylistService $playlistService, AlbumService $albumService, CategoriesService $categoriesService)
     {
         $this->playlistService = $playlistService;
         $this->albumService = $albumService;
+        $this->categoriesService = $categoriesService;
     }
 
-    public function pageManagePlaylist()
+    public function pageManagePlaylist(Request $request)
     {
-        $pagination = $this->playlistService->listPlaylist();
+        $categoryId = $request->input('category_id');
+        $playlistIds = empty($categoryId) ? null : $this->categoriesService->findOne(['id' => $categoryId])['playlist_ids'];
+        $pagination = $this->playlistService->getListPagination(
+            ['id', 'name', 'created_at', 'updated_at'],
+            is_null($playlistIds) ? [] : ['no_supported' => true, 'ids' => explode(',', $playlistIds)]
+        );
         $playlists = $pagination['data'];
         unset($pagination['data']);
         $data = [
@@ -47,14 +55,21 @@ class PlaylistManageController
     public function createPlaylist(FormCreatePlaylist $request)
     {
         $validated = $request->validated();
-        if (is_array($validated) || ! $request->hasFile('image')) {
+        if (is_array($validated) || empty($_FILES['image']['name'][0])) {
             return back()->with('fail', config('adm.playlist.MESSAGES.CREATE_FAIL'))
                          ->withInput()->withErrors();
         }
         $data = $request->all();
         $data['playlist_id'] = Str::random(22);
-        $fileName = $request->file('image')->hash()->move('public/uploads/images');
-        $data['image'] = asset("uploads/images/$fileName");
+        $files = $request->file('image');
+        $files = array_reverse($files);
+        $fileNames = [];
+        foreach ($files as $file) {
+            $fileName = $file->hash()->move('public/uploads/images');
+            $fileNames[] = asset("uploads/images/$fileName");
+        }
+        $data['image'] = (count($fileNames) > 1) ? implode('|', $fileNames) : $fileNames[0];
+        $data['tags'] = isset($data['tags']) ? implode(',', $data['tags']) : null;
         $this->playlistService->create($data);
         return redirect()->route('adm-manage-playlist', ['page' => 1])
                          ->with('success', config('adm.playlist.MESSAGES.CREATE_SUCCESS'));
@@ -64,10 +79,12 @@ class PlaylistManageController
     {
         $id = $request->input('id');
         $playlist = $this->playlistService->findOne(['id' => $id]);
+        $tags = is_null($playlist['tags']) ? [] : explode(',', $playlist['tags']);
         $data = [
             'label' => 2,
             'title' => 'Cập nhật danh sách phát',
             'playlist' => $playlist,
+            'tags' => $tags,
         ];
         return view('adm.viewCrudPlaylist', $data);
     }
@@ -81,13 +98,20 @@ class PlaylistManageController
         }
         $data = $request->all();
         $id = $data['id'];
-        if ($request->hasFile('image')) {
-            $fileName = $request->file('image')->hash()->move('public/uploads/images');
-            $data['image'] = asset("uploads/images/$fileName");
-        } else {
+        if (empty($_FILES['image']['name'][0])) {
             $data['image'] = $data['image_url'];
+        } else {
+            $files = $request->file('image');
+            $files = array_reverse($files);
+            $fileNames = [];
+            foreach ($files as $file) {
+                $fileName = $file->hash()->move('public/uploads/images');
+                $fileNames[] = asset("uploads/images/$fileName");
+            }
+            $data['image'] = (count($fileNames) > 1) ? implode('|', $fileNames) : $fileNames[0];
         }
         unset($data['id'], $data['image_url']);
+        $data['tags'] = isset($data['tags']) ? implode(',', $data['tags']) : null;
         $this->playlistService->updateOne($id, $data);
         return redirect()->route('adm-manage-playlist', ['page' => 1])
                          ->with('success', config('adm.playlist.MESSAGES.UPDATE_SUCCESS'));
@@ -105,7 +129,7 @@ class PlaylistManageController
     public function deleteMultiplePlaylist(Request $request)
     {
         $ids = $request->input('playlist_ids');
-        $this->playlistService->deleteAll(['id' => $ids]);
+        $this->playlistService->delete(['id' => $ids]);
         return redirect()->route('adm-manage-playlist', ['page' => 1])
                          ->with('success', config('adm.playlist.MESSAGES.DELETE_SUCCESS'));
     }
@@ -115,12 +139,13 @@ class PlaylistManageController
         $id = $request->input('id');
         $playlist = $this->playlistService->findOne(['id' => $id]);
         $albums = $this->albumService->findAll(['id', 'name']);
+        $albumIds = explode(',', $playlist['album_ids']);
         $data = [
             'label' => 2,
             'title' => 'Biểu mẫu chọn album cho danh sách phát',
             'id' => $id,
             'albums' => $albums,
-            'albumIds' => explode(',', $playlist['album_ids']),
+            'albumIds' => $albumIds,
         ];
         return view('adm.viewChooseAlbumForPlaylist', $data);
     }

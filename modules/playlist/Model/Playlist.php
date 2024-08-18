@@ -14,8 +14,10 @@ class Playlist extends Model
         'album_ids',
         'name',
         'slug',
-        'description',
         'image',
+        'tags',
+        'priority',
+        'description',
         'created_at',
         'updated_at',
     ];
@@ -25,7 +27,9 @@ class Playlist extends Model
         'album_ids' => '',
         'name' => '',
         'slug' => '',
-        'description' => '',
         'image' => '',
+        'tags' => '',
+        'priority' => 0,
+        'description' => '',
     ];
 }

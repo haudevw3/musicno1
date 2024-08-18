@@ -14,8 +14,8 @@ class FormCreateCategory extends FormRequest
     public function rules()
     {
         return [
-            'name' => 'required|exists:categories,name|min:6|max:255',
-            'slug' => 'required|exists:categories,slug|min:6|max:255',
+            'name' => 'required|exists:categories,name|min:5|max:255',
+            'slug' => 'required|exists:categories,slug|min:5|max:255',
         ];
     }
 

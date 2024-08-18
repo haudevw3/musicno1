@@ -3,16 +3,19 @@
 namespace Modules\Song\Service\Impl;
 
 use Core\Service\BaseServiceImpl;
+use Modules\Artist\Service\ArtistService;
 use Modules\Song\Repository\SongRepository;
 use Modules\Song\Service\SongService;
 
 class SongServiceImpl extends BaseServiceImpl implements SongService
 {
     protected $baseRepo;
+    protected $artistService;
 
-    public function __construct(SongRepository $baseRepo)
+    public function __construct(SongRepository $baseRepo, ArtistService $artistService)
     {
         parent::__construct($baseRepo);
+        $this->artistService = $artistService;
     }
 
     public function create(array $data)
@@ -20,13 +23,13 @@ class SongServiceImpl extends BaseServiceImpl implements SongService
         $attributes = [
             'song_id' => $data['song_id'],
             'album_id' => $data['album_id'],
-            'artist_id' => $data['artist_id'],
+            'artist_ids' => $data['artist_ids'],
+            'tags' => $data['tags'],
             'name' => ucwords(trim($data['name'])),
             'slug' => trim($data['slug']),
             'audio' => trim($data['audio']),
             'image' => trim($data['image']),
             'duration' => trim($data['duration']),
-            'contributing_artist_ids' => implode(',', $data['contributing_artist_ids']),
         ];
         return $this->baseRepo->create($attributes);
     }
@@ -35,23 +38,42 @@ class SongServiceImpl extends BaseServiceImpl implements SongService
     {
         $attributes = [];
         $song = $this->baseRepo->findOne(['id' => $id]);
-        if (array_key_exists('name', $data) && $song['name'] !== ucwords(trim($data['name']))) {
+        if (array_key_exists('name', $data) &&
+            $song['name'] !== ($data['name'] = ucwords(trim($data['name'])))) {
+
             $attributes['name'] = $data['name'];
-            $attributes['slug'] = $data['slug'];
+            $attributes['slug'] = trim($data['slug']);
         }
-        if (array_key_exists('image', $data) && $song['image'] !== $data['image']) {
+
+        if (array_key_exists('image', $data) &&
+            $song['image'] !== $data['image']) {
+
             $attributes['image'] = $data['image'];
         }
-        if (array_key_exists('audio', $data) && $song['audio'] !== $data['audio']) {
+
+        if (array_key_exists('audio', $data) &&
+            $song['audio'] !== $data['audio']) {
+
             $attributes['audio'] = $data['audio'];
             $attributes['duration'] = $data['duration'];
         }
-        if(array_key_exists('contributing_artist_ids', $data) && $song['contributing_artist_ids'] !== $data['contributing_artist_ids']) {
-            $attributes['contributing_artist_ids'] = $data['contributing_artist_ids'];
+
+        if (array_key_exists('tags', $data) &&
+            $song['tags'] !== $data['tags']) {
+
+            $attributes['tags'] = $data['tags'];
         }
+
+        if (array_key_exists('artist_ids', $data) &&
+            $song['artist_ids'] !== $data['artist_ids']) {
+
+            $attributes['artist_ids'] = $data['artist_ids'];
+        }
+
         if (empty($attributes)) {
             return;
         }
+
         return $this->baseRepo->updateOne($id, $attributes);
     }
 
@@ -60,18 +82,17 @@ class SongServiceImpl extends BaseServiceImpl implements SongService
         return $this->baseRepo->deleteOne($id);
     }
 
-    public function deleteAll(array $condition = [], $forever = false)
+    public function getListSongByTags(array $tags, array $columns = [])
     {
-        $column = array_keys($condition)[0];
-        $values = array_values($condition)[0];
-        $values = is_array($values) ? $values : [$values];
-        foreach ($values as $value) {
-            $this->baseRepo->delete([$column => $value]);
+        $columns = array_key_exists('artist_ids', $columns) ? $columns : array_merge($columns, ['artist_ids']);
+        $songs = $this->getListByTags($tags, $columns);
+        foreach ($songs as $key => $song) {
+            $artistIds = explode(',', $song['artist_ids']);
+            foreach ($artistIds as $artistId) {
+                $song['artists'][] = $this->artistService->findOne(['id' => $artistId], ['artist_id', 'name']);
+            }
+            $songs[$key] = $song;
         }
-    }
-
-    public function listSong(array $columns = [], array $conditions = [], array $sorted = ['created_at' => 'desc'], $perPage = 10)
-    {
-        return $this->baseRepo->list($columns, $conditions, $sorted, $perPage);
+        return $songs;
     }
 }
