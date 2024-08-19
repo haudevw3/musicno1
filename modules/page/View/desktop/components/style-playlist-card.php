@@ -3,10 +3,10 @@
         foreach ($data[2] as $key => $category) {
             ?>
                 <div class="card-title d-flex justify-content-between <?php echo ($key > 0) ? 'mt-20' : null ?>">
-                    <div class="text-color-white fw-600 fs-20"><?php echo $category['name'] ?></div>
+                    <div class="text-color-white fw-bold fs-20"><?php echo $category['name'] ?></div>
                     <?php 
                         if (! array_key_exists('show_all', $data)) {
-                            ?><a data-url="<?php echo '/'.$category['slug'] ?>" class="mt-5 fw-600 text-color-dark-04">Hiển thị tất cả</a><?php
+                            ?><a class="show-all cursor-pointer mt-5 fw-600 text-color-dark-04" data-url="<?php echo $category['slug'] ?>">Hiển thị tất cả</a><?php
                         }
                     ?>
                 </div>

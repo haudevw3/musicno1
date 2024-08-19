@@ -5,20 +5,20 @@ namespace Modules\Album\Service\Impl;
 use Core\Service\BaseServiceImpl;
 use Modules\Album\Repository\AlbumRepository;
 use Modules\Album\Service\AlbumService;
-use Modules\Artist\Service\ArtistService;
-use Modules\Song\Service\SongService;
+use Modules\Artist\Repository\ArtistRepository;
+use Modules\Song\Repository\SongRepository;
 
 class AlbumServiceImpl extends BaseServiceImpl implements AlbumService
 {
     protected $baseRepo;
-    protected $songService;
-    protected $artistService;
+    protected $songRepo;
+    protected $artistRepo;
 
-    public function __construct(AlbumRepository $baseRepo, ArtistService $artistService, SongService $songService)
+    public function __construct(AlbumRepository $baseRepo, ArtistRepository $artistRepo, SongRepository $songRepo)
     {
         parent::__construct($baseRepo);
-        $this->songService = $songService;
-        $this->artistService = $artistService;
+        $this->artistRepo = $artistRepo;
+        $this->songRepo = $songRepo;
     }
 
     public function create(array $data)
@@ -115,12 +115,12 @@ class AlbumServiceImpl extends BaseServiceImpl implements AlbumService
     {
         $columns = array_key_exists('song_ids', $columns) ? $columns : array_merge($columns, ['song_ids']);
         $album = $this->baseRepo->findOne([array_keys($condition)[0] => array_values($condition)[0]], $columns);
-        $songs = $this->songService->findAll(['name', 'image', 'audio', 'duration', 'artist_ids'], ['album_id' => $album['id']]);
+        $songs = $this->songRepo->findAll(['name', 'image', 'audio', 'duration', 'artist_ids'], ['album_id' => $album['id']]);
         $duration = 0;
         foreach ($songs as $key => $song) {
             $artistIds = explode(',', $song['artist_ids']);
             foreach ($artistIds as $artistId) {
-                $song['artists'][] = $this->artistService->findOne(['id' => $artistId], ['artist_id', 'name']);
+                $song['artists'][] = $this->artistRepo->findOne(['id' => $artistId], ['artist_id', 'name']);
             }
             if ($justNeedSong) {
                 unset($song['artist_ids']);

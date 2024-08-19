@@ -21,7 +21,8 @@
             "Modules\\User\\": "modules/user/"
         },
         "files": [
-            "core/helpers.php"
+            "core/helpers.php",
+            "modules/song/helpers.php"
         ]
     },
     "minimum-stability": "dev",

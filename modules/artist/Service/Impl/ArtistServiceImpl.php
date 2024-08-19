@@ -6,6 +6,7 @@ use Core\Service\BaseServiceImpl;
 use Modules\Artist\Repository\ArtistRepository;
 use Modules\Artist\Service\ArtistService;
 
+
 class ArtistServiceImpl extends BaseServiceImpl implements ArtistService
 {
     protected $baseRepo;

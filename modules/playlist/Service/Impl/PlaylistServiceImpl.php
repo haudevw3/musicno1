@@ -3,26 +3,25 @@
 namespace Modules\Playlist\Service\Impl;
 
 use Core\Service\BaseServiceImpl;
-use Modules\Album\Service\AlbumService;
-use Modules\Artist\Service\ArtistService;
+use Modules\Album\Repository\AlbumRepository;
+use Modules\Artist\Repository\ArtistRepository;
 use Modules\Playlist\Repository\PlaylistRepository;
 use Modules\Playlist\Service\PlaylistService;
-use Modules\Song\Service\SongService;
+use Modules\Song\Repository\SongRepository;
 
 class PlaylistServiceImpl extends BaseServiceImpl implements PlaylistService
 {
     protected $baseRepo;
-    protected $artistService;
-    protected $albumService;
-    protected $songService;
+    protected $artistRepo;
+    protected $albumRepo;
+    protected $songRepo;
 
-    public function __construct(PlaylistRepository $baseRepo, ArtistService $artistService,
-                                AlbumService $albumService, SongService $songService)
+    public function __construct(PlaylistRepository $baseRepo, ArtistRepository $artistRepo, AlbumRepository $albumRepo, SongRepository $songRepo)
     {
         parent::__construct($baseRepo);
-        $this->artistService = $artistService;
-        $this->albumService = $albumService;
-        $this->songService = $songService;
+        $this->artistRepo = $artistRepo;
+        $this->albumRepo = $albumRepo;
+        $this->songRepo = $songRepo;
     }
 
     public function create(array $data)
@@ -102,12 +101,12 @@ class PlaylistServiceImpl extends BaseServiceImpl implements PlaylistService
         $duration = 0;
         $albumIds = explode(',', $playlist['album_ids']);
         foreach ($albumIds as $albumId) {
-            $album = $this->albumService->findOne(['id' => $albumId], ['album_id', 'name', 'type', 'song_ids']);
+            $album = $this->albumRepo->findOne(['id' => $albumId], ['album_id', 'name', 'type', 'song_ids']);
             $songIds = explode(',', $album['song_ids']);
-            $song = $this->songService->findOne(['id' => $songIds[0]], ['name', 'image', 'audio', 'duration', 'artist_ids']);
+            $song = $this->songRepo->findOne(['id' => $songIds[0]], ['name', 'image', 'audio', 'duration', 'artist_ids']);
             $artistIds = explode(',', $song['artist_ids']);
             foreach ($artistIds as $artistId) {
-                $song['artists'][] = $this->artistService->findOne(['id' => $artistId], ['artist_id', 'name']);
+                $song['artists'][] = $this->artistRepo->findOne(['id' => $artistId], ['artist_id', 'name']);
             }
             if ($justNeedSong) {
                 unset($song['artist_ids']);

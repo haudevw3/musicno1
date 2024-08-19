@@ -4,8 +4,8 @@
             <img class="rounded-6" src="<?php $images = explode('|', $playlist['image']); echo (count($images) > 1) ? $images[1] : $playlist['image'];?>">
         </div>
         <div class="card-info ml-20 text-color-white">
-            <div class="fs-18 fw-600">Danh sách phát</div>
-            <div class="fs-24 mt-10 fw-bold"><?php echo $playlist['name'] ?></div>
+            <div class="fs-18 fw-bold">Danh sách phát</div>
+            <div class="fs-24 fw-bold mt-10"><?php echo $playlist['name'] ?></div>
             <div class="mt-10 d-flex">
                 <div class="fw-bold">
                     <i class="fa-regular fa-compact-disc"></i>

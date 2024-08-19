@@ -3,19 +3,19 @@
 namespace Modules\Song\Service\Impl;
 
 use Core\Service\BaseServiceImpl;
-use Modules\Artist\Service\ArtistService;
+use Modules\Artist\Repository\ArtistRepository;
 use Modules\Song\Repository\SongRepository;
 use Modules\Song\Service\SongService;
 
 class SongServiceImpl extends BaseServiceImpl implements SongService
 {
     protected $baseRepo;
-    protected $artistService;
+    protected $artistRepo;
 
-    public function __construct(SongRepository $baseRepo, ArtistService $artistService)
+    public function __construct(SongRepository $baseRepo, ArtistRepository $artistRepo)
     {
         parent::__construct($baseRepo);
-        $this->artistService = $artistService;
+        $this->artistRepo = $artistRepo;
     }
 
     public function create(array $data)
@@ -89,7 +89,7 @@ class SongServiceImpl extends BaseServiceImpl implements SongService
         foreach ($songs as $key => $song) {
             $artistIds = explode(',', $song['artist_ids']);
             foreach ($artistIds as $artistId) {
-                $song['artists'][] = $this->artistService->findOne(['id' => $artistId], ['artist_id', 'name']);
+                $song['artists'][] = $this->artistRepo->findOne(['id' => $artistId], ['artist_id', 'name']);
             }
             $songs[$key] = $song;
         }

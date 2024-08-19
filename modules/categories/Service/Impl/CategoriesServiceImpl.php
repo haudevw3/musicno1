@@ -5,17 +5,17 @@ namespace Modules\Categories\Service\Impl;
 use Core\Service\BaseServiceImpl;
 use Modules\Categories\Repository\CategoriesRepository;
 use Modules\Categories\Service\CategoriesService;
-use Modules\Playlist\Service\PlaylistService;
+use Modules\Playlist\Repository\PlaylistRepository;
 
 class CategoriesServiceImpl extends BaseServiceImpl implements CategoriesService
 {
     protected $baseRepo;
-    protected $playlistService;
+    protected $playlistRepo;
 
-    public function __construct(CategoriesRepository $baseRepo, PlaylistService $playlistService)
+    public function __construct(CategoriesRepository $baseRepo, PlaylistRepository $playlistRepo)
     {
         parent::__construct($baseRepo);
-        $this->playlistService = $playlistService;
+        $this->playlistRepo = $playlistRepo;
     }
 
     public function create(array $data)
@@ -107,7 +107,7 @@ class CategoriesServiceImpl extends BaseServiceImpl implements CategoriesService
         foreach ($categories as $key => $category) {
             $playlistIds = explode(',', $category['playlist_ids']);
             foreach ($playlistIds as $playlistId) {
-                $category['playlists'][] = $this->playlistService->findOne(['id' => $playlistId], $columns);
+                $category['playlists'][] = $this->playlistRepo->findOne(['id' => $playlistId], $columns);
             }
             $categories[$key] = $category;
         }
@@ -122,13 +122,13 @@ class CategoriesServiceImpl extends BaseServiceImpl implements CategoriesService
         foreach ($subCategories as $key => $subCategory) {
             $playlistIds = explode(',', $subCategory['playlist_ids']);
             foreach ($playlistIds as $id) {
-                // $playlist = $this->playlistService->findOne(['id' => $id], $columns);
+                // $playlist = $this->playlistRepo->findOne(['id' => $id], $columns);
                 // $tags = explode(',', $playlist['tags']);
                 // if (in_array(1, $tags)) {
                 //     $featuredPlaylists[] = $playlist;
                 // }
                 // $subCategory['playlists'][] = $playlist;
-                $subCategory['playlists'][] = $this->playlistService->findOne(['id' => $id], $columns);
+                $subCategory['playlists'][] = $this->playlistRepo->findOne(['id' => $id], $columns);
             }
             $subCategories[$key] = $subCategory;
         }

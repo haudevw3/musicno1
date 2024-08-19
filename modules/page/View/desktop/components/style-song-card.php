@@ -1,6 +1,6 @@
 <div id="song-card-container" class="song-card-container">
     <div class="card-title">
-        <div class="text-color-white fw-600 fs-20"><?php echo $data[1]['name'] ?></div>
+        <div class="text-color-white fw-bold fs-20"><?php echo $data[1]['name'] ?></div>
     </div>
     <div class="card-content">
         <?php
@@ -24,7 +24,8 @@
                                         $artists = $song['artists'];
                                         for ($i = 0; $i < count($artists); $i++) {
                                             ?>
-                                                <a class="text-color-dark-05 cursor-pointer" href="http://"><?php echo $artists[$i]['name'] ?></a>
+                                                <a class="text-color-dark-05 cursor-pointer"
+                                                   data-url="<?php echo route('artist-detail-page', $artists[$i]['artist_id']) ?>"><?php echo $artists[$i]['name'] ?></a>
                                                 <?php if ($i < (count($artists) - 1)) { ?><span class="text-color-dark-05">,</span><?php } ?>
                                             <?php
                                         }

@@ -60,13 +60,18 @@ const MUSIC_CONTROL = (function () {
             isPlay = true;
             showControl = true;
             UI_CONTROL.setStateOfCard({status: true, pos: repo.currentPos});
-            UI_CONTROL.setStateOfButton({status: true, pos: repo.currentPos});
+            if (! UI_CONTROL.trackState.notFocusStateOfButton) {
+                console.log(UI_CONTROL.trackState.styleId);
+                UI_CONTROL.setStateOfButton({status: true, pos: repo.currentPos});
+            }
             ctrls.playMusic.find("i").attr("class", UI_CONTROL.styles.icons.pause);
         } else {
             isPlay = false;
             AUDIO.pauseAudio();
             UI_CONTROL.setStateOfCard({status: false, pos: repo.currentPos});
-            UI_CONTROL.setStateOfButton({status: false, pos: repo.currentPos});
+            if (! UI_CONTROL.trackState.notFocusStateOfButton) {
+                UI_CONTROL.setStateOfButton({status: false, pos: repo.currentPos});
+            }
             ctrls.playMusic.find("i").attr("class", UI_CONTROL.styles.icons.play);
         }
         if (showControl) {
@@ -84,6 +89,7 @@ const MUSIC_CONTROL = (function () {
         }
         setTimeout(function () {
             prepareDataAtPosAndBootMusic(isShuffle ? shuffleItems[shufflePosition] : repo.nextPos);
+            UI_CONTROL.setNotStateFocusOfButtonIf();
         }, 100);
     }
 
@@ -96,6 +102,7 @@ const MUSIC_CONTROL = (function () {
         }
         setTimeout(function () {
             prepareDataAtPosAndBootMusic(isShuffle ? shuffleItems[shufflePosition] : repo.previousPos);
+            UI_CONTROL.setNotStateFocusOfButtonIf();
         }, 100);
     }
 

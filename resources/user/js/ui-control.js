@@ -39,7 +39,10 @@ const UI_CONTROL = (function () {
     const trackState = {
         "id": null,
         "styleId": null,
-        "needFocusAtPos": true,
+        "currentId": null,
+        "currentPos": null,
+        "needFocusStateAtPos": true,
+        "notFocusStateOfButton": false,
     }
 
     const bindControl = function () {
@@ -54,14 +57,13 @@ const UI_CONTROL = (function () {
     }
 
     const eventOnclickNavlink = async function () {
-        ctrls.navbar.find(".nav-link").removeClass("bg-color-dark-03");
-        $(this).addClass("bg-color-dark-03");
         var url = BASE_URL + $(this).attr("data-url").replace("/", "");
-        // if (navlink != url) {
-        //     navlink = url;
+        if (navlink != url) {
+            navlink = url;
             history.pushState({}, "", url);
             await renderContent(url);
-        //}
+        }
+        setStateOfNavlink({subject: this});
         manageEvent();
         updateStateForCurrentPage();
     }
@@ -86,10 +88,14 @@ const UI_CONTROL = (function () {
     const setStateAndData = async function (subject, options = {}) {
         var status = true;
         var dataOfSubject = getDataOfSubject(subject);
-        trackState.needFocusAtPos = (options.needFocusAtPos != undefined) ? options.needFocusAtPos : true;
+        trackState.currentId = dataOfSubject.id;
+        trackState.currentPos = dataOfSubject.pos;
+        trackState.notFocusStateOfButton = false;
+        trackState.needFocusStateAtPos = (options.needFocusStateAtPos != undefined) ? options.needFocusStateAtPos : true;
 
         if (trackState.styleId != options.styleId) {
             removeStateOfCard();
+            trackState.currentId = null;
             trackState.styleId = options.styleId;
         }
 
@@ -117,16 +123,31 @@ const UI_CONTROL = (function () {
         });
 
         $(styles.id[2]).find(styles.btn.play).on("click", function () {
-            setStateAndData(this, {styleId: styles.id[2], needFocusAtPos: false});
+            setStateAndData(this, {styleId: styles.id[2], needFocusStateAtPos: false});
+        });
+
+        $(styles.id[2]).find(".show-all").on("click", async function () {
+            var dataOfSubject = getDataOfSubject(this);
+            var url = dataOfSubject.url.replace(BASE_URL, "/");
+            history.pushState({}, "", dataOfSubject.url);
+            
+            if (url == '/top-100') {
+                ctrls.navbar.find(".nav-link[data-url='"+ url +"'").click();
+            } else {
+                setStateOfNavlink({url: dataOfSubject.url});
+                await renderContent(dataOfSubject.url);
+            }
         });
 
         $(styles.id[2]).find(styles.card.text).on("click", async function () {
             var dataOfSubject = getDataOfSubject(this);
             history.pushState({}, "", dataOfSubject.url);
+            setStateOfNavlink({url: dataOfSubject.url});
             await renderContent(dataOfSubject.url);
 
             trackState.styleId = styles.id[3];
-            trackState.needFocusAtPos = true;
+            trackState.needFocusStateAtPos = true;
+            trackState.currentId = dataOfSubject.id;
             if (trackState.id == dataOfSubject.id) {
                 setStateOfCard({status: MUSIC_CONTROL.isPlayMusic(), pos: MUSIC_CONTROL.repo.currentPos});
                 setStateOfButton({status: MUSIC_CONTROL.isPlayMusic()});
@@ -152,7 +173,9 @@ const UI_CONTROL = (function () {
                 await renderContent(albumUrl);
 
                 trackState.styleId = styles.id[4];
-                trackState.needFocusAtPos = true;
+                trackState.needFocusStateAtPos = true;
+                trackState.currentId = dataOfSubject.id;
+                trackState.currentPos = dataOfSubject.pos;
                 var attr = {
                     "data-pos": dataOfSubject.pos,
                     "data-id": dataOfSubject.id,
@@ -193,8 +216,13 @@ const UI_CONTROL = (function () {
     }
 
     const setStateOfCard = function (options = {}) {
+        if (trackState.id != trackState.currentId &&
+           (trackState.styleId == styles.id[3] || trackState.styleId == styles.id[4])) {
+            return;
+        }
+        
         var icon = options.status ? styles.icons.pause : styles.icons.play;
-        var focusId = trackState.needFocusAtPos ? (styles.card.prefix + options.pos) : ("#" + trackState.id);
+        var focusId = trackState.needFocusStateAtPos ? (styles.card.prefix + options.pos) : ("#" + trackState.id);
         var bgColor = (trackState.styleId == styles.id[1] || trackState.styleId == styles.id[2]) ? styles.bgColor.dark : styles.bgColor.darkGray;
         $(trackState.styleId).find(focusId).addClass(bgColor).end()
                              .find(focusId + " " + styles.tags.iplay).attr("class", icon);
@@ -207,6 +235,11 @@ const UI_CONTROL = (function () {
     }
 
     const setStateOfButton = function (options = {}) {
+        if (trackState.id != trackState.currentId &&
+           (trackState.styleId == styles.id[3] || trackState.styleId == styles.id[4])) {
+             return;
+        }
+
         if (trackState.styleId == styles.id[3] || trackState.styleId == styles.id[4]) {
             var icon = options.status ? styles.icons.pause : styles.icons.play;
             var text = options.status ? "Tạm dừng" : "Tiếp tục phát";
@@ -215,9 +248,22 @@ const UI_CONTROL = (function () {
         }
     }
 
+    const removeStateOfButton = function () {
+        $(trackState.styleId).find(styles.tags.iplayFollowingSchedule).attr("class", styles.icons.play).end()
+                             .find(styles.tags.spanplayFollowingSchedule).text("Phát bài hát");
+    }
+
+    const setNotStateFocusOfButtonIf = function () {
+        if (trackState.styleId == styles.id[4]) {
+            trackState.notFocusStateOfButton = (trackState.currentPos != MUSIC_CONTROL.repo.currentPos) ? true : false;
+            removeStateOfButton();
+            removeStateOfCard();
+        }
+    }
+
     const updateStateForCurrentPage = function () {
         if (trackState.styleId == styles.id[1]) {
-            trackState.needFocusAtPos = true;
+            trackState.needFocusStateAtPos = true;
             setStateOfCard({
                 status: MUSIC_CONTROL.isPlayMusic(),
                 pos: MUSIC_CONTROL.repo.currentPos,
@@ -229,8 +275,19 @@ const UI_CONTROL = (function () {
             trackState.styleId == styles.id[4]) {
             
             trackState.styleId = styles.id[2];
-            trackState.needFocusAtPos = false;
+            trackState.needFocusStateAtPos = false;
             setStateOfCard({status: MUSIC_CONTROL.isPlayMusic()});
+        }
+    }
+
+    const setStateOfNavlink = function (options = {}) {
+        ctrls.navbar.find(".nav-link").removeClass(styles.bgColor.darkGray);
+        if (options.url != undefined) {
+            navlink = options.url;
+        }
+
+        if (options.subject != undefined) {
+            $(options.subject).addClass(styles.bgColor.darkGray);
         }
     }
 
@@ -258,6 +315,8 @@ const UI_CONTROL = (function () {
         setStateOfCard: setStateOfCard,
         setStateOfButton: setStateOfButton,
         removeStateOfCard: removeStateOfCard,
+        removeStateOfButton: removeStateOfButton,
+        setNotStateFocusOfButtonIf: setNotStateFocusOfButtonIf,
     }
 
 })();
