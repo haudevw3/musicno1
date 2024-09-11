@@ -15,8 +15,8 @@ class Provider extends ServiceProvider
     public function register()
     {
         $this->mergeConfigFrom('modules/categories/config.php', 'categories');
-        $this->app->singleton('Modules\Categories\Repository\CategoriesRepository', 'Modules\Categories\Repository\Impl\CategoriesRepositoryImpl');
+        $this->app->singleton('Modules\Categories\Repository\CategoryRepository', 'Modules\Categories\Repository\Impl\CategoryRepositoryImpl');
 
-        $this->app->singleton('Modules\Categories\Service\CategoriesService', 'Modules\Categories\Service\Impl\CategoriesServiceImpl');
+        $this->app->singleton('Modules\Categories\Service\CategoryService', 'Modules\Categories\Service\Impl\CategoryServiceImpl');
     }
 }

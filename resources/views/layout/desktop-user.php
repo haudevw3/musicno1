@@ -30,7 +30,7 @@
         </div>
         <?php include_one('components.user.ads') ?>
     </div>
-
+    
     <?php include_one('components.user.render-js') ?>
     <?php isset($_namespace) ? render_js($_namespace) : null ?>
 </body>

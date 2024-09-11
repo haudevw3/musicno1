@@ -9,6 +9,4 @@ interface SongService
     public function updateOne($id, array $data);
 
     public function deleteOne($id);
-
-    public function getListSongByTags(array $tags, array $columns = []);
 }

@@ -10,28 +10,30 @@ class Song extends Model
 
     protected $fillable = [
         'id',
-        'song_id',
+        '_id',
         'album_id',
-        'artist_ids',
+        'artist_id',
+        'sub_artist_ids',
+        'tags',
         'name',
         'slug',
         'image',
         'audio',
         'duration',
-        'tags',
         'created_at',
         'updated_at',
     ];
 
     protected $attributes = [
-        'song_id' => '',
+        '_id' => '',
         'album_id' => 0,
-        'artist_ids' => '',
+        'artist_id' => 0,
+        'sub_artist_ids' => '',
+        'tags' => '',
         'name' => '',
         'slug' => '',
         'image' => '',
         'audio' => '',
         'duration' => '',
-        'tags' => '',
     ];
 }

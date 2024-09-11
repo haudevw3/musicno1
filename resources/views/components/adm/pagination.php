@@ -11,7 +11,9 @@
                 <?php
                 for ($i = 1; $i <= $pagination['last_page']; $i++) {
                     ?>
-                        <li class="page-item <?php echo ($pagination['current_page'] == $i) ? 'active' : null ?>"><a class="page-link" href="<?php echo $pagination['path'].$i ?>"><?php echo $i ?></a></li>
+                        <li class="page-item <?php echo ($pagination['current_page'] == $i) ? 'active' : null ?>">
+                            <a class="page-link" href="<?php echo $pagination['path'].$i ?>"><?php echo $i ?></a>
+                        </li>
                     <?php
                 }
                 ?>

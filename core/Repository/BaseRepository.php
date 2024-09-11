@@ -12,7 +12,7 @@ interface BaseRepository
 
     public function findAll(array $columns = [], array $conditions = [], array $sorted = []);
 
-    public function list(array $columns = [], array $conditions = [], array $sorted = [], $perPage = 10);
+    public function pagination(array $columns = [], array $conditions = [], array $sorted = [], $perPage = 10);
 
     public function create(array $data);
 
@@ -20,7 +20,7 @@ interface BaseRepository
 
     public function updateOne($id, array $data);
 
-    public function delete(array $condition, $forever = false);
+    public function delete(array $condition);
 
-    public function deleteOne($id, $forever = false);
+    public function deleteOne($id);
 }

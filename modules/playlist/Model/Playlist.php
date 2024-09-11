@@ -10,26 +10,24 @@ class Playlist extends Model
 
     protected $fillable = [
         'id',
-        'playlist_id',
+        '_id',
         'album_ids',
+        'priority',
         'name',
         'slug',
         'image',
-        'tags',
-        'priority',
         'description',
         'created_at',
         'updated_at',
     ];
 
     protected $attributes = [
-        'playlist_id' => '',
+        '_id' => '',
         'album_ids' => '',
+        'priority' => 0,
         'name' => '',
         'slug' => '',
         'image' => '',
-        'tags' => '',
-        'priority' => 0,
         'description' => '',
     ];
 }

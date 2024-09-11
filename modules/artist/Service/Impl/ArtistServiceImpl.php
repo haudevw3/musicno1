@@ -5,6 +5,7 @@ namespace Modules\Artist\Service\Impl;
 use Core\Service\BaseServiceImpl;
 use Modules\Artist\Repository\ArtistRepository;
 use Modules\Artist\Service\ArtistService;
+use Foundation\Support\Str;
 
 
 class ArtistServiceImpl extends BaseServiceImpl implements ArtistService
@@ -19,12 +20,11 @@ class ArtistServiceImpl extends BaseServiceImpl implements ArtistService
     public function create(array $data)
     {
         $attributes = [
-            'artist_id' => $data['artist_id'],
-            'name' => ucwords(trim($data['name'])),
-            'slug' => trim($data['slug']),
-            'image' => $data['image'],
-            'tags' => $data['tags'],
-            'description' => ! empty($data['description']) ? trim($data['description']) : null,
+            '_id' => Str::random(22),
+            'name' => filterName($data['name']),
+            'slug' => filterStr($data['slug']),
+            'image' => trim($data['image']),
+            'description' => filterStr($data['description']),
         ];
         return $this->baseRepo->create($attributes);
     }
@@ -35,42 +35,38 @@ class ArtistServiceImpl extends BaseServiceImpl implements ArtistService
         $artist = $this->baseRepo->findOne(['id' => $id]);
 
         if (array_key_exists('name', $data) &&
-            $artist['name'] !== ($data['name'] = ucwords(trim($data['name'])))) {
-
-            $attributes['name'] = $data['name'];
-            $attributes['slug'] = trim($data['slug']);
+           ($artist['name'] != $data['name'])) {
+            $attributes['name'] = filterName($data['name']);
+            $attributes['slug'] = filterStr($data['slug']);
         }
 
         if (array_key_exists('image', $data) &&
-            $artist['image'] !== $data['image']) {
-
-            $attributes['image'] = $data['image'];
+           ($artist['image'] != $data['image'])) {
+            $attributes['image'] = trim($data['image']);
         }
 
-        if (array_key_exists('tags', $data) &&
-            $artist['tags'] !== $data['tags']) {
-
-            $attributes['tags'] = $data['tags'];
-        }
-
-        if (! empty($data['description'])) {
-            $attributes['description'] = $data['description'];
-        }
-
-        if (array_key_exists('album_ids', $data) &&
-            $artist['album_ids'] !== $data['album_ids']) {
-
-            $attributes['album_ids'] = $data['album_ids'];
+        if (array_key_exists('description', $data) &&
+           ($artist['description'] != $data['description'])) {
+            $attributes['description'] = filterStr($data['description']);
         }
 
         if (array_key_exists('album_id', $data)) {
-            $albumIds = null;
             if (is_null($artist['album_ids'])) {
-                $albumIds = $data['album_id'];
+                $attributes['album_ids'] = $data['album_id'];
             } else {
-                $albumIds = $artist['album_ids'].','.$data['album_id'];
+                $attributes['album_ids'] = $artist['album_ids'].','.$data['album_id'];
             }
-            $attributes['album_ids'] = $albumIds;
+        }
+
+        if (array_key_exists('delete_album_id', $data)) {
+            $albumIds = explode(',', $artist['album_ids']);
+            foreach ($albumIds as $key => $value) {
+                if ($value == $data['delete_album_id']) {
+                    unset($albumIds[$key]);
+                    break;
+                }
+            }
+            $attributes['album_ids'] = implode(',', $albumIds);
         }
 
         if (empty($attributes)) {

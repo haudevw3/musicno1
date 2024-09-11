@@ -9,6 +9,4 @@ interface PlaylistService
     public function updateOne($id, array $data);
 
     public function deleteOne($id);
-
-    public function getListAlbumAndSongById(array $condition, array $columns = [], $justNeedSong = false);
 }

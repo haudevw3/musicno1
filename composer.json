@@ -18,11 +18,11 @@
             "Modules\\Page\\": "modules/page/",
             "Modules\\Playlist\\": "modules/playlist/",
             "Modules\\Song\\": "modules/song/",
-            "Modules\\User\\": "modules/user/"
+            "Modules\\User\\": "modules/user/",
+            "Modules\\Upload\\": "modules/upload/"
         },
         "files": [
-            "core/helpers.php",
-            "modules/song/helpers.php"
+            "core/helpers.php"
         ]
     },
     "minimum-stability": "dev",

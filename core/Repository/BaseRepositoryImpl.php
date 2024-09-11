@@ -81,17 +81,11 @@ abstract class BaseRepositoryImpl implements BaseRepository
         return $query->get();
     }
 
-    public function list(array $columns = [], array $conditions = [], array $sorted = [], $perPage = 10)
+    public function pagination(array $columns = [], array $conditions = [], array $sorted = [], $perPage = 10)
     {
         $items = [];
         $sorted = ! empty($sorted) ? $sorted : ['created_at' => 'desc'];
-        if (array_key_exists('no_supported', $conditions)) {
-            foreach ($conditions['ids'] as $id) {
-                $items[] = $this->findOne(['id' => $id], $columns);
-            }
-        } else {
-            $items = $this->findAll($columns, $conditions, $sorted);
-        }
+        $items = $this->findAll($columns, $conditions, $sorted);
         $paginator = new Paginator($items, $perPage, [], app('request'));
         return $paginator->toArray();
     }
@@ -112,14 +106,12 @@ abstract class BaseRepositoryImpl implements BaseRepository
         return $this->model()->update($id, $data);
     }
 
-    public function delete(array $condition, $forever = false)
+    public function delete(array $condition)
     {
-        $column = array_keys($condition)[0];
-        $value = array_values($condition)[0];
-        return $this->model()->where($column, $value)->delete();
+        return $this->model()->where(array_keys($condition)[0], array_values($condition)[0])->delete();
     }
 
-    public function deleteOne($id, $forever = false)
+    public function deleteOne($id)
     {
         return $this->model()->delete($id);
     }

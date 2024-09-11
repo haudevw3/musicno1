@@ -19,13 +19,13 @@ class UserServiceImpl extends BaseServiceImpl implements UserService
     {
         $attributes = [
             'ip' => request()->ip(),
-            'fullname' => ucwords(trim($data['fullname'])),
+            'fullname' => filterName($data['fullname']),
             'username' => trim($data['username']),
             'password' => password_hash($data['password'], PASSWORD_DEFAULT),
             'email' => trim($data['email']),
             'role' => $data['role'],
-            'image' => $data['image'],
             'tel' => empty($data['tel']) ? null : trim($data['tel']),
+            'image' => empty($data['image']) ? null : trim($data['image']),
         ];
         return $this->baseRepo->create($attributes);
     }
@@ -36,44 +36,37 @@ class UserServiceImpl extends BaseServiceImpl implements UserService
         $user = $this->baseRepo->findOne(['id' => $id]);
 
         if (array_key_exists('fullname', $data) &&
-            $user['fullname'] !== ($data['fullname'] = ucwords(trim($data['fullname'])))) {
-
-            $attributes['fullname'] = $data['fullname'];
+           ($user['fullname'] != $data['fullname'])) {
+            $attributes['fullname'] = filterName($data['fullname']);
         }
-
+        
         if (array_key_exists('username', $data) &&
-            $user['username'] !== $data['username']) {
-
-            $attributes['username'] = $data['username'];
+           ($user['username'] != $data['username'])) {
+            $attributes['username'] = trim($data['username']);
         }
 
         if (array_key_exists('email', $data) &&
-            $user['email'] !== $data['email']) {
-
-            $attributes['email'] = $data['email'];
+           ($user['email'] != $data['email'])) {
+            $attributes['email'] = trim($data['email']);
         }
 
         if (array_key_exists('role', $data) &&
-            $user['role'] !== $data['role']) {
-
+           ($user['role'] != $data['role'])) {
             $attributes['role'] = $data['role'];
         }
 
         if (array_key_exists('tel', $data) &&
-            $user['tel'] !== $data['tel']) {
-
-            $attributes['tel'] = $data['tel'];
+           ($user['tel'] != $data['tel'])) {
+            $attributes['tel'] = trim($data['tel']);
         }
 
         if (array_key_exists('image', $data) &&
-            $user['image'] !== $data['image']) {
-
-            $attributes['image'] = $data['image'];
+           ($user['image'] != $data['image'])) {
+            $attributes['image'] = trim($data['image']);
         }
 
         if (array_key_exists('password', $data) &&
-            $data['password'] !== 'musicno1') {
-
+           ($data['password'] != 'musicno1')) {
             $attributes['password'] = password_hash($data['password'], PASSWORD_DEFAULT);
         }
 

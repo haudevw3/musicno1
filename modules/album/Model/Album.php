@@ -10,14 +10,13 @@ class Album extends Model
 
     protected $fillable = [
         'id',
-        'album_id',
+        '_id',
         'artist_id',
         'song_ids',
         'name',
         'slug',
         'image',
         'type',
-        'tags',
         'release_year',
         'description',
         'created_at',
@@ -25,14 +24,13 @@ class Album extends Model
     ];
 
     protected $attributes = [
-        'album_id' => '',
+        '_id' => '',
         'artist_id' => 0,
         'song_ids' => '',
         'name' => '',
         'slug' => '',
         'image' => '',
         'type' => 0,
-        'tags' => '',
         'release_year' => 0,
         'description' => '',
     ];

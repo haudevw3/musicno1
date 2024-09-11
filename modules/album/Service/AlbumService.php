@@ -9,6 +9,4 @@ interface AlbumService
     public function updateOne($id, array $data);
 
     public function deleteOne($id);
-
-    public function getListSongById(array $condition, array $columns = [], $justNeedSong = false);
 }

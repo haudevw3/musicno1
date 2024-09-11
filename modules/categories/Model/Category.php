@@ -10,26 +10,28 @@ class Category extends Model
 
     protected $fillable = [
         'id',
-        'category_id',
-        'playlist_ids',
+        '_id',
+        'parent_id',
+        'priority',
+        'type',
+        'sub_ids',
+        'tags',
         'name',
         'slug',
         'image',
-        'tags',
-        'priority',
-        'parent_id',
         'created_at',
         'updated_at'
     ];
 
     protected $attributes = [
-        'category_id' => '',
-        'playlist_ids' => '',
+        '_id' => '',
+        'parent_id' => 0,
+        'priority' => 0,
+        'type' => 0,
+        'sub_ids' => '',
+        'tags' => '',
         'name' => '',
         'slug' => '',
         'image' => '',
-        'tags' => '',
-        'priority' => 0,
-        'parent_id' => 0,
     ];
 }
