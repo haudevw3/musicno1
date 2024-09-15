@@ -1,4 +1,4 @@
-const FORM_MANAGE_ALBUM = (function () {
+const FORM_MANAGE_PLAYLIST = (function () {
 
     var ctrls = {};
 
@@ -67,7 +67,7 @@ const FORM_MANAGE_ALBUM = (function () {
     }
 
     const convertNameToSlug = function () {
-        var name = _getValInput(ctrls.formManagePlaylist.find("[name=name]"));
+        var name = $(this).val();
         ctrls.formManagePlaylist.find("[name=slug]").val(_renderSlug(name));
     }
 
@@ -83,4 +83,4 @@ const FORM_MANAGE_ALBUM = (function () {
 
 })();
 
-FORM_MANAGE_ALBUM.init();
+FORM_MANAGE_PLAYLIST.init();

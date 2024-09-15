@@ -1,17 +1,13 @@
 <?php
 
-$_namespace = 'artist.viewFormManageArtist';
+$namespace = 'artist.viewFormManageArtist';
+$mainContent = _namespace('artist.layoutFormManageArtist');
 
-push($_namespace);
+push($namespace);
 
-echo asset('js/artist/form-manage-artist.js');
 echo asset('js/upload/file-manager.js');
+echo asset('js/artist/form-manage-artist.js');
 
 endpush();
-
-$components = [
-    _namespace('components.adm.file-manager'),
-    _namespace('artist.components.form-manage-artist'),
-];
 
 require _namespace('layout.desktop-adm');

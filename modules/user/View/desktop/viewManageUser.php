@@ -1,17 +1,13 @@
 <?php
 
-$_namespace = 'user.viewManageUser';
+$namespace = 'user.viewManageUser';
+$mainContent = _namespace('user.layoutManageUser');
 
-push($_namespace);
+push($namespace);
 
 echo asset('js/table.js');
 echo asset('js/user/table-manage-user.js');
 
 endpush();
-
-$components = [
-    _namespace('components.adm.modal-dialog'),
-    _namespace('user.components.table-manage-user'),
-];
 
 require _namespace('layout.desktop-adm');

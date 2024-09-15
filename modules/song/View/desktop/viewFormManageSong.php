@@ -1,18 +1,14 @@
 <?php
 
-$_namespace = 'song.viewFormManageSong';
+$namespace = 'song.viewFormManageSong';
+$mainContent = _namespace('song.layoutFormManageSong');
 
-push($_namespace);
+push($namespace);
 
 echo asset('js/text-box.js');
 echo asset('js/upload/file-manager.js');
 echo asset('js/song/form-manage-song.js');
 
 endpush();
-
-$components = [
-    _namespace('components.adm.file-manager'),
-    _namespace('song.components.form-manage-song'),
-];
 
 require _namespace('layout.desktop-adm');

@@ -9,6 +9,7 @@ Route::middleware('auth.admin')->group(function () {
             ->where('page', 'page-(\d+)')
             ->name('adm-manage-album');
         Route::get('edit/{id}', [AlbumManageController::class, 'pageEditAlbum'])->name('adm-edit-album');
+        Route::get('{id}/add-song', [AlbumManageController::class, 'pageAddSong'])->name('adm-add-song');
     });
 
     Route::prefix('api/albums')->group(function () {

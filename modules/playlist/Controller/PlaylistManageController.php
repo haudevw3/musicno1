@@ -25,7 +25,6 @@ class PlaylistManageController
         $playlists = $pagination['data'];
         unset($pagination['data']);
         $data = [
-            'label' => 1,
             'playlists' => $playlists,
             'pagination' => $pagination,
         ];
@@ -35,8 +34,7 @@ class PlaylistManageController
     public function pageAddPlaylist()
     {
         $data = [
-            'label' => 2,
-            'title' => 'Biểu mẫu tạo danh sách phát',
+            'title' => 'Tạo danh sách phát',
         ];
         return view('playlist.viewFormManagePlaylist', $data);
     }
@@ -62,7 +60,6 @@ class PlaylistManageController
             $albums[] = $this->albumService->findOne(['id' => $albumId], ['id', 'name']);
         }
         $data = [
-            'label' => 2,
             'title' => 'Cập nhật danh sách phát',
             'playlist' => $playlist,
             'albums' => $albums,
@@ -98,5 +95,12 @@ class PlaylistManageController
             $this->playlistService->deleteOne($id);
         }
         return response()->json();
+    }
+
+    public function searchByPlaylistName(Request $request)
+    {
+        $name = $request->input('name');
+        $data = $this->playlistService->findAll(['id', 'name'], ['like' => ['name' => '%'.$name.'%']]);
+        return response()->json($data);
     }
 }

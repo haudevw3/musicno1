@@ -1,13 +1,17 @@
-<div class="btn-icon center-align-items rounded-circle cursor-pointer mr-20">
+<button class="btn btn-icon btn-transparent-dark rounded-circle mr-20">
     <i class="fa-regular fa-envelope"></i>
-</div>
-<div class="btn-icon center-align-items rounded-circle cursor-pointer mr-20">
-    <i class="fa-regular fa-bell"></i>
-</div>
-<div id="navbar-dropdown-user-image" class="btn-icon rounded-circle cursor-pointer center-align-items">
-    <img class="rounded-circle" width="40" height="40" src="<?php echo random_avatar() ?>" alt="">
+</button>
 
-    <div class="dropdown-menu position-absolute shadow animated-fade-in-up">
+<button class="btn btn-icon btn-transparent-dark rounded-circle mr-20">
+    <i class="fa-regular fa-bell"></i>
+</button>
+
+<div class="dropdown">
+    <button id="navbar-dropdown-user-image" class="btn btn-icon btn-transparent-dark rounded-circle" data-bs-toggle="dropdown" aria-expanded="false">
+        <img width="40" height="40" src="<?php echo random_avatar() ?>" alt="">
+    </button>
+
+    <div class="dropdown-menu shadow animated-fade-in-up mt-20" aria-labelledby="navbar-dropdown-user-image">
         <header class="p-10 text-center">
             <div class="text-black fw-bold"><?php echo $user->fullname ?></div>
             <div class="fs-12"><?php echo $user->email ?></div>

@@ -16,7 +16,7 @@ const TABLE_MANAGE_ALBUM = (function () {
     const deleteAlbum = function () {
         var id = $(this).attr("data-id");
         var url = $(this).attr("data-url");
-        UI_CONTROL.addStateFocusOfButton(true, this);
+        
         _showDialog("Thông báo", "Bạn có muốn xóa album này không? Khi xóa mọi dữ liệu liên quan sẽ bị mất vĩnh viễn.")
         .then(function (b) {
             if (b) {
@@ -27,7 +27,6 @@ const TABLE_MANAGE_ALBUM = (function () {
                     }
                 });
             }
-            TABLE.removeStateOfTable();
         });
     }
 
@@ -37,10 +36,12 @@ const TABLE_MANAGE_ALBUM = (function () {
             var array = ctrls.tableManageAlbum.find("[name='album_ids[]']:checkbox:checked").map(function () {
                 return $(this).val();
             }).get();
+
             var formData = new FormData;
             for (var i = 0; i < array.length; i++) {
                 formData.append("album_ids[" + i + "]", array[i]);
-            }            
+            }
+                     
             _showDialog("Thông báo", "Bạn có muốn xóa những album này không? Khi xóa mọi dữ liệu liên quan sẽ bị mất vĩnh viễn.")
             .then(function (b) {
                 if (b) {

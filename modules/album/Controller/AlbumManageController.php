@@ -29,8 +29,6 @@ class AlbumManageController
         $albums = $pagination['data'];
         unset($pagination['data']);
         $data = [
-            'label' => 1,
-            'title' => 'Bảng dữ liệu album',
             'albums' => $albums,
             'pagination' => $pagination,
         ];
@@ -58,7 +56,6 @@ class AlbumManageController
         $id = $request->input('id');
         $album = $this->albumService->findOne(['id' => $id]);
         $data = [
-            'label' => 2,
             'title' => 'Cập nhật album',
             'album' => $album,
         ];
@@ -91,5 +88,16 @@ class AlbumManageController
         $name = $request->input('name');
         $data = $this->albumService->findAll(['id', 'name'], ['like' => ['name' => '%'.$name.'%']]);
         return response()->json($data);
+    }
+
+    public function pageAddSong(Request $request)
+    {
+        $id = $request->input('id');
+        $album = $this->albumService->findOne(['id' => $id]);
+        $data = [
+            'title' => 'Tạo bài hát',
+            'album' => $album,
+        ];
+        return view('song.viewFormManageSong', $data);
     }
 }

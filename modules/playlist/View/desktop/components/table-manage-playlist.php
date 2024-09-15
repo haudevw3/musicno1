@@ -1,69 +1,84 @@
-<div id="table-manage-playlist" class="datatable table-container bg-white rounded shadow">
-    <div class="table-header vertical-center-align-items fs-16 fw-semibold text-blue p-20 rounded-top">
-        Bảng dữ liệu danh sách phát
-    </div>
+<div id="table-manage-playlist" class="datatable card shadow">
+    <div class="card-header fs-16 fw-semibold text-blue">Bảng dữ liệu</div>
 
-    <?php include_one('playlist.components.actions-manage-playlist') ?>
+    <div class="card-body">
+        <div class="datatable-top d-flex justify-content-between">
+            <div class="datatable-dropdown">
+                <select class="datatable-selector form-select">
+                    <option value="5">5</option>
+                    <option value="10" selected="">10</option>
+                    <option value="15">15</option>
+                    <option value="20">20</option>
+                    <option value="25">25</option>
+                </select>
+            </div>
+            <div class="datatable-search">
+                <input class="form-control" placeholder="Search..." type="search">
+            </div>
+        </div>
 
-    <div class="table-wrapper pl-20 pr-20">
-        <table class="table-content">
-            <thead>
-                <tr>
-                    <th>
-                        <div class="form-check">
-                            <input class="form-check-input" id="checkbox" type="checkbox">
-                            <label class="form-check-label" for="checkbox"></label>
-                        </div>
-                    </th>
-                    <th>STT</th>
-                    <th>Tên danh sách phát</th>
-                    <th>Cập nhật gần đây</th>
-                    <th>Hành động</th>
-                </tr>
-            </thead>
-            <tbody>
-                <?php
-                    if (! empty($playlists)) {
-                        foreach ($playlists as $key => $playlist) {
-                            $key++;
-                            ?>
-                                <tr data-index="<?php echo $key ?>">
-                                    <td>
-                                        <div class="form-check">
-                                            <input class="form-check-input" id="checkbox-<?php echo $key ?>" type="checkbox" name="playlist_ids[]" value="<?php echo $playlist['id'] ?>">
-                                            <label class="form-check-label" for="checkbox-<?php echo $key ?>"></label>
-                                        </div>
-                                    </td>
-                                    <td><?php echo $key ?></td>
-                                    <td><?php echo $playlist['name'] ?></td>
-                                    <td><?php echo date_format(date_create($playlist['updated_at']), 'd-m-Y | H:i') ?></td>
-                                    <td>
-                                        <div class="d-flex position-relative">
-                                            <a class="btn-table center-align-items show-options" data-index="<?php echo $key ?>">
-                                                <i class="fa-regular fa-ellipsis-vertical"></i>
-                                            </a>
-                                            <a class="btn-table center-align-items ml-10" href="<?php echo route('adm-edit-playlist', $playlist['id']) ?>">
-                                                <i class="fa-regular fa-pen-to-square"></i>
-                                            </a>
-                                            <a class="btn-table center-align-items ml-10 delete-playlist"
-                                                data-id="<?php echo $playlist['id'] ?>"
-                                                data-url="<?php echo route('adm-delete-playlist', $playlist['id']) ?>">
-                                                <i class="fa-regular fa-trash-can"></i>
-                                            </a>
+        <div class="datatable-container mt-20">
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th>
+                            <div class="form-check">
+                                <input class="form-check-input" id="checkbox" type="checkbox">
+                                <label class="form-check-label" for="checkbox"></label>
+                            </div>
+                        </th>
+                        <th>STT</th>
+                        <th>Tên danh sách phát</th>
+                        <th>Cập nhật gần đây</th>
+                        <th>Hành động</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <?php
+                        if (! empty($playlists)) {
+                            foreach ($playlists as $key => $playlist) {
+                                $key++;
+                                ?>
+                                    <tr data-index="<?php echo $key ?>">
+                                        <td>
+                                            <div class="form-check">
+                                                <input class="form-check-input" id="checkbox-<?php echo $key ?>" type="checkbox" name="playlist_ids[]" value="<?php echo $playlist['id'] ?>">
+                                                <label class="form-check-label" for="checkbox-<?php echo $key ?>"></label>
+                                            </div>
+                                        </td>
+                                        <td><?php echo $key ?></td>
+                                        <td><?php echo $playlist['name'] ?></td>
+                                        <td><?php echo date_format(date_create($playlist['updated_at']), 'd-m-Y | H:i') ?></td>
+                                        <td>
+                                            <div class="d-flex position-relative">
+                                                <button class="btn btn-datatable btn-icon btn-transparent-dark me-2 show-options" data-index="<?php echo $key ?>">
+                                                    <i class="fa-regular fa-ellipsis-vertical"></i>
+                                                </button>
 
-                                            <?php _require('playlist.components.options-manage-playlist', compact('key', 'playlist')) ?>
-                                        </div>
-                                    </td>
-                                </tr>
-                            <?php
+                                                <a class="btn btn-datatable btn-icon btn-transparent-dark me-2" href="<?php echo route('adm-edit-playlist', $playlist['id']) ?>">
+                                                    <i class="fa-regular fa-pen-to-square"></i>
+                                                </a>
+
+                                                <button class="btn btn-datatable btn-icon btn-transparent-dark delete-playlist"
+                                                    data-id="<?php echo $playlist['id'] ?>"
+                                                    data-url="<?php echo route('adm-delete-playlist', $playlist['id']) ?>">
+                                                    <i class="fa-regular fa-trash-can"></i>
+                                                </button>
+
+                                                <?php require _namespace('categories.components.options-manage-playlist') ?>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                <?php
+                            }
                         }
-                    }
-                ?>
-            </tbody>
-        </table>
-    </div>
+                    ?>
+                </tbody>
+            </table>
+        </div>
 
-    <div class="table-bottom p-20 d-flex justify-content-end">
-        <?php include_one('components.adm.pagination', compact('pagination')) ?>
+        <div class="datatable-bottom items-align-vertical-center-end mt-20">
+            <?php require _namespace('components.adm.pagination') ?>
+        </div>
     </div>
 </div>

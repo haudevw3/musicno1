@@ -9,7 +9,7 @@ return [
         3 => 'Dành cho album',
     ],
 
-    'tags' => [
+    'pages' => [
         1 => 'Trang chủ',
         2 => 'Top bài hát',
         3 => 'Chủ đề & Thể loại',

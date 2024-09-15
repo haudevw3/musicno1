@@ -5,18 +5,19 @@ const TABLE_MANAGE_SONG = (function () {
     const bindControl = function () {
         var self = {};
         self.tableManageSong = $("#table-manage-song");
+        self.deleteMultipleSong = $("#delete-multiple-song");
         return self;
     }
 
     const bindFunction = function () {
         ctrls.tableManageSong.find(".delete-song").on("click", deleteSong);
-        ctrls.tableManageSong.find("#delete-multiple-song").on("click", deleteMultipleSong);
+        ctrls.deleteMultipleSong.on("click", deleteMultipleSong);
     }
 
     const deleteSong = function () {
         var id = $(this).attr("data-id");
         var url = $(this).attr("data-url");
-        UI_CONTROL.addStateFocusOfButton(true, this);
+        
         _showDialog("Thông báo", "Bạn có muốn xóa bài hát này không? Khi xóa mọi dữ liệu liên quan sẽ bị mất vĩnh viễn.")
         .then(function (b) {
             if (b) {
@@ -27,7 +28,6 @@ const TABLE_MANAGE_SONG = (function () {
                     }
                 });
             }
-            TABLE.removeStateOfTable();
         });
     }
 
@@ -37,10 +37,12 @@ const TABLE_MANAGE_SONG = (function () {
             var array = ctrls.tableManageSong.find("[name='song_ids[]']:checkbox:checked").map(function () {
                 return $(this).val();
             }).get();
+
             var formData = new FormData;
             for (var i = 0; i < array.length; i++) {
                 formData.append("song_ids[" + i + "]", array[i]);
-            }            
+            }
+               
             _showDialog("Thông báo", "Bạn có muốn xóa những bài hát này không? Khi xóa mọi dữ liệu liên quan sẽ bị mất vĩnh viễn.")
             .then(function (b) {
                 if (b) {

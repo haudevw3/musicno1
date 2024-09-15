@@ -17,5 +17,6 @@ Route::middleware('auth.admin')->group(function () {
         Route::put('update/{id}', [PlaylistManageController::class, 'updatePlaylist'])->name('adm-update-playlist');
         Route::delete('delete/{id}', [PlaylistManageController::class, 'deletePlaylist'])->name('adm-delete-playlist');
         Route::post('delete-multiple', [PlaylistManageController::class, 'deleteMultiplePlaylist'])->name('adm-delete-multiple-playlist');
+        Route::get('q/{name}', [PlaylistManageController::class, 'searchByPlaylistName'])->name('adm-search-by-playlist-name');
     });
 });

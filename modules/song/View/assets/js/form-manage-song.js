@@ -20,6 +20,7 @@ const FORM_MANAGE_SONG = (function () {
         var albumId = ctrls.formManageSong.attr("data-album-id");
         var albumType = ctrls.formManageSong.attr("data-album-type");
         var artistId = ctrls.formManageSong.attr("data-artist-id");
+        var redirect = ctrls.formManageSong.attr("data-redirect");
 
         var subArtistIds = [];
         var nodeList = $("#text-box")[0].childNodes;
@@ -57,10 +58,10 @@ const FORM_MANAGE_SONG = (function () {
                 data = {...data, ...{artist_id: artistId, album_id: albumId}};
                 _apiCreate(url, data).then(function (res) {
                     if (res.message == "Created") {
-                        if (albumType == 1) {
-                            window.location = "/artists/list/page-1";
+                        // if (albumType == 1) {
+                            window.location = redirect;
                             SESSION.set("message", "Tạo bài hát cho album thành công.");
-                        }
+                        // }
                     }
                 });
             }
@@ -70,7 +71,7 @@ const FORM_MANAGE_SONG = (function () {
     }
 
     const convertNameToSlug = function () {
-        var name = _getValInput(ctrls.formManageSong.find("[name=name]"));
+        var name = $(this).val();
         ctrls.formManageSong.find("[name=slug]").val(_renderSlug(name));
     }
 

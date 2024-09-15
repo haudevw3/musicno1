@@ -22,7 +22,6 @@ class UserManageController
         $users = $pagination['data'];
         unset($pagination['data']);
         $data = [
-            'label' => 1,
             'users' => $users,
             'pagination' => $pagination,
         ];
@@ -32,7 +31,6 @@ class UserManageController
     public function pageAddUser()
     {
         $data = [
-            'label' => 2,
             'title' => 'Tạo tài khoản',
         ];
         return view('user.viewFormManageUser', $data);
@@ -53,7 +51,6 @@ class UserManageController
         $id = $request->input('id');
         $user = $this->userService->findOne(['id' => $id]);
         $data = [
-            'label' => 2,
             'title' => 'Cập nhật tài khoản',
             'user' => $user,
         ];

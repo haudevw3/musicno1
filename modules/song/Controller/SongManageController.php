@@ -33,7 +33,6 @@ class SongManageController
         $songs = $pagination['data'];
         unset($pagination['data']);
         $data = [
-            'label' => 1,
             'songs' => $songs,
             'pagination' => $pagination,
         ];
@@ -66,7 +65,6 @@ class SongManageController
             $subArtists[] = $this->artistService->findOne(['id' => $value], ['id', 'name']);
         }
         $data = [
-            'label' => 2,
             'title' => 'Cập nhật bài hát',
             'song' => $song,
             'subArtists' => $subArtists,

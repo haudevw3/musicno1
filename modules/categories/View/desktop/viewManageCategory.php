@@ -1,17 +1,13 @@
 <?php
 
-$_namespace = 'categories.viewManageCategory';
+$namespace = 'categories.viewManageCategory';
+$mainContent = _namespace('categories.layoutManageCategory');
 
-push($_namespace);
+push($namespace);
 
 echo asset('js/table.js');
 echo asset('js/categories/table-manage-category.js');
 
 endpush();
-
-$components = [
-    _namespace('components.adm.modal-dialog'),
-    _namespace('categories.components.table-manage-category'),
-];
 
 require _namespace('layout.desktop-adm');

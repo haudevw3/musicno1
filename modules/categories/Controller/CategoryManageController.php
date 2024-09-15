@@ -3,17 +3,26 @@
 namespace Modules\Categories\Controller;
 
 use Foundation\Http\Request;
+use Modules\Album\Service\AlbumService;
+use Modules\Artist\Service\ArtistService;
 use Modules\Categories\Request\FormCreateCategory;
 use Modules\Categories\Request\FormUpdateCategory;
 use Modules\Categories\Service\CategoryService;
+use Modules\Playlist\Service\PlaylistService;
 
 class CategoryManageController
 {
     protected $categoryService;
+    protected $playlistService;
+    protected $artistService;
+    protected $albumService;
 
-    public function __construct(CategoryService $categoryService)
+    public function __construct(CategoryService $categoryService, PlaylistService $playlistService, ArtistService $artistService, AlbumService $albumService)
     {
         $this->categoryService = $categoryService;
+        $this->playlistService = $playlistService;
+        $this->artistService = $artistService;
+        $this->albumService = $albumService;
     }
 
     public function pageManageCategory()
@@ -22,7 +31,6 @@ class CategoryManageController
         $categories = $pagination['data'];
         unset($pagination['data']);
         $data = [
-            'label' => 1,
             'categories' => $categories,
             'pagination' => $pagination,
         ];
@@ -34,7 +42,6 @@ class CategoryManageController
         $parents = $this->categoryService->findAll(['id','name'], ['parent_id' => 0], ['priority' => 'desc']);
         $parents = array_merge([['id' => 0, 'name' => 'Không']], is_null($parents) ? [] : $parents);
         $data = [
-            'label' => 2,
             'title' => 'Tạo danh mục',
             'parents' => $parents,
         ];
@@ -57,11 +64,24 @@ class CategoryManageController
         $category = $this->categoryService->findOne(['id' => $id]);
         $parents = $this->categoryService->findAll(['id','name'], ['parent_id' => 0], ['priority' => 'desc']);
         $parents = array_merge([['id' => 0, 'name' => 'Không']], $parents);
+        $tags = [];
+        $tagIds = explode(',', $category['tag_ids']);
+        if ($category['type'] > 0) {
+            foreach ($tagIds as $tagId) {
+                if ($category['type'] == 1) {
+                    $tags[] = $this->playlistService->findOne(['id' => $tagId], ['id', 'name']);
+                } else if ($category['type'] == 2) {
+                    $tags[] = $this->artistService->findOne(['id' => $tagId], ['id', 'name']);
+                } else if ($category['type'] == 3) {
+                    $tags[] = $this->albumService->findOne(['id' => $tagId], ['id', 'name']);
+                }
+            }
+        }
         $data = [
-            'label' => 2,
             'title' => 'Cập nhật danh mục',
             'category' => $category,
             'parents' => $parents,
+            'tags' => $tags,
         ];
         return view('categories.viewFormManageCategory', $data);
     }

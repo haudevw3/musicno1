@@ -1,17 +1,13 @@
 <?php
 
-$_namespace = 'artist.viewManageArtist';
+$namespace = 'artist.viewManageArtist';
+$mainContent = _namespace('artist.layoutManageArtist');
 
-push($_namespace);
+push($namespace);
 
 echo asset('js/table.js');
 echo asset('js/artist/table-manage-artist.js');
 
 endpush();
-
-$components = [
-    _namespace('components.adm.modal-dialog'),
-    _namespace('artist.components.table-manage-artist'),
-];
 
 require _namespace('layout.desktop-adm');

@@ -16,6 +16,7 @@ const FORM_MANAGE_USER = (function () {
     const postFormUser = function () {
         var id = ctrls.formManageUser.attr("data-id");
         var url = ctrls.formManageUser.attr("data-url");
+
         var data = {
             fullname: _getValInput(ctrls.formManageUser.find("[name=fullname]")),
             username: _getValInput(ctrls.formManageUser.find("[name=username]")),
@@ -25,6 +26,7 @@ const FORM_MANAGE_USER = (function () {
             tel: _getValInput(ctrls.formManageUser.find("[name=tel]"), false),
             role: _getValInput(ctrls.formManageUser.find("[name=role]")),
         }
+        
         const required = [data.fullname, data.username, data.email, data.password];
         if (! required.includes('')) {
             if (checkUsername(data.username) != -1) {

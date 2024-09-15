@@ -17,12 +17,14 @@ const FORM_MANAGE_ARTIST = (function () {
     const postFormArtist = function () {
         var id = ctrls.formManageArtist.attr("data-id");
         var url = ctrls.formManageArtist.attr("data-url");
+
         var data = {
             name: _getValInput(ctrls.formManageArtist.find("[name=name]")),
             slug: _getValInput(ctrls.formManageArtist.find("[name=slug]")),
             image: _getValInput(ctrls.formManageArtist.find("[name=image]")),
             description: _getValInput(ctrls.formManageArtist.find("[name=description]")),
         }
+
         const required = [data.name, data.slug, data.image, data.description];
         if (! required.includes('')) {
             if (id > 0) {
@@ -47,7 +49,7 @@ const FORM_MANAGE_ARTIST = (function () {
     }
 
     const convertNameToSlug = function () {
-        var name = _getValInput(ctrls.formManageArtist.find("[name=name]"));
+        var name = $(this).val();
         ctrls.formManageArtist.find("[name=slug]").val(_renderSlug(name));
     }
 

@@ -22,7 +22,6 @@ class ArtistManageController
         $artists = $pagination['data'];
         unset($pagination['data']);
         $data = [
-            'label' => 1,
             'artists' => $artists,
             'pagination' => $pagination,
         ];
@@ -32,7 +31,6 @@ class ArtistManageController
     public function pageAddArtist()
     {
         $data = [
-            'label' => 2,
             'title' => 'Tạo nghệ sĩ',
         ];
         return view('artist.viewFormManageArtist', $data);
@@ -53,7 +51,6 @@ class ArtistManageController
         $id = $request->input('id');
         $artist = $this->artistService->findOne(['id' => $id]);
         $data = [
-            'label' => 2,
             'title' => 'Cập nhật nghệ sĩ',
             'artist' => $artist,
         ];
@@ -101,7 +98,6 @@ class ArtistManageController
     {
         $id = $request->input('id');
         $data = [
-            'label' => 2,
             'title' => 'Tạo album',
             'artistId' => $id,
         ];

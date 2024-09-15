@@ -1,17 +1,14 @@
-<div id="form-manage-album" class="form-container bg-white rounded shadow"
+<div id="form-manage-album" class="card shadow col-9"
     data-id="<?php echo isset($album) ? $album['id'] : 0 ?>"
     data-url="<?php echo isset($album) ? route('adm-update-album', $album['id']) : route('adm-create-album') ?>"
     data-artist-id="<?php echo isset($artistId) ? $artistId : 0 ?>">
 
-    <div class="form-header vertical-center-align-items fs-16 fw-semibold text-blue p-20 rounded-top">
-        <?php echo $title ?>
-    </div>
-
-    <div class="form-wrapper p-20">
+    <div class="card-header fs-16 fw-semibold text-blue"><?php echo 'Biểu mẫu '. mb_strtolower($title) ?></div>
+    <div class="card-body">
         <?php
             if (! isset($album)) {
                 ?>
-                    <div class="alert alert-info position-relative m-0 mb-3" role="alert">
+                    <div class="alert alert-info position-relative m-0 mb-3 d-block" role="alert">
                         <li class="text-primary">Bước 1: Điền đầy đủ thông tin để tạo album</li>
                         <li class="text-primary">Bước 2: Thêm một hoặc nhiều bài hát vào album dựa trên loại album đã tạo trước đó.</li>
                         <li class="text-warning">
@@ -22,11 +19,11 @@
                 <?php
             }
         ?>
-
-        <div class="form-content rounded p-20">
+        
+        <div class="form-content p-20">
             <div id="name" class="mb-3">
                 <label>Tên album:</label>
-                <div class="input-group-icon">
+                <div class="input-group-validation">
                     <i class="fa-regular fa-pen"></i>
                     <input type="text" name="name" class="form-control" placeholder="Nhập tên album..."
                         value="<?php echo isset($album) ? $album['name'] : null ?>">
@@ -36,7 +33,7 @@
         
             <div id="slug" class="mb-3">
                 <label>Đường dẫn hiển thị:</label>
-                <div class="input-group-icon">
+                <div class="input-group-validation">
                     <i class="fa-regular fa-link"></i>
                     <input type="text" name="slug" class="form-control" placeholder="Tự thay đổi theo tên album..."
                         value="<?php echo isset($album) ? $album['slug'] : null ?>">
@@ -46,7 +43,7 @@
 
             <div id="image" class="mb-3">
                 <label>Hình ảnh: ( chỉ chấp nhận các tập tin có đuôi jpg, jpeg, png - được bỏ trống )</label>
-                <div class="input-group-icon">
+                <div class="input-group-validation">
                     <i class="fa-regular fa-camera"></i>
                     <input type="text" name="image" class="form-control ofm" placeholder="Nhấn vào đây để chọn hình ảnh..."
                         value="<?php echo isset($album) ? $album['image'] : null ?>">
@@ -88,12 +85,12 @@
 
             <div id="description" class="mb-3">
                 <label>Mô tả cho album:</label>
-                <textarea rows="5" name="description" class="form-control" placeholder="Nhập mô tả cho album..."
-                ><?php echo isset($album) ? $album['description'] : null ?></textarea>
+                <textarea rows="5" name="description" class="form-control" placeholder="Nhập mô tả cho album..."><?php
+                    echo isset($album) ? $album['description'] : null ?></textarea>
                 <span class="invalid-feedback"></span>
             </div>
 
-            <div class="mb-0 mt-20 d-flex justify-content-end">
+            <div class="mt-20 items-align-vertical-center-end">
                 <button id="submit-form-album" class="btn btn-primary">
                     <?php echo isset($album) ? 'Cập nhật album' : 'Tạo album' ?>
                 </button>
@@ -104,6 +101,6 @@
 
 <?php
     if (! isset($album)) {
-        _require('song.components.form-manage-song', ['title' => 'Biểu mẫu tạo bài hát', 'style' => 'display:none;']);
+        _require('song.components.form-manage-song', ['title' => 'Tạo bài hát']);
     }
 ?>

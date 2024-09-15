@@ -18,6 +18,7 @@ const FORM_MANAGE_ALBUM = (function () {
         var id = ctrls.formManageAlbum.attr("data-id");
         var url = ctrls.formManageAlbum.attr("data-url");
         var artistId = ctrls.formManageAlbum.attr("data-artist-id");
+
         var data = {
             name: _getValInput(ctrls.formManageAlbum.find("[name=name]")),
             slug: _getValInput(ctrls.formManageAlbum.find("[name=slug]")),
@@ -26,6 +27,7 @@ const FORM_MANAGE_ALBUM = (function () {
             release_year: _getValInput(ctrls.formManageAlbum.find("[name=release_year]")),
             description: _getValInput(ctrls.formManageAlbum.find("[name=description]")),
         }
+        
         const required = [data.name, data.slug, data.description];
         if (! required.includes('')) {
             if (id > 0) {
@@ -57,7 +59,7 @@ const FORM_MANAGE_ALBUM = (function () {
     }
 
     const convertNameToSlug = function () {
-        var name = _getValInput(ctrls.formManageAlbum.find("[name=name]"));
+        var name = $(this).val();
         ctrls.formManageAlbum.find("[name=slug]").val(_renderSlug(name));
     }
 

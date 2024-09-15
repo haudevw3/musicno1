@@ -5,29 +5,28 @@ const TABLE_MANAGE_USER = (function () {
     const bindControl = function () {
         var self = {};
         self.tableManageUser = $("#table-manage-user");
+        self.deleteMultipleUser = $("#delete-multiple-user");
         return self;
     }
 
     const bindFunction = function () {
         ctrls.tableManageUser.find(".delete-user").on("click", deleteUser);
-        ctrls.tableManageUser.find("#delete-multiple-user").on("click", deleteMultipleUser);
+        ctrls.deleteMultipleUser.on("click", deleteMultipleUser);
     }
 
     const deleteUser = function () {
         var id = $(this).attr("data-id");
         var url = $(this).attr("data-url");
-        UI_CONTROL.addStateFocusOfButton(true, this);
         _showDialog("Thông báo", "Bạn có muốn xóa tài khoản này không? Khi xóa mọi dữ liệu liên quan sẽ bị mất vĩnh viễn.")
         .then(function (b) {
             if (b) {
                 _apiDelete(url, {id: id}).then(function (res) {
                     if (res.message == "Success") {
                         window.location = "/users/list/page-1";
-                        SESSION.set("message", "Xóa dữ liệu tài khoản thành công.");
+                        SESSION.set("message", "Xóa tài khoản thành công.");
                     }
                 });
             }
-            TABLE.removeStateOfTable();
         });
     }
 
@@ -37,17 +36,19 @@ const TABLE_MANAGE_USER = (function () {
             var array = ctrls.tableManageUser.find("[name='user_ids[]']:checkbox:checked").map(function () {
                 return $(this).val();
             }).get();
+
             var formData = new FormData;
             for (var i = 0; i < array.length; i++) {
                 formData.append("user_ids[" + i + "]", array[i]);
-            }            
+            }
+
             _showDialog("Thông báo", "Bạn có muốn xóa những tài khoản này không? Khi xóa mọi dữ liệu liên quan sẽ bị mất vĩnh viễn.")
             .then(function (b) {
                 if (b) {
                     _apiUpload(url, formData).then(function (res) {
                         if (res.message == "Success") {
                             window.location = "/users/list/page-1";
-                            SESSION.set("message", "Xóa dữ liệu tài khoản thành công.");
+                            SESSION.set("message", "Xóa tài khoản thành công.");
                         }
                     });
                 }

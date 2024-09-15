@@ -27,7 +27,8 @@ class CategoryServiceImpl extends BaseServiceImpl implements CategoryService
             'priority' => $data['priority'],
             'parent_id' => $data['parent_id'],
             'image' => empty($data['image']) ? null : trim($data['image']),
-            'tags' => empty($data['tags']) ? null : trim($data['tags']),
+            'pages' => empty($data['pages']) ? null : trim($data['pages']),
+            'tag_ids' => empty($data['tag_ids']) ? null : trim($data['tag_ids']),
         ];
         return $this->baseRepo->create($attributes);
     }
@@ -48,9 +49,9 @@ class CategoryServiceImpl extends BaseServiceImpl implements CategoryService
             $attributes['image'] = trim($data['image']);
         }
 
-        if (array_key_exists('tags', $data) &&
-           ($category['tags'] != $data['tags'])) {
-            $attributes['tags'] = trim($data['tags']);
+        if (array_key_exists('pages', $data) &&
+           ($category['pages'] != $data['pages'])) {
+            $attributes['pages'] = trim($data['pages']);
         }
 
         if (array_key_exists('type', $data) &&
@@ -68,9 +69,9 @@ class CategoryServiceImpl extends BaseServiceImpl implements CategoryService
             $attributes['parent_id'] = $data['parent_id'];
         }
 
-        if (array_key_exists('playlist_ids', $data) &&
-           ($category['playlist_ids'] != $data['playlist_ids'])) {
-            $attributes['playlist_ids'] = $data['playlist_ids'];
+        if (array_key_exists('tag_ids', $data) &&
+           ($category['tag_ids'] != $data['tag_ids'])) {
+            $attributes['tag_ids'] = trim($data['tag_ids']);
         }
 
         if (empty($attributes)) {

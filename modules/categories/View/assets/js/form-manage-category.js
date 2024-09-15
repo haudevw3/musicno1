@@ -12,23 +12,37 @@ const FORM_MANAGE_CATEGORY = (function () {
     const bindFunction = function () {
         ctrls.submitFormCategory.on("click", postFormCategory);
         ctrls.formManageCategory.find("[name=name]").on("change", convertNameToSlug);
+        ctrls.formManageCategory.find("[name=type]").on("change", changeType);
     }
 
     const postFormCategory = function () {
         var id = ctrls.formManageCategory.attr("data-id");
         var url = ctrls.formManageCategory.attr("data-url");
-        var tags = ctrls.formManageCategory.find("[name='tags[]']:checkbox:checked").map(function () {
+
+        var tagIds = [];
+        var nodeList = $("#text-box")[0].childNodes;
+        nodeList.forEach(function (node) {
+            if (node.nodeType == Node.ELEMENT_NODE) {
+                tagIds.push(node.dataset.id);
+            }
+        });
+        tagIds = (tagIds.length == 0) ? null : tagIds.join(',');
+
+        var pages = ctrls.formManageCategory.find("[name='pages[]']:checkbox:checked").map(function () {
             return $(this).val();
         }).get();
+
         var data = {
+            tag_ids: tagIds,
+            pages: pages.join(','),
             name: _getValInput(ctrls.formManageCategory.find("[name=name]")),
             slug: _getValInput(ctrls.formManageCategory.find("[name=slug]")),
             type: _getValInput(ctrls.formManageCategory.find("[name=type]")),
             priority: _getValInput(ctrls.formManageCategory.find("[name=priority]")),
             parent_id: _getValInput(ctrls.formManageCategory.find("[name=parent_id]")),
             image: _getValInput(ctrls.formManageCategory.find("[name=image]"), false),
-            tags: tags.join(',')
         }
+
         const required = [data.name, data.slug];
         if (! required.includes('')) {
             if (id > 0) {
@@ -53,9 +67,50 @@ const FORM_MANAGE_CATEGORY = (function () {
     }
 
     const convertNameToSlug = function () {
-        var name = _getValInput(ctrls.formManageCategory.find("[name=name]"));
+        var name = $(this).val();
         ctrls.formManageCategory.find("[name=slug]").val(_renderSlug(name));
     }
+
+    const changeType = function () {
+        var type = $(this).val();
+        setTextBoxByType(type);
+    }
+
+    const setTextBoxByType = function (type) {
+        var typeName = "";
+        var url = "";
+        var text = "";
+
+        if (type == 1) {
+            typeName = "danh sách phát";
+            url = "/api/playlists/q/";
+            ctrls.formManageCategory.find("[name=textbox]").attr("aria-placeholder", "Tìm kiếm theo tên danh sách phát...");
+        } else if (type == 2) {
+            typeName = "nghệ sĩ";
+            url = "/api/artists/q/";
+            ctrls.formManageCategory.find("[name=textbox]").attr("aria-placeholder", "Tìm kiếm theo tên nghệ sĩ...");
+        } else if (type == 3) {
+            typeName = "album";
+            url = "/api/albums/q/";
+            ctrls.formManageCategory.find("[name=textbox]").attr("aria-placeholder", "Tìm kiếm theo tên album...");
+        }
+
+        if (type == 0) {
+            url = "";
+            text = "Chọn loại danh mục để thực hiện chức năng này: ( được bỏ trống )";
+            ctrls.formManageCategory.find("[name=textbox]").attr("aria-placeholder", "Tìm kiếm...");
+        } else {
+            text = `Gắn thẻ các ${typeName} để hiển thị: ( nhập @ và 1 kí tự đi kèm để tìm kiếm - được bỏ trống )`;
+        }
+
+        TEXT_BOX.init({url: url});
+        ctrls.formManageCategory.find("#search label").text(text);
+    }
+
+    $(document).ready(function () {
+        var type = ctrls.formManageCategory.find("[name=type]").val();
+        setTextBoxByType(type);
+    });
 
     function init() {
         ctrls = bindControl();

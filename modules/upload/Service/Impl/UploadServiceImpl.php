@@ -23,8 +23,8 @@ class UploadServiceImpl extends BaseServiceImpl implements UploadService
             unset($partsOfOriginalName[count($partsOfOriginalName) - 1]);
             $name = implode('', $partsOfOriginalName);
             $type = $file->getClientMimeType();
-            $aliasName = $file->hash()->move('public/uploads/images');
-            $link = asset("uploads/images/$aliasName");
+            $aliasName = $file->hash()->move('public/uploads');
+            $link = asset("uploads/$aliasName");
             $attributes = [
                 'name' => $name,
                 'link' => $link,
