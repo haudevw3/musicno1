@@ -1,0 +1,50 @@
+<?php
+
+namespace {{ namespace }};
+
+use MongoDB\Laravel\Eloquent\Model;
+
+class {{ class }} extends Model
+{
+    /**
+     * Give the database name if any.
+     *
+     * @var string
+     */
+    protected $connection = 'musicno1';
+
+    /**
+     * The collection name in Mongo DB.
+     *
+     * @var string
+     */
+    protected $collection = 'collection_name';
+
+    /**
+     * The attributes that are mass assignable.
+     *
+     * @var bool
+     */
+    public $timestamps = false;
+
+    /**
+     * The attributes that are mass assignable.
+     *
+     * @var array<int, string>
+     */
+    protected $fillable = [];
+
+    /**
+     * The attributes and data type for serialization.
+     *
+     * @var array<string|int, string|null>
+     */
+    protected $attributes = [];
+
+    /**
+     * The attributes that should be hidden for serialization.
+     *
+     * @var array<int, string>
+     */
+    protected $hidden = [];
+}
