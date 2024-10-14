@@ -112,7 +112,7 @@ class ServiceMakeCommand extends Command
         $this->addContentStubTo('contract', "$path/Contracts/$service.php",
         ['namespace' => "Modules\\$module\\Service\\Contracts", 'interface' => $service]);
 
-        $this->addContentStubTo('repository', "$path/$service.php",
+        $this->addContentStubTo('service', "$path/$service.php",
         ['namespace' => "Modules\\$module\\Service", 'interface' => $service.'Contract',
          'use' => "Modules\\$module\\Service\\Contracts\\".$service, 'class' => $service]);
     }

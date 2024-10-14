@@ -86,8 +86,8 @@ class ModuleMakeCommand extends Command
 
             $name = ucfirst($name);
 
-            $this->addContentStubTo('provider', $path.'/'.$name.'Provider.php',
-            ['namespace' => "Modules\\$name", 'class' => $name.'ServiceProvider']);
+            $this->addContentStubTo('provider', $path.'/Provider.php',
+            ['namespace' => "Modules\\$name", 'class' => 'Provider']);
             $this->addContentStubTo('config', $path.'/config.php');
             $this->addContentStubTo('routes', $path.'/routes.php');
 

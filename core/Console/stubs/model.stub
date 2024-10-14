@@ -2,12 +2,12 @@
 
 namespace {{ namespace }};
 
-use MongoDB\Laravel\Eloquent\Model;
+use Jenssegers\Mongodb\Eloquent\Model;
 
 class {{ class }} extends Model
 {
     /**
-     * Give the database name if any.
+     * Assign different a connection if any.
      *
      * @var string
      */
@@ -21,21 +21,21 @@ class {{ class }} extends Model
     protected $collection = 'collection_name';
 
     /**
-     * The attributes that are mass assignable.
+     * The attribute will disabled.
      *
      * @var bool
      */
     public $timestamps = false;
 
     /**
-     * The attributes that are mass assignable.
+     * Assign fields to save in the database.
      *
      * @var array<int, string>
      */
     protected $fillable = [];
 
     /**
-     * The attributes and data type for serialization.
+     * Define default values for the model's attributes.
      *
      * @var array<string|int, string|null>
      */
