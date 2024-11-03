@@ -2,6 +2,7 @@
 
 namespace Core\Jwt;
 
+use Core\Constant;
 use Core\Jwt\Exceptions\InvalidClaimTypeException;
 use Core\Jwt\Exceptions\InvalidHeaderTypeException;
 use Core\Jwt\Exceptions\UnsupportedAlgorithmException;
@@ -142,7 +143,7 @@ class Encoder
         }
 
         if (! isset($payload['exp'])) {
-            $payload = array_merge($payload, ['exp' => time() + config('app.expiration_time')]);
+            $payload = array_merge($payload, ['exp' => time() + Constant::DEFAULT_EXP]);
         }
 
         foreach ($payload as $key => $value) {
