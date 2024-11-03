@@ -1,6 +1,65 @@
 <?php
 
+use Illuminate\Support\Arr;
 use Illuminate\Support\Str;
+
+if (! function_exists('menu')) {
+    /**
+     * Get a menu from the config with the given key.
+     *
+     * @param  string  $key
+     * @return mixed
+     */
+    function menu(string $key)
+    {
+        return config("menu.$key");
+    }
+}
+
+if (! function_exists('label')) {
+    /**
+     * Get a label from the config with the given key.
+     *
+     * @param  string  $key
+     * @return mixed
+     */
+    function label(string $key)
+    {
+        return config("label.$key");
+    }
+}
+
+if (! function_exists('current_date')) {
+    /**
+     * Get the current date.
+     *
+     * @param  string|null  $format
+     * @param  int|null     $timestamp
+     * @return string
+     */
+    function current_date($format = null, $timestamp = null)
+    {
+        return date($format ?? 'Y-m-d H:i:s', $timestamp);
+    }
+}
+
+if (! function_exists('typecast')) {
+    /**
+     * Get typecast with the given value.
+     *
+     * @param  mixed   $value
+     * @param  string  $type
+     * @return mixed
+     */
+    function typecast($value, $type = 'bool')
+    {
+        if ($type === 'bool') {
+            $result = ($value === 'true') ? true : false;
+        }
+
+        return $result;
+    }
+}
 
 if (! function_exists('random_avatar')) {
     /**
@@ -34,9 +93,10 @@ if (! function_exists('str_random')) {
      * Get a unique identifier string or integer with the given type.
      * 
      * @param  string  $type
+     * @param  int     $length
      * @return string
      */
-    function str_random($type = 'string')
+    function str_random($type = 'string', $length = 22)
     {
         $rand = rand(10000, 99999);
 
@@ -44,7 +104,7 @@ if (! function_exists('str_random')) {
             return $rand;
         }
 
-        return Str::random(22).strval($rand);
+        return Str::random($length).strval($rand);
     }
 }
 
@@ -90,29 +150,25 @@ if (! function_exists('template_email')) {
     /**
      * Render string HTML to send mail.
      *
-     * @param  string  $title
+     * @param  string  $subject
      * @param  string  $content
      * @param  array   $options
      * @return string
      */
-    function template_email(string $title = '', string $content = '', array $options = [])
+    function template_email(string $subject, string $content, array $options = [])
     {
-        $title = $title ?: config('label.VERIFY_ACCOUNT_TITLE');
-        $content = $content ?: config('label.VERIFY_ACCOUNT_CONTENT');
-
-        $url = isset($options['url']) ? trim($options['url'], '/') : '';
-        $name = isset($options['name']) ? $options['name'] : '';
-        $token = isset($options['token']) ? $options['token'] : '';
-        $btnName = isset($options['btn_name']) ? $options['btn_name'] : 'Link xác thực của bạn';
-
+        $url = $options['url'];
+        $name = $options['name'];
+        $token = $options['token'];
+        $btnName = $options['btn_name'];
 
         $html = <<<EOD
             <!doctype html>
             <html lang="vi">
             <head>
                 <meta content="text/html; charset=utf-8" http-equiv="Content-Type" />
-                <title>MusicNo1 - {$title}</title>
-                <meta name="description" content="{$title}.">
+                <title>MusicNo1 - {$subject}</title>
+                <meta name="description" content="{$subject}">
             </head>
             <body style="margin:0;padding:0;background-color:#ffffff">
                 <center>
@@ -121,7 +177,7 @@ if (! function_exists('template_email')) {
                             <tr>
                                 <th style="height:100px">
                                     <h1 style="margin:0;margin-bottom:10px;padding:0;color:#4b4b4b;font-family:Helvetica,Arial,sans-serif;font-size:20px;font-weight:700;line-height:1.2;text-align:center;word-wrap:normal">MusicNo1</h1>
-                                    <p style="margin:0;margin-bottom:10px;padding:0;color:#4b4b4b;font-family:Helvetica,Arial,sans-serif;font-size:16px;font-weight:500;line-height:26px;text-align:center;word-wrap:normal">{$title}</p>
+                                    <p style="margin:0;margin-bottom:10px;padding:0;color:#4b4b4b;font-family:Helvetica,Arial,sans-serif;font-size:16px;font-weight:500;line-height:26px;text-align:center;word-wrap:normal">{$subject}</p>
                                 </th>
                             </tr>
                             <tr>
@@ -141,7 +197,7 @@ if (! function_exists('template_email')) {
                                                         Chuyển hướng đến trang web tại đây
                                                     </p>
                                                     <a style="margin:0;padding:0;color:#4b4b4b;font-family:Helvetica,Arial,sans-serif;font-size:12px;font-weight:400;text-decoration:none;text-align:center;word-wrap:normal;"
-                                                    href="">http://musicno1.online</a>
+                                                    href="">https://musicno1.online</a>
                                                 </th>
                                             </tr>
                                         </tbody>
