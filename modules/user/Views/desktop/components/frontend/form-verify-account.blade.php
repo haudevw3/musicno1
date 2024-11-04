@@ -16,12 +16,7 @@
             <input type="hidden" name="id" value="{{ $id }}">
 
             <div class="mb-3">
-                <div class="input-group input-group-joined input-group-solid">
-                    <span class="input-group-text">
-                        <i class="fa-regular fa-lock"></i>
-                    </span>
-                    <input class="form-control ps-0" type="text" name="token_send_mail" autocomplete="off" autocapitalize="off" placeholder="Mã xác nhận">
-                </div>
+                <x-core::base-input icon="lock" type="text" name="token_send_mail" placeholder="Mã xác nhận"></x-core::base-input>
             </div>
 
             <div class="mb-3 d-flex justify-content-end">

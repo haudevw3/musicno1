@@ -11,6 +11,7 @@
         "jenssegers/mongodb": "3.9",
         "laravel/framework": "^9.0",
         "laravel/sanctum": "^2.14",
+        "laravel/socialite": "^5.16",
         "laravel/tinker": "^2.7",
         "mailgun/mailgun-php": "^4.3",
         "nyholm/psr7": "^1.8",
@@ -31,7 +32,9 @@
             "Core\\": "core/",
             "Database\\Factories\\": "database/factories/",
             "Database\\Seeders\\": "database/seeders/",
-            "Modules\\User\\": "modules/user/"
+            "Modules\\Adm\\": "modules/adm/",
+            "Modules\\User\\": "modules/user/",
+            "Modules\\Page\\": "modules/page/"
         },
         "files": [
             "core/functions.php"

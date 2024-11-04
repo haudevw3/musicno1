@@ -10,39 +10,19 @@
 
         <div class="form-content">
             <div class="mb-4">
-                <div class="input-group input-group-joined input-group-solid">
-                    <span class="input-group-text">
-                        <i class="fa-regular fa-user"></i>
-                    </span>
-                    <input class="form-control ps-0" type="text" name="name" autocomplete="off" autocapitalize="off" placeholder="Họ và tên">
-                </div>
+                <x-core::base-input icon="user" type="text" name="name" placeholder="Họ và tên"></x-core::base-input>
             </div>
 
             <div class="mb-4">
-                <div class="input-group input-group-joined input-group-solid">
-                    <span class="input-group-text">
-                        <i class="fa-regular fa-user"></i>
-                    </span>
-                    <input class="form-control ps-0" type="text" name="username" autocomplete="off" autocapitalize="off" placeholder="Tên đăng nhập">
-                </div>
+                <x-core::base-input icon="user" type="text" name="username" placeholder="Tên đăng nhập"></x-core::base-input>
             </div>
 
             <div class="mb-4">
-                <div class="input-group input-group-joined input-group-solid">
-                    <span class="input-group-text">
-                        <i class="fa-regular fa-envelope"></i>
-                    </span>
-                    <input class="form-control ps-0" type="email" name="email" autocomplete="off" autocapitalize="off" placeholder="Email">
-                </div>
+                <x-core::base-input icon="envelope" type="email" name="email" placeholder="Email"></x-core::base-input>
             </div>
 
             <div class="mb-4">
-                <div class="input-group input-group-joined input-group-solid">
-                    <span class="input-group-text">
-                        <i class="fa-regular fa-lock"></i>
-                    </span>
-                    <input class="form-control ps-0" type="password" name="password" placeholder="Mật khẩu">
-                </div>
+                <x-core::base-input icon="lock" type="password" name="password" placeholder="Mật khẩu"></x-core::base-input>
             </div>
 
             <div class="mb-3">

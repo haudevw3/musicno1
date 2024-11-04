@@ -1,6 +1,5 @@
 <?php
 
-use App\Http\Controllers\TestController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -14,8 +13,6 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::get('/', function () {
-    return view('desktop-index');
-});
-
-Route::get('send', [TestController::class, 'testMailgun']);
+// Route::get('/', function () {
+//     return view('welcome');
+// });

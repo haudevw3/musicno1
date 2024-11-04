@@ -5,9 +5,10 @@
 /storage
 /vendor
 /docker
-/modules
+/modules/adm
+/modules/page
 /resources
-/core/Middleware
+/core/Http
 docker-compose.yml
 .env
 .env.backup

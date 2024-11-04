@@ -26,11 +26,12 @@ Route::middleware('demon')->group(function () {
     Route::middleware('auth.custom')->group(function () {
         Route::get('xac-thuc-tai-khoan/{id?}', [UserController::class, 'verifyAccountPage'])->name('verify-account-page');
         Route::get('doi-mat-khau/{id?}', [UserController::class, 'changePassword'])->name('change-password');
-        Route::get('dang-xuat', [UserController::class, 'logout']);
+        Route::get('dang-xuat', [UserController::class, 'logout'])->name('logout');
 
         Route::prefix('api/v1')->middleware('api')->group(function () {
             Route::post('post-verify-account', [UserController::class, 'postVerifyAccountApi']);
             Route::post('refresh-token-to-send-mail', [UserController::class, 'refreshTokenToSendMailApi']);
+            Route::get('thong-tin-ca-nhan', [UserController::class, 'profile'])->name('profile');
         });
     });
 });

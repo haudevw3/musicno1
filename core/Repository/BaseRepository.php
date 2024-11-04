@@ -2,6 +2,7 @@
 
 namespace Core\Repository;
 
+use Core\Pagination\Paginator;
 use Core\Repository\Contracts\BaseRepository as BaseRepositoryContract;
 use Illuminate\Database\Eloquent\Builder;
 
@@ -127,14 +128,11 @@ abstract class BaseRepository implements BaseRepositoryContract
      *
      * @param  array  $conditions
      * @param  array  $fields
-     * @param  array  $sorted
      * @return \Jenssegers\Mongodb\Eloquent\Model
      */
-    public function findOne(array $conditions, array $fields = [], array $sorted = [])
+    public function findOne(array $conditions, array $fields = [])
     {
-        return $this->parseGrammar(
-            $conditions, empty($sorted) ? $sorted : ['sorted' => $sorted]
-        )->first($fields);
+        return $this->parseGrammar($conditions)->first($fields);
     }
 
     /**
@@ -142,14 +140,29 @@ abstract class BaseRepository implements BaseRepositoryContract
      *
      * @param  array  $conditions
      * @param  array  $fields
-     * @param  array  $sorted
+     * @param  array  $options
      * @return \Illuminate\Database\Eloquent\Collection
      */
-    public function findMany(array $conditions = [], array $fields = [], array $sorted = [])
+    public function findMany(array $conditions = [], array $fields = [], array $options = [])
     {
         return $this->parseGrammar(
-            $conditions, array_merge(empty($sorted) ? $sorted : ['sorted' => $sorted], ['limit' => 1000])
+            $conditions, isset($options['limit']) ? $options : array_merge($options, ['limit' => 10])
         )->get($fields);
+    }
+
+    /**
+     * Paginate the given query.
+     *
+     * @param  array  $fields
+     * @param  array  $conditions
+     * @param  array  $options
+     * @return \Core\Pagination\Contracts\Paginator
+     */
+    public function paginator(array $fields = [], array $conditions = [], array $options = [])
+    {
+        $items = $this->parseGrammar($conditions, $options)->get($fields);
+
+        return Paginator::create($items, count($items), 20, request());
     }
 
     /**

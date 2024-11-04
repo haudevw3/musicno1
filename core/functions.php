@@ -55,6 +55,26 @@ if (! function_exists('typecast')) {
     {
         if ($type === 'bool') {
             $result = ($value === 'true') ? true : false;
+        } elseif ($type === 'int') {
+            $result = intval($value);
+        }
+
+        return $result;
+    }
+}
+
+if (! function_exists('regex')) {
+    /**
+     * Get regex with the given key.
+     *
+     * @param  string  $key
+     * @return string
+     */
+    function regex(string $key) {
+        $result = '';
+
+        if ($key === 'page') {
+            $result = 'page-[1-9][0-9]*';
         }
 
         return $result;

@@ -2,6 +2,7 @@
 
 namespace Modules\User\Service;
 
+use Core\Constant;
 use Core\Http\ResponseBag;
 use Core\Jwt\Jwt;
 use Core\Service\BaseService;
@@ -217,11 +218,11 @@ class ClientService extends BaseService implements ClientServiceContract
                 'username' => $username,
                 'password' => $password,
                 'active' => 1,
-                'roles' => [1],
+                'roles' => [Constant::MEMBER_ROLE],
             ]);
         }
 
-        Auth::login($user);
+        $deleted = false;
 
         $client = $this->baseRepo->findOne(['user_id' => $user->id]);
 
@@ -232,8 +233,12 @@ class ClientService extends BaseService implements ClientServiceContract
         // then we will check the start time login and the session lifetime,
         // if it is valid then we must delete the previous session.
         if (! is_null($client) && $timed >= $sessionLifetime) {
-            $this->baseRepo->deleteOne(['user_id' => $user->id]);
-        } else {
+            $deleted = $this->baseRepo->deleteOne(['user_id' => $user->id]);
+        }
+
+        Auth::login($user);
+
+        if (is_null($client) || $deleted) {
             $this->create([
                 'user_id' => $user->id,
                 'token' => $googleUser->token,

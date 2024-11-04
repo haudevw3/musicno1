@@ -75,20 +75,29 @@ interface BaseRepository
      *
      * @param  array  $conditions
      * @param  array  $fields
-     * @param  array  $sorted
      * @return \Jenssegers\Mongodb\Eloquent\Model
      */
-    public function findOne(array $conditions, array $fields = [], array $sorted = []);
+    public function findOne(array $conditions, array $fields = []);
 
     /**
      * Return many documents with the given conditions.
      *
      * @param  array  $conditions
      * @param  array  $fields
-     * @param  array  $sorted
+     * @param  array  $options
      * @return \Illuminate\Database\Eloquent\Collection
      */
-    public function findMany(array $conditions = [], array $fields = [], array $sorted = []);
+    public function findMany(array $conditions = [], array $fields = [], array $options = []);
+
+    /**
+     * Paginate the given query.
+     *
+     * @param  array  $fields
+     * @param  array  $conditions
+     * @param  array  $options
+     * @return \Core\Pagination\Contracts\Paginator
+     */
+    public function paginator(array $fields = [], array $conditions = [], array $options = []);
 
     /**
      * Parse grammar and Build a new query builder for the model's table.

@@ -10,12 +10,7 @@
         
         <div class="form-content">
             <div class="mb-3">
-                <div class="input-group input-group-joined input-group-solid">
-                    <span class="input-group-text">
-                        <i class="fa-regular fa-lock"></i>
-                    </span>
-                    <input class="form-control ps-0" type="email" name="email" autocomplete="off" autocapitalize="off" placeholder="Email">
-                </div>
+                <x-core::base-input icon="envelope" type="email" name="email" placeholder="Email"></x-core::base-input>
             </div>
 
             <div class="mb-3">
