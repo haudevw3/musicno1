@@ -1,6 +1,7 @@
 <?php
 
 use Illuminate\Support\Arr;
+use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Str;
 
 if (! function_exists('menu')) {
@@ -39,7 +40,7 @@ if (! function_exists('current_date')) {
      */
     function current_date($format = null, $timestamp = null)
     {
-        return date($format ?? 'Y-m-d H:i:s', $timestamp);
+        return date($format ?? 'd-m-Y H:i:s', $timestamp);
     }
 }
 
@@ -57,9 +58,51 @@ if (! function_exists('typecast')) {
             $result = ($value === 'true') ? true : false;
         } elseif ($type === 'int') {
             $result = intval($value);
+        } elseif ($type === 'array') {
+            $result = is_array($value) ? $value : [$value];
+        } elseif ($type === 'hash') {
+            $result = Hash::make($value);
         }
 
         return $result;
+    }
+}
+
+if (! function_exists('isset_if')) {
+    /**
+     * Determine if and get the value with the given array and key.
+     *
+     * @param  mixed  $variable
+     * @param  mixed  $key
+     * @param  mixed  $default
+     * @return mixed
+     */
+    function isset_if($variable, $key = null, $default = null)
+    {
+        if (is_array($variable)) {
+            return isset($variable[$key]) ? $variable[$key] : $default;
+        }
+
+        return isset($variable) ? $key : $default;
+    }
+}
+
+if (! function_exists('empty_if')) {
+    /**
+     * Determine if and get the value with the given array and key.
+     *
+     * @param  mixed  $variable
+     * @param  mixed  $key
+     * @param  mixed  $default
+     * @return mixed
+     */
+    function empty_if($variable, $key = null, $default = null)
+    {
+        if (is_array($variable)) {
+            return empty($variable[$key]) ? $variable[$key] : $default;
+        }
+
+        return empty($variable) ? $key : $default;
     }
 }
 
