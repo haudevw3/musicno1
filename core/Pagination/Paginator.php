@@ -44,6 +44,13 @@ class Paginator implements PaginatorContract
     protected $query = [];
 
     /**
+     * The query string variable used to store the page.
+     *
+     * @var string
+     */
+    protected $pageName = 'page-';
+
+    /**
      * The total number of items before slicing.
      *
      * @var int
@@ -128,6 +135,27 @@ class Paginator implements PaginatorContract
     }
 
     /**
+     * Get the query string variable used to store the page.
+     *
+     * @return string
+     */
+    public function getPageName()
+    {
+        return $this->pageName;
+    }
+
+    /**
+     * Set the query string variable used to store the page.
+     *
+     * @param  string  $name
+     * @return void
+     */
+    public function setPageName($name)
+    {
+        $this->pageName = $name;
+    }
+
+    /**
      * Get the base path for paginator generated URLs.
      *
      * @return string
@@ -160,7 +188,7 @@ class Paginator implements PaginatorContract
 
         unset($segments[count($segments) - 1]);
 
-        $path = implode('/', $segments).'/page-';
+        $path = implode('/', $segments).'/'.$this->getPageName();
 
         return $path;
     }
@@ -219,7 +247,7 @@ class Paginator implements PaginatorContract
      */
     protected function setItems($items)
     {
-        $offset = ($this->currentPage == 1) ? 0 : ($this->currentPage * $this->perPage);
+        $offset = ($this->currentPage() == 1) ? 0 : ($this->currentPage() - 1) * $this->perPage;
 
         $this->items = $items instanceof Collection ? $items : Collection::make($items);
 
