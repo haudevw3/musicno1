@@ -17,8 +17,8 @@ trait Mailer
     {
         if (! isset($options['subject'])) {
             $options = array_merge($options, [
-                'subject' => label('EMAIL_SUBJECT_VERIFY_ACCOUNT'),
-                'content' => label('EMAIL_CONTENT_VERIFY_ACCOUNT'),
+                'subject' => config('user.label.EMAIL_SUBJECT_VERIFY_ACCOUNT'),
+                'content' => config('user.label.EMAIL_CONTENT_VERIFY_ACCOUNT'),
                 'url' => route('verify-account-page', $user->id),
                 'btn_name' => 'Link xác thực của bạn',
             ]);

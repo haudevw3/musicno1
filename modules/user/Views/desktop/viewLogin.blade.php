@@ -1,7 +1,7 @@
 @extends('layout/desktop-frontend-none')
 
 @push('scripts')
-    <script src="{{ asset('js/user/post-login.js?=').time() }}"></script>
+    <script src="{{ asset('js/user/login.js?=').time() }}"></script>
 @endpush
 
 @section('content')

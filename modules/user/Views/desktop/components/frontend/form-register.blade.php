@@ -6,23 +6,23 @@
     </div>
 
     <div class="card-body">
-        <div id="alert" class="d-none" role="alert"></div>
+        @include('components.alert')
 
         <div class="form-content">
             <div class="mb-4">
-                <x-core::base-input icon="user" type="text" name="name" placeholder="Họ và tên"></x-core::base-input>
+                <x-core::input-group icon="user" type="text" name="name" placeholder="Họ và tên"></x-core::input-group>
             </div>
 
             <div class="mb-4">
-                <x-core::base-input icon="user" type="text" name="username" placeholder="Tên đăng nhập"></x-core::base-input>
+                <x-core::input-group icon="user" type="text" name="username" placeholder="Tên đăng nhập"></x-core::input-group>
             </div>
 
             <div class="mb-4">
-                <x-core::base-input icon="envelope" type="email" name="email" placeholder="Email"></x-core::base-input>
+                <x-core::input-group icon="envelope" type="email" name="email" placeholder="Email"></x-core::input-group>
             </div>
 
             <div class="mb-4">
-                <x-core::base-input icon="lock" type="password" name="password" placeholder="Mật khẩu"></x-core::base-input>
+                <x-core::input-group icon="lock" type="password" name="password" placeholder="Mật khẩu"></x-core::input-group>
             </div>
 
             <div class="mb-3">

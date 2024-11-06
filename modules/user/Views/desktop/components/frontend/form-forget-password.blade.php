@@ -6,11 +6,11 @@
     </div>
 
     <div class="card-body">
-        <div id="alert" class="d-none" role="alert"></div>
+        @include('components.alert')
         
         <div class="form-content">
             <div class="mb-3">
-                <x-core::base-input icon="envelope" type="email" name="email" placeholder="Email"></x-core::base-input>
+                <x-core::input-group icon="envelope" type="email" name="email" placeholder="Email"></x-core::input-group>
             </div>
 
             <div class="mb-3">

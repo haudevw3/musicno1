@@ -26,12 +26,12 @@ class UserController extends Controller
         $this->clientService = $clientService;
     }
 
-    public function login(Request $request)
+    public function loginPage(Request $request)
     {
         return view('user::viewLogin');
     }
 
-    public function register()
+    public function registerPage()
     {
         return view('user::viewRegister');
     }
@@ -45,14 +45,14 @@ class UserController extends Controller
         return redirect('/');
     }
 
-    public function verifyAccountPage(Request $request)
+    public function pageVerifyAccount(Request $request)
     {
         $data = ['id' => $request->route('id')];
 
         return view('user::viewVerifyAccount', $data);
     }
 
-    public function forgetPassword()
+    public function pageForgetPassword()
     {
         return view('user::viewForgetPassword');
     }
@@ -62,7 +62,7 @@ class UserController extends Controller
         
     }
 
-    public function postLoginApi(Request $request)
+    public function loginApi(Request $request)
     {
         $responseBag = $this->clientService->login($request->all());
 
@@ -71,14 +71,14 @@ class UserController extends Controller
         );
     }
 
-    public function postRegisterApi(FormRegister $request)
+    public function registerApi(FormRegister $request)
     {
         $user = $this->userService->create($request->all(), true);
 
         return response()->json($user, 201);
     }
 
-    public function postForgetPasswordApi(FormForgetPassword $request)
+    public function forgetPasswordApi(FormForgetPassword $request)
     {
         $responseBag = $this->userService->forgetPassword($request->input('email'));
 
@@ -87,7 +87,7 @@ class UserController extends Controller
         );
     }
 
-    public function postVerifyAccountApi(Request $request)
+    public function verifyAccountApi(Request $request)
     {
         $responseBag = $this->userService->verifyAccount($request->all());
 

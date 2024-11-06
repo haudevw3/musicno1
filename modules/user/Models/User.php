@@ -58,7 +58,6 @@ class User extends Model implements AuthenticatableContract,
         'time_send_mail',
         'token_send_mail',
         'active',
-        'created_time',
         'created_at',
         'updated_at',
     ];
@@ -82,7 +81,6 @@ class User extends Model implements AuthenticatableContract,
         'time_send_mail' => 0,
         'token_send_mail' => '',
         'active' => 0,
-        'created_time' => 0,
         'created_at' => '',
         'updated_at' => '',
     ];
@@ -93,7 +91,7 @@ class User extends Model implements AuthenticatableContract,
      * @var array<int, string>
      */
     protected $hidden = [
-        'password',
+        'password', 'remember_token'
     ];
 
     /**

@@ -3,10 +3,9 @@
 namespace Modules\User\Request;
 
 use Illuminate\Foundation\Http\FormRequest;
-use Modules\User\Rules\EmailExisted;
-use Modules\User\Rules\UserExisted;
+use Modules\User\Rules\EmailExcept;
 
-class FormRegister extends FormRequest
+class FormUpdateUser extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -27,9 +26,9 @@ class FormRegister extends FormRequest
     {
         return [
             'name' => 'required|min:6|max:50',
-            'username' => ['required', 'min:6', 'max:30', new UserExisted],
+            'username' => ['required', 'min:6', 'max:30'],
             'password' => 'required|min:8|max:30',
-            'email' => ['required', 'email', new EmailExisted],
+            'email' => ['required', 'email', new EmailExcept($this)],
         ];
     }
 

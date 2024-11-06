@@ -33,15 +33,15 @@ class UserService extends BaseService implements UserServiceContract
     public function create(array $data, $needSendMail = false)
     {
         $attributes = [
-            'id' => isset($data['id']) ? $data['id'] : str_random(),
+            'id' => isset_if($data, 'id', str_random()),
             'ip' => Request::ip(),
             'name' => str_ucwords($data['name']),
             'username' => str_filter($data['username']),
-            'password' => Hash::make(str_filter($data['password'])),
+            'password' => typecast($data['password'], 'hash'),
             'email' => str_filter($data['email']),
-            'roles' => isset($data['roles']) ? $data['roles'] : [0],
-            'image' => isset($data['image']) ? $data['image'] : null,
-            'active' => isset($data['active']) ? $data['active'] : 0,
+            'roles' => typecast(isset_if($data, 'roles', 0), 'array'),
+            'image' => isset_if($data, 'image'),
+            'active' => isset_if($data, 'active', 0),
             'created_at' => current_date(),
             'updated_at' => current_date(),
             'created_time' => time(),
@@ -66,14 +66,14 @@ class UserService extends BaseService implements UserServiceContract
      */
     public function updateOne($id, array $data)
     {
-        $user = $this->baseRepo->findOne(['id' => $id]);
+        $user = $this->baseRepo->findOne(['_id' => $id]);
 
         if (is_null($user)) {
             return false;
         }
 
         return $this->baseRepo->updateOne(
-            ['id' => $id], $this->filterData($data)
+            ['_id' => $id], $this->filterData($data)
         );
     }
 
@@ -84,6 +84,7 @@ class UserService extends BaseService implements UserServiceContract
     protected function filterData(array $data)
     {
         $attributes = [];
+        $attributes['updated_at'] = current_date();
 
         if (isset($data['name']))
             $attributes['name'] = str_ucwords($data['name']);
@@ -94,20 +95,33 @@ class UserService extends BaseService implements UserServiceContract
         if (isset($data['image']))
             $attributes['image'] = str_filter($data['image']);
         if (isset($data['roles']))
-            $attributes['roles'] = (array) $data['roles'];
+            $attributes['roles'] = typecast($data['roles'], 'array');
         if (isset($data['active']))
-            $attributes['active'] = intval($data['active']);
-        if (isset($data['updated_at']))
-            $attributes['updated_at'] = str_filter($data['updated_at']);
+            $attributes['active'] = typecast($data['active'], 'int');
         if (isset($data['password']) && $data['password'] !== label('PASSWORD_DEFAULT'))
-            $attributes['password'] = Hash::make(str_filter($data['password']));
+            $attributes['password'] = typecast($data['password'], 'hash');
         if (isset($data['time_send_mail'])) {
-            $attributes['time_send_mail'] = intval($data['time_send_mail']);
-            $attributes['token_send_mail'] = intval($data['token_send_mail']);
-            $attributes['count_send_mail'] = intval($data['count_send_mail']);
+            $attributes['time_send_mail'] = typecast($data['time_send_mail'], 'int');
+            $attributes['token_send_mail'] = typecast($data['token_send_mail'], 'int');
+            $attributes['count_send_mail'] = typecast($data['count_send_mail'], 'int');
         }
 
         return $attributes;
+    }
+
+    /**
+     * @param  string  $id
+     * @return bool
+     */
+    public function deleteOne($id)
+    {
+        $user = $this->baseRepo->findOne(['_id' => $id]);
+
+        if (is_null($user)) {
+            return false;
+        }
+
+        return $this->baseRepo->deleteOne(['_id' => $id]);
     }
 
     /**
@@ -124,19 +138,19 @@ class UserService extends BaseService implements UserServiceContract
         $timed = time() - $user->time_send_mail;
 
         if (is_null($user)) {
-            $responseBag->errors = label('INVALID_USER');
+            $responseBag->errors = config('user.label.INVALID_USER');
         }
 
         // If the input value is different from the token value sent mail,
         // then it will be invalid.
         elseif ($user->token_send_mail != $data['token_send_mail']) {
-            $responseBag->errors = label('INVALID_TOKEN');
+            $responseBag->errors = config('user.label.INVALID_TOKEN');
         }
 
         // If the input value is valid but the token expiration time
         // is larger than the default value, then it is invalid.
         elseif ($timed > Constant::TIME_EXPIRE_TOKEN) {
-            $responseBag->errors = label('TOKEN_NOT_EXPIRED');
+            $responseBag->errors = config('user.label.TOKEN_NOT_EXPIRED');
         }
 
         // This case satisfies the conditions. We will update some information
@@ -174,7 +188,7 @@ class UserService extends BaseService implements UserServiceContract
         // If the account is not activated then the user
         // can't use this function.
         if ($user->active === 0) {
-            $responseBag->errors = label('ACCOUNT_NOT_ACTIVATED');
+            $responseBag->errors = config('user.label.ACCOUNT_NOT_ACTIVATED');
         }
 
         // If the current time minus the time sent mail on before,
@@ -192,7 +206,7 @@ class UserService extends BaseService implements UserServiceContract
         // One day, we just sent mail to the user of the maximum is one times.
         // If the user exceeds the limit allowed then we force them wait to the next day.
         elseif ($user->count_send_mail >= Constant::LIMITED_SEND_MAIL_FORGET_PASSWORD) {
-            $responseBag->errors = label('REQUEST_NOT_EXPIRED');
+            $responseBag->errors = config('user.label.REQUEST_NOT_EXPIRED');
         }
         
         else {
@@ -211,13 +225,13 @@ class UserService extends BaseService implements UserServiceContract
             $this->baseRepo->updateOne(['id' => $user->id], $dataBag->all());
 
             $this->sendMailToVerify($user, [
-                'subject' => label('EMAIL_SUBJECT_FORGET_PASSWORD'),
-                'content' => label('EMAIL_CONTENT_FORGET_PASSWORD'),
+                'subject' => config('user.label.EMAIL_SUBJECT_FORGET_PASSWORD'),
+                'content' => config('user.label.EMAIL_CONTENT_FORGET_PASSWORD'),
                 'url' => route('login-page'),
                 'btn_name' => 'Link đăng nhập',
             ]);
 
-            $responseBag->status(200)->data(['success' => label('SENT_PASSWORD')]);
+            $responseBag->status(200)->data(['success' => config('user.label.SENT_PASSWORD')]);
         }
 
         return $responseBag;
@@ -237,7 +251,7 @@ class UserService extends BaseService implements UserServiceContract
         $timed = time() - $user->time_send_mail;
 
         if (is_null($user)) {
-            $responseBag->errors = label('INVALID_USER');
+            $responseBag->errors = config('user.label.INVALID_USER');
         }
 
         // If the current time minus the time sent mail on before,
@@ -255,14 +269,14 @@ class UserService extends BaseService implements UserServiceContract
         // One day, we just sent mail to the user of the maximum is three times.
         // If the user exceeds the limit allowed then we force them wait to the next day.
         elseif ($user->count_send_mail >= Constant::LIMITED_SEND_MAIL_VERIFY_ACCOUNT) {
-            $responseBag->errors = label('LIMITED_SEND_MAIL');
+            $responseBag->errors = config('user.label.LIMITED_SEND_MAIL');
         }
 
         // If the time of token value has still not yet expiration time,
         // then we will not send mail to the user. We want to ensure that,
         // every process must is valid.
         elseif ($timed <= Constant::TIME_EXPIRE_TOKEN) {
-            $responseBag->errors = label('TOKEN_NOT_EXPIRED');
+            $responseBag->errors = config('user.label.TOKEN_NOT_EXPIRED');
         }
         
         else {
@@ -283,7 +297,7 @@ class UserService extends BaseService implements UserServiceContract
             $message = preg_replace(
                 ['/{total}/', '/{number}/'],
                 [$dataBag->count_send_mail, Constant::LIMITED_SEND_MAIL_VERIFY_ACCOUNT - $dataBag->count_send_mail],
-                label('NUMBER_OF_MAILINGS'),
+                config('user.label.NUMBER_OF_MAILINGS'),
             );
 
             $responseBag->status(200)->add($message, 'success');

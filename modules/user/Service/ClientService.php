@@ -56,8 +56,8 @@ class ClientService extends BaseService implements ClientServiceContract
             'user_id' => $data['user_id'],
             'session_id' => Session::getId(),
             'remember_token' => Cookie::get('remember_token'),
-            'token' => isset($data['token']) ? $data['token'] : null,
-            'refresh_token' => isset($data['refresh_token']) ? $data['refresh_token'] : null,
+            'token' => isset_if($data, 'token'),
+            'refresh_token' => isset_if($data, 'refresh_token'),
             'status' => 1,
             'created_at' => current_date(),
             'updated_at' => current_date(),
@@ -65,46 +65,6 @@ class ClientService extends BaseService implements ClientServiceContract
         ];
 
         return $this->baseRepo->create($attributes);
-    }
-
-    /**
-     * @param  string  $id
-     * @param  array   $data
-     * @return bool
-     */
-    public function updateOne($id, array $data)
-    {
-        $client = $this->baseRepo->findOne(['id' => $id]);
-
-        if (is_null($client)) {
-            return false;
-        }
-
-        return $this->baseRepo->updateOne(
-            ['id' => $id], $this->filterData($data)
-        );
-    }
-
-    /**
-     * @param  array  $data
-     * @return array
-     */
-    protected function filterData(array $data)
-    {
-        $attributes = [];
-
-        if (isset($data['status']))
-            $attributes['status'] = (bool) $data['status'];
-        if (isset($data['session_id']))
-            $attributes['session_id'] = $data['session_id'];
-        if (isset($data['remember_token']))
-            $attributes['remember_token'] = $data['remember_token'];
-        if (isset($data['updated_at'])) {
-            $attributes['updated_at'] = $data['updated_at'];
-            $attributes['updated_time'] = $data['updated_time'];
-        }
-
-        return $attributes;
     }
 
     /**
@@ -133,13 +93,13 @@ class ClientService extends BaseService implements ClientServiceContract
         $user = $this->attempt($pendingClient);
 
         if (is_null($user)) {
-            $responseBag->errors = label('INVALID_LOGIN');
+            $responseBag->errors = config('user.label.INVALID_LOGIN');
         }
 
         // If the account is not activated then the user
         // can't login into the application.
         elseif ($user->active === 0) {
-            $responseBag->errors = label('ACCOUNT_NOT_ACTIVATED');
+            $responseBag->errors = config('user.label.ACCOUNT_NOT_ACTIVATED');
         }
 
         if ($responseBag->isNotEmptyError()) {
@@ -163,7 +123,7 @@ class ClientService extends BaseService implements ClientServiceContract
         // if it is valid the we force must the give an error for the user know.
         elseif (! is_null($client) && ($client->ip !== Request::ip() ||
             $client->session_id !== Session::getId())) {
-            $responseBag->errors = label('LOGIN_ON_ANOTHER_DEVICE');
+            $responseBag->errors = config('user.label.LOGIN_ON_ANOTHER_DEVICE');
         }
 
         if ($responseBag->isEmptyError()) {

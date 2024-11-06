@@ -19,6 +19,12 @@ interface UserService
     public function updateOne($id, array $data);
 
     /**
+     * @param  string  $id
+     * @return bool
+     */
+    public function deleteOne($id);
+
+    /**
      * @param  array  $data
      * @return \Core\Http\ResponseBag
      */

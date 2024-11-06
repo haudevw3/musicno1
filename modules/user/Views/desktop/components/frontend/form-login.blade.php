@@ -6,15 +6,15 @@
     </div>
 
     <div class="card-body">
-        <div id="alert" class="d-none" role="alert"></div>
+        @include('components.alert')
 
         <div class="form-content">
             <div class="mb-4">
-                <x-core::base-input icon="user" type="text" name="username" placeholder="Tên đăng nhập hoặc email"></x-core::base-input>
+                <x-core::input-group icon="user" type="text" name="username" placeholder="Tên đăng nhập hoặc email"></x-core::input-group>
             </div>
 
             <div class="mb-4">
-                <x-core::base-input icon="lock" type="password" name="password" placeholder="Mật khẩu"></x-core::base-input>
+                <x-core::input-group icon="lock" type="password" name="password" placeholder="Mật khẩu"></x-core::input-group>
             </div>
 
             <div class="mb-4 d-flex justify-content-between">
@@ -22,7 +22,7 @@
                     <input class="form-check-input" id="remember" type="checkbox" name="remember" value="false">
                     <label class="form-check-label" for="remember">Ghi nhớ đăng nhập</label>
                 </div>
-                <a href="{{ route('forget-password') }}">Quên mật khẩu</a>
+                <a href="{{ route('page-forget-password') }}">Quên mật khẩu</a>
             </div>
 
             <div class="mb-3">

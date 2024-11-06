@@ -16,7 +16,7 @@
             <input type="hidden" name="id" value="{{ $id }}">
 
             <div class="mb-3">
-                <x-core::base-input icon="lock" type="text" name="token_send_mail" placeholder="Mã xác nhận"></x-core::base-input>
+                <x-core::input-group icon="lock" type="text" name="token_send_mail" placeholder="Mã xác nhận"></x-core::input-group>
             </div>
 
             <div class="mb-3 d-flex justify-content-end">

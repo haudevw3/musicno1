@@ -3,6 +3,7 @@
 namespace Modules\User\Request;
 
 use Illuminate\Foundation\Http\FormRequest;
+use Modules\User\Rules\EmailNotExists;
 
 class FormForgetPassword extends FormRequest
 {
@@ -24,7 +25,7 @@ class FormForgetPassword extends FormRequest
     public function rules()
     {
         return [
-            'email' => ['required', 'email', new \Core\Rules\EmailNotExists],
+            'email' => ['required', 'email', new EmailNotExists],
         ];
     }
 

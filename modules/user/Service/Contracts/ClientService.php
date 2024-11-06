@@ -13,12 +13,12 @@ interface ClientService
      */
     public function create(array $data);
 
-    /**
-     * @param  string  $id
-     * @param  array   $data
-     * @return bool
-     */
-    public function updateOne($id, array $data);
+    // /**
+    //  * @param  string  $id
+    //  * @param  array   $data
+    //  * @return bool
+    //  */
+    // public function updateOne($id, array $data);
 
     /**
      * Generate a token with the given expiration time if any.
