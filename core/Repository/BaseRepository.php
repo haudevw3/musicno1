@@ -177,13 +177,15 @@ abstract class BaseRepository implements BaseRepositoryContract
     /**
      * Return one document with the given conditions.
      *
-     * @param  array  $conditions
-     * @param  array  $fields
+     * @param  array|string  $conditions
+     * @param  array         $fields
      * @return \Jenssegers\Mongodb\Eloquent\Model
      */
-    public function findOne(array $conditions, array $fields = [])
+    public function findOne($conditions, array $fields = [])
     {
-        return $this->buildQuery($conditions)->first($fields);
+        return $this->buildQuery(
+            is_array($conditions) ? $conditions : [$this->primaryKey => $conditions]
+        )->first($fields);
     }
 
     /**

@@ -91,11 +91,11 @@ interface BaseRepository
     /**
      * Return one document with the given conditions.
      *
-     * @param  array  $conditions
-     * @param  array  $fields
+     * @param  array|string  $conditions
+     * @param  array         $fields
      * @return \Jenssegers\Mongodb\Eloquent\Model
      */
-    public function findOne(array $conditions, array $fields = []);
+    public function findOne($conditions, array $fields = []);
 
     /**
      * Return many documents with the given conditions.
