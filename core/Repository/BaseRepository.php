@@ -316,12 +316,12 @@ abstract class BaseRepository implements BaseRepositoryContract
     /**
      * Determine if the comparison query operator exists in the given array.
      *
-     * @param  array    $array
-     * @param  string   $operator
+     * @param  mixed   $array
+     * @param  string  $operator
      * @return bool
      */
-    protected function hasOperator(array $array = [], $operator)
+    protected function hasOperator($array, $operator)
     {
-        return isset($array[$operator]);
+        return is_array($array) && isset($array[$operator]);
     }
 }
