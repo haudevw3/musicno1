@@ -4,16 +4,33 @@ namespace Core\Repository;
 
 use Core\Pagination\Paginator;
 use Core\Repository\Contracts\BaseRepository as BaseRepositoryContract;
-use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Support\Traits\Macroable;
+use MongoDB\BSON\ObjectId;
 
 abstract class BaseRepository implements BaseRepositoryContract
 {
+    use Macroable;
+
     /**
-     * The model instance.
+     * The primary key name in Mongo DB.
+     *
+     * @var string
+     */
+    protected $primaryKey = '_id';
+    
+    /**
+     * The eloquent model instance.
      *
      * @var \Jenssegers\Mongodb\Eloquent\Model
      */
     protected $model;
+
+    /**
+     * The eloquent builder instance.
+     *
+     * @var \Jenssegers\Mongodb\Eloquent\Builder
+     */
+    protected $builder;
 
     /**
      * Create a new base repository instance.
@@ -44,13 +61,23 @@ abstract class BaseRepository implements BaseRepositoryContract
     }
 
     /**
-     * Get the model instance.
+     * Get the eloquent model instance.
      *
      * @return \Jenssegers\Mongodb\Eloquent\Model
      */
     public function model()
     {
         return $this->model;
+    }
+
+    /**
+     * Get the eloquent builder instance.
+     *
+     * @return \Jenssegers\Mongodb\Eloquent\Builder
+     */
+    public function builder()
+    {
+        return $this->builder;
     }
 
     /**
@@ -61,7 +88,7 @@ abstract class BaseRepository implements BaseRepositoryContract
      */
     public function count(array $conditions = [])
     {
-        return $this->parseGrammar($conditions)->count();
+        return $this->buildQuery($conditions)->count();
     }
 
     /**
@@ -73,7 +100,7 @@ abstract class BaseRepository implements BaseRepositoryContract
      */
     public function sum(string $field, array $conditions = [])
     {
-        return $this->parseGrammar($conditions)->sum($field);
+        return $this->buildQuery($conditions)->sum($field);
     }
 
     /**
@@ -85,7 +112,7 @@ abstract class BaseRepository implements BaseRepositoryContract
      */
     public function get(string $id, array $fields = [])
     {
-        return $this->model::where('_id', $id)->first($fields);
+        return $this->model::where($this->primaryKey, $id)->first($fields);
     }
 
     /**
@@ -100,27 +127,51 @@ abstract class BaseRepository implements BaseRepositoryContract
     }
 
     /**
-     * Update one document with the given conditions.
+     * Update documents with the given conditions.
      *
      * @param  array  $conditions
      * @param  array  $data
      * @param  array  $options
      * @return bool
      */
-    public function updateOne(array $conditions, array $data, array $options = [])
+    public function update(array $conditions, array $data, array $options = [])
     {
-        return $this->parseGrammar($conditions)->update($data, $options);
+        return $this->buildQuery($conditions)->update($data, $options);
     }
 
     /**
-     * Delete one document with the given conditions.
+     * Update one document with the given unique identifier.
+     *
+     * @param  string  $id
+     * @param  array   $data
+     * @param  array   $options
+     * @return bool
+     */
+    public function updateOne(string $id, array $data, array $options = [])
+    {
+        return $this->model::where($this->primaryKey, $id)->update($data, $options);
+    }
+
+    /**
+     * Delete documents with the given conditions.
      *
      * @param  array  $conditions
      * @return bool
      */
-    public function deleteOne(array $conditions)
+    public function delete(array $conditions)
     {
-        return $this->parseGrammar($conditions)->delete();
+        return $this->buildQuery($conditions)->delete();
+    }
+
+    /**
+     * Delete one document with the given unique identifier.
+     *
+     * @param  string  $id
+     * @return bool
+     */
+    public function deleteOne(string $id)
+    {
+        return $this->model::where($this->primaryKey, $id)->delete();
     }
 
     /**
@@ -132,7 +183,7 @@ abstract class BaseRepository implements BaseRepositoryContract
      */
     public function findOne(array $conditions, array $fields = [])
     {
-        return $this->parseGrammar($conditions)->first($fields);
+        return $this->buildQuery($conditions)->first($fields);
     }
 
     /**
@@ -145,7 +196,7 @@ abstract class BaseRepository implements BaseRepositoryContract
      */
     public function findMany(array $conditions = [], array $fields = [], array $options = [])
     {
-        return $this->parseGrammar(
+        return $this->buildQuery(
             $conditions, isset($options['limit']) ? $options : array_merge($options, ['limit' => 10])
         )->get($fields);
     }
@@ -160,79 +211,115 @@ abstract class BaseRepository implements BaseRepositoryContract
      */
     public function paginator(array $fields = [], array $conditions = [], array $options = [])
     {
-        $items = $this->parseGrammar($conditions, $options)->get($fields);
+        $items = $this->buildQuery($conditions, $options)->get($fields);
 
         return Paginator::create($items, count($items), 20, request());
     }
 
     /**
-     * Parse grammar and build a new query builder for the model's table.
+     * Build a query statement with the given conditions and options if any.
      *
      * @param  array  $conditions
      * @param  array  $options
-     * @return \Illuminate\Database\Eloquent\Builder
+     * @return \Jenssegers\Mongodb\Eloquent\Builder
      */
-    public function parseGrammar(array $conditions = [], array $options = [])
-    {   
-        // Get a new query builder for the model's table.
-        $builder = $this->model::query();
+    public function buildQuery(array $conditions = [], array $options = [])
+    {
+        // Get a new eloquent query builder for the model's table.
+        $this->builder = $this->model::query();
 
         if (! empty($conditions)) {
-            $builder = $this->parseConditions($conditions, $builder);
+            $this->parseConditions($conditions);
         }
 
         if (! empty($options)) {
-            $builder = $this->parseOptions($options, $builder);
+            $this->parseOptions($options);
         }
 
-        return $builder;
+        return $this->builder;
     }
 
     /**
-     * Parse conditions for the model.
+     * Parse conditions and convert them to the "query" standard in Mongo DB.
      *
      * @param  array  $conditions
-     * @param  \Illuminate\Database\Eloquent\Builder  $builder
-     * @return \Illuminate\Database\Eloquent\Builder
+     * @return $this
      */
-    protected function parseConditions(array $conditions, Builder $builder)
+    protected function parseConditions(array $conditions)
     {
-        foreach ($conditions as $column => $value) {
-            if (is_array($value) && isset($value['$regex'])) {
-                $builder = $builder->where($column, 'regexp', $value['$regex']);
+        $identifiers =  $this->hasPrimaryKey($conditions) &&
+                        $this->hasOperator($conditions[$this->primaryKey], '$in')
+                        ? $conditions[$this->primaryKey]['$in'] : [];
+
+        if (! empty($identifiers)) {
+            $objectIds = [];
+
+            foreach ($identifiers as $identifier) {
+                $objectIds[] = new ObjectId($identifier);
+            }
+
+            $conditions[$this->primaryKey]['$in'] = $objectIds;
+        }
+
+        foreach ($conditions as $key => $value) {
+            if (is_array($value) && $this->hasOperator($value, '$regex')) {
+                $this->builder = $this->builder->where($key, 'regexp', $value['$regex']);
             } else {
-                $builder = $builder->where($column, $value);
+                $this->builder = $this->builder->where($key, $value);
             }
         }
 
-        return $builder;
+        return $this;
     }
 
     /**
-     * Parse options for the model.
+     * Parse optional parameters addition as (skip, limit, sorted) and
+     * convert them to the "query" standard in Mongo DB.
      *
      * @param  array  $options
-     * @param  \Illuminate\Database\Eloquent\Builder  $builder
-     * @return \Illuminate\Database\Eloquent\Builder
+     * @return $this
      */
-    protected function parseOptions(array $options, Builder $builder)
+    protected function parseOptions(array $options)
     {
         if (isset($options['skip']) && is_numeric($skip = $options['skip'])) {
-            $builder = $builder->skip($skip);
+            $this->builder = $this->builder->skip($skip);
         }
 
         if (isset($options['limit']) && is_numeric($limit = $options['limit'])) {
-            $builder = $builder->take($limit);
+            $this->builder = $this->builder->take($limit);
         }
         
         if (isset($options['sorted']) && is_array($sorted = $options['sorted'])) {
             foreach ($sorted as $key => $value) {
-                $builder = $builder->orderBy(
+                $this->builder = $this->builder->orderBy(
                     $key, (is_string($value) ? ($value == 'desc' ? -1 : 1) : $value)
                 );
             }
         }
 
-        return $builder;
+        return $this;
+    }
+
+    /**
+     * Determine if the primary key exists in the given conditions.
+     * 
+     * @param  array  $conditions
+     * @return bool
+     */
+    protected function hasPrimaryKey(array $conditions)
+    {
+        return isset($conditions[$this->primaryKey]);
+    }
+
+    /**
+     * Determine if the comparison query operator exists in the given array.
+     *
+     * @param  array    $array
+     * @param  string   $operator
+     * @return bool
+     */
+    protected function hasOperator(array $array = [], $operator)
+    {
+        return isset($array[$operator]);
     }
 }

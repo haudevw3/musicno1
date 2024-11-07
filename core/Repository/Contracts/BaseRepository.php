@@ -5,18 +5,18 @@ namespace Core\Repository\Contracts;
 interface BaseRepository
 {
     /**
-     * Get the model name of the sub-class when it extends from the parent class.
-     *
-     * @return string
-     */
-    public function getModel();
-
-    /**
-     * Get the model instance.
+     * Get the eloquent model instance.
      *
      * @return \Jenssegers\Mongodb\Eloquent\Model
      */
     public function model();
+
+    /**
+     * Get the eloquent builder instance.
+     *
+     * @return \Jenssegers\Mongodb\Eloquent\Builder
+     */
+    public function builder();
 
     /**
      * Get the record with the given unique identifier.
@@ -53,22 +53,40 @@ interface BaseRepository
     public function create(array $data);
 
     /**
-     * Update one document with the given conditions.
+     * Update documents with the given conditions.
      *
      * @param  array  $conditions
      * @param  array  $data
      * @param  array  $options
      * @return bool
      */
-    public function updateOne(array $conditions, array $data, array $options = []);
+    public function update(array $conditions, array $data, array $options = []);
 
     /**
-     * Delete one document with the given conditions.
+     * Update one document with the given unique identifier.
+     *
+     * @param  string  $id
+     * @param  array   $data
+     * @param  array   $options
+     * @return bool
+     */
+    public function updateOne(string $id, array $data, array $options = []);
+
+    /**
+     * Delete documents with the given conditions.
      *
      * @param  array  $conditions
      * @return bool
      */
-    public function deleteOne(array $conditions);
+    public function delete(array $conditions);
+
+    /**
+     * Delete one document with the given unique identifier.
+     *
+     * @param  string  $id
+     * @return bool
+     */
+    public function deleteOne(string $id);
 
     /**
      * Return one document with the given conditions.
@@ -100,11 +118,11 @@ interface BaseRepository
     public function paginator(array $fields = [], array $conditions = [], array $options = []);
 
     /**
-     * Parse grammar and Build a new query builder for the model's table.
+     * Build a query statement with the given conditions and options if any.
      *
      * @param  array  $conditions
      * @param  array  $options
-     * @return \Jenssegers\Mongodb\Eloquent\Model
+     * @return \Jenssegers\Mongodb\Eloquent\Builder
      */
-    public function parseGrammar(array $conditions = [], array $options = []);
+    public function buildQuery(array $conditions = [], array $options = []);
 }
