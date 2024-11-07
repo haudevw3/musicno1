@@ -157,17 +157,17 @@ if (! function_exists('str_random')) {
      * 
      * @param  string  $type
      * @param  int     $length
-     * @return string
+     * @return mixed
      */
     function str_random($type = 'string', $length = 22)
     {
-        $rand = rand(10000, 99999);
-
-        if ($type != 'string') {
-            return $rand;
+        if ($type === 'int') {
+            $result = rand(10000, 99999);
+        } elseif ($type === 'string') {
+            $result = Str::random($length);
         }
 
-        return Str::random($length).strval($rand);
+        return $result;
     }
 }
 
