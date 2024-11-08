@@ -124,6 +124,23 @@ if (! function_exists('regex')) {
     }
 }
 
+if (! function_exists('class_name')) {
+    /**
+     * Get the class name with the given value.
+     *
+     * @param  string  $value
+     * @return string
+     */
+    function class_name(string $value)
+    {   
+        if ($pos = strrpos($value, '\\')) {
+            return substr($value, $pos + 1);
+        }
+
+        return $value;
+    }
+}
+
 if (! function_exists('random_avatar')) {
     /**
      * Get an avatar with the given value.
