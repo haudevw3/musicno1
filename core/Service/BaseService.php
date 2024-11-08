@@ -17,6 +17,13 @@ class BaseService implements BaseServiceContract
     protected $baseRepo;
 
     /**
+     * The cache service instance.
+     *
+     * @var \Core\Service\Contracts\CacheService
+     */
+    protected $cacheService;
+
+    /**
      * Create a new base service instance.
      *
      * @param  \Core\Repository\BaseRepository  $baseRepo
@@ -25,6 +32,20 @@ class BaseService implements BaseServiceContract
     public function __construct($baseRepo = null)
     {
         $this->baseRepo = $baseRepo;
+
+        if (! is_null($baseRepo)) {
+            $this->cacheService = new CacheService($baseRepo);
+        }
+    }
+
+    /**
+     * Get the cache service instance.
+     *
+     * @return \Core\Service\Contracts\CacheService
+     */
+    public function cache()
+    {
+        return $this->cacheService;
     }
 
     /**
