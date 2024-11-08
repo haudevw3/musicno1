@@ -81,4 +81,21 @@ class UserManagerController extends Controller
             ['errors' => config('user.label.DELETE_FAILED')], 500
         );
     }
+
+    public function deleteManyUserApi(Request $request)
+    {
+        $deleted = $this->userService->delete(
+            ['_id' => ['$in' => $request->input('user_ids')]]
+        );
+
+        if ($deleted) {
+            return response()->json(
+                ['success' => config('user.label.DELETE_SUCCESS')]
+            );
+        }
+
+        return response()->json(
+            ['errors' => config('user.label.DELETE_FAILED')], 500
+        );
+    }
 }

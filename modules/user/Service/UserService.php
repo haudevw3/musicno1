@@ -66,14 +66,14 @@ class UserService extends BaseService implements UserServiceContract
      */
     public function updateOne($id, array $data)
     {
-        $user = $this->baseRepo->findOne(['_id' => $id]);
+        $user = $this->baseRepo->findOne($id);
 
         if (is_null($user)) {
             return false;
         }
 
         return $this->baseRepo->updateOne(
-            ['_id' => $id], $this->filterData($data)
+            $id, $this->filterData($data)
         );
     }
 
@@ -115,13 +115,13 @@ class UserService extends BaseService implements UserServiceContract
      */
     public function deleteOne($id)
     {
-        $user = $this->baseRepo->findOne(['_id' => $id]);
+        $user = $this->baseRepo->findOne($id);
 
         if (is_null($user)) {
             return false;
         }
 
-        return $this->baseRepo->deleteOne(['_id' => $id]);
+        return $this->baseRepo->deleteOne($id);
     }
 
     /**
@@ -164,7 +164,7 @@ class UserService extends BaseService implements UserServiceContract
                 'count_send_mail' => 0,
             ];
 
-            $this->baseRepo->updateOne(['id' => $id], $data);
+            $this->baseRepo->update(['id' => $id], $data);
 
             $responseBag->status(200)->data(['success' => true]);
         }
@@ -222,7 +222,7 @@ class UserService extends BaseService implements UserServiceContract
             
             $dataBag->password = Hash::make($dataBag->token_send_mail);
 
-            $this->baseRepo->updateOne(['id' => $user->id], $dataBag->all());
+            $this->baseRepo->update(['id' => $user->id], $dataBag->all());
 
             $this->sendMailToVerify($user, [
                 'subject' => config('user.label.EMAIL_SUBJECT_FORGET_PASSWORD'),
@@ -290,7 +290,7 @@ class UserService extends BaseService implements UserServiceContract
         if ($dataBag->isNotEmpty()) {
             $user->token_send_mail = $dataBag->token_send_mail;
 
-            $this->baseRepo->updateOne(['id' => $id], $dataBag->all());
+            $this->baseRepo->update(['id' => $id], $dataBag->all());
             
             $this->sendMailToVerify($user);
 

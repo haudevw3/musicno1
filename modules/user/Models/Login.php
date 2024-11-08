@@ -4,7 +4,7 @@ namespace Modules\User\Models;
 
 use Jenssegers\Mongodb\Eloquent\Model;
 
-class LoginLog extends Model
+class Login extends Model
 {
     /**
      * Assign different a connection if any.
@@ -18,7 +18,7 @@ class LoginLog extends Model
      *
      * @var string
      */
-    protected $collection = 'login_logs';
+    protected $collection = 'logins';
 
     /**
      * The attribute will disabled.
@@ -34,9 +34,17 @@ class LoginLog extends Model
      */
     protected $fillable = [
         '_id',
+        'id',
         'ip',
         'user_id',
-        'timed',
+        'session_id',
+        'token',
+        'refresh_token',
+        'remember_token',
+        'status',
+        'created_at',
+        'updated_at',
+        'created_time',
     ];
 
     /**
@@ -45,10 +53,17 @@ class LoginLog extends Model
      * @var array<string|int, string|null>
      */
     protected $attributes = [
-        '_id' => '',
+        'id' => '',
         'ip' => '',
         'user_id' => '',
-        'timed' => '',
+        'session_id' => '',
+        'token' => '',
+        'refresh_token' => '',
+        'remember_token' => '',
+        'status' => 1,
+        'created_at' => '',
+        'updated_at' => '',
+        'created_time' => 0,
     ];
 
     /**
@@ -56,5 +71,10 @@ class LoginLog extends Model
      *
      * @var array<int, string>
      */
-    protected $hidden = [];
+    protected $hidden = [
+        'session_id',
+        'remember_token',
+        'access_token',
+        'refresh_token',
+    ];
 }

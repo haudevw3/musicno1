@@ -7,23 +7,23 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Modules\User\Request\FormForgetPassword;
 use Modules\User\Request\FormRegister;
-use Modules\User\Service\Contracts\ClientService;
+use Modules\User\Service\Contracts\LoginService;
 use Modules\User\Service\Contracts\UserService;
 
 class UserController extends Controller
 {
     protected $userService;
-    protected $clientService;
+    protected $loginService;
 
     /**
-     * @param  \Modules\User\Service\Contracts\UserService    $userService
-     * @param  \Modules\User\Service\Contracts\ClientService  $clientService
+     * @param  \Modules\User\Service\Contracts\UserService   $userService
+     * @param  \Modules\User\Service\Contracts\LoginService  $loginService
      * @return void
      */
-    public function __construct(UserService $userService, ClientService $clientService)
+    public function __construct(UserService $userService, LoginService $loginService)
     {
         $this->userService = $userService;
-        $this->clientService = $clientService;
+        $this->loginService = $loginService;
     }
 
     public function loginPage(Request $request)
@@ -40,7 +40,7 @@ class UserController extends Controller
     {
         $user = Auth::user();
 
-        $this->clientService->logout($user);
+        $this->loginService->logout($user);
 
         return redirect('/');
     }
@@ -64,7 +64,7 @@ class UserController extends Controller
 
     public function loginApi(Request $request)
     {
-        $responseBag = $this->clientService->login($request->all());
+        $responseBag = $this->loginService->withAccount($request->all());
 
         return response()->json(
             $responseBag->data(), $responseBag->status()
@@ -94,7 +94,7 @@ class UserController extends Controller
         if ($responseBag->status() == 200) {
             $user = $this->userService->findOne(['id' => $request->input('id')]);
 
-            $this->clientService->create(['user_id' => $user->id]);
+            $this->loginService->create(['user_id' => $user->id]);
             Auth::login($user);
         }
 

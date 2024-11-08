@@ -3,25 +3,20 @@
 namespace Modules\User\Controllers;
 
 use App\Http\Controllers\Controller;
-use Illuminate\Support\Facades\Auth;
 use Laravel\Socialite\Facades\Socialite;
-use Modules\User\Service\Contracts\ClientService;
-use Modules\User\Service\Contracts\UserService;
+use Modules\User\Service\Contracts\LoginService;
 
 class SocialiteController extends Controller
 {
-    protected $userService;
-    protected $clientService;
+    protected $loginService;
 
     /**
-     * @param  \Modules\User\Service\Contracts\UserService    $userService
-     * @param  \Modules\User\Service\Contracts\ClientService  $clientService
+     * @param  \Modules\User\Service\Contracts\LoginService  $loginService
      * @return void
      */
-    public function __construct(UserService $userService, ClientService $clientService)
+    public function __construct(LoginService $loginService)
     {
-        $this->userService = $userService;
-        $this->clientService = $clientService;
+        $this->loginService = $loginService;
     }
 
     public function redirect()
@@ -33,7 +28,7 @@ class SocialiteController extends Controller
     {
         $user = Socialite::driver('google')->user();
 
-        $this->clientService->loginByGoogle($user);
+        $this->loginService->withGoogle($user);
 
         return redirect('/');
     }

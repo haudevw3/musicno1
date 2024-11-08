@@ -5,20 +5,13 @@ namespace Modules\User\Service\Contracts;
 use Laravel\Socialite\Contracts\User as GoogleUser;
 use Modules\User\Models\User;
 
-interface ClientService
+interface LoginService
 {
     /**
      * @param  array  $data
      * @return \Jenssegers\Mongodb\Eloquent\Model
      */
     public function create(array $data);
-
-    // /**
-    //  * @param  string  $id
-    //  * @param  array   $data
-    //  * @return bool
-    //  */
-    // public function updateOne($id, array $data);
 
     /**
      * Generate a token with the given expiration time if any.
@@ -29,20 +22,20 @@ interface ClientService
     public function generateToken(array $data);
     
     /**
-     * Resolve login for a client using the given credentials.
+     * Log a user into the application with the given credentials.
      *
      * @param  array  $credentials
      * @return \Core\Http\ResponseBag
      */
-    public function login(array $credentials);
+    public function withAccount(array $credentials);
 
     /**
-     * Resolve login for a client using the given Google account.
+     * Log a user into the application with the given Google account.
      *
      * @param  \Laravel\Socialite\Contracts\User  $googleUser
      * @return void
      */
-    public function loginByGoogle(GoogleUser $googleUser);
+    public function withGoogle(GoogleUser $googleUser);
 
     /**
      * Log the user out of the application.

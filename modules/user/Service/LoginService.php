@@ -14,21 +14,21 @@ use Illuminate\Support\Facades\Session;
 use Laravel\Socialite\Contracts\User as GoogleUser;
 use Modules\User\Models\User;
 use Modules\User\Objects\PendingClient;
-use Modules\User\Repository\Contracts\ClientRepository;
+use Modules\User\Repository\Contracts\LoginRepository;
 use Modules\User\Repository\Contracts\UserRepository;
-use Modules\User\Service\Contracts\ClientService as ClientServiceContract;
+use Modules\User\Service\Contracts\LoginService as LoginServiceContract;
 
-class ClientService extends BaseService implements ClientServiceContract
+class LoginService extends BaseService implements LoginServiceContract
 {
     protected $baseRepo;
     protected $userRepo;
 
     /**
-     * @param  \Modules\User\Repository\Contracts\ClientRepository  $baseRepo
-     * @param  \Modules\User\Repository\Contracts\UserRepository    $userRepo
+     * @param  \Modules\User\Repository\Contracts\LoginRepository  $baseRepo
+     * @param  \Modules\User\Repository\Contracts\UserRepository   $userRepo
      * @return void
      */
-    public function __construct(ClientRepository $baseRepo, UserRepository $userRepo)
+    public function __construct(LoginRepository $baseRepo, UserRepository $userRepo)
     {
         parent::__construct($baseRepo);
 
@@ -41,15 +41,6 @@ class ClientService extends BaseService implements ClientServiceContract
      */
     public function create(array $data)
     {
-        // $accessTokenExp = $currentTime + Constant::ACCESS_TOKEN_EXP;
-        // $refreshTokenExp = $currentTime + Constant::REFRESH_TOKEN_EXP;
-
-        // $refreshToken = $this->generateToken(['exp' => $refreshTokenExp]);
-        // $accessToken = $this->generateToken([
-        //     'exp' => $accessTokenExp,
-        //     'refresh_token' => $refreshToken,
-        // ]);
-
         $attributes = [
             'id' => str_random(),
             'ip' => Request::ip(),
@@ -79,12 +70,12 @@ class ClientService extends BaseService implements ClientServiceContract
     }
 
     /**
-     * Resolve login for a client using the given credentials.
+     * Log a user into the application with the given credentials.
      *
      * @param  array  $credentials
      * @return \Core\Http\ResponseBag
      */
-    public function login(array $credentials)
+    public function withAccount(array $credentials)
     {
         $responseBag = ResponseBag::create();
 
@@ -115,7 +106,7 @@ class ClientService extends BaseService implements ClientServiceContract
         // then we will check the start time login and the session lifetime,
         // if it is valid then we must delete the previous session.
         if (! is_null($client) && $timed >= $sessionLifetime) {
-            $this->baseRepo->deleteOne(['user_id' => $user->id]);
+            $this->baseRepo->delete(['user_id' => $user->id]);
         }
 
         // If the user login into the application on another device,
@@ -157,12 +148,12 @@ class ClientService extends BaseService implements ClientServiceContract
     }
 
     /**
-     * Resolve login for a client using the given Google account.
+     * Log a user into the application with the given Google account.
      *
      * @param  \Laravel\Socialite\Contracts\User  $googleUser
      * @return void
      */
-    public function loginByGoogle(GoogleUser $googleUser)
+    public function withGoogle(GoogleUser $googleUser)
     {
         $user = $this->userRepo->findOne(['id' => $googleUser->id]);
 
@@ -193,7 +184,7 @@ class ClientService extends BaseService implements ClientServiceContract
         // then we will check the start time login and the session lifetime,
         // if it is valid then we must delete the previous session.
         if (! is_null($client) && $timed >= $sessionLifetime) {
-            $deleted = $this->baseRepo->deleteOne(['user_id' => $user->id]);
+            $deleted = $this->baseRepo->delete(['user_id' => $user->id]);
         }
 
         Auth::login($user);
@@ -217,7 +208,7 @@ class ClientService extends BaseService implements ClientServiceContract
     {
         Auth::logout();
 
-        $this->baseRepo->deleteOne(['user_id' => $user->id]);
-        $this->userRepo->updateOne(['id' => $user->id], ['remember_token' => null]);
+        $this->baseRepo->delete(['user_id' => $user->id]);
+        $this->userRepo->update(['id' => $user->id], ['remember_token' => null]);
     }
 }

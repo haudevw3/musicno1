@@ -33,6 +33,7 @@ Route::middleware('demon')->group(function () {
         Route::post('create', [UserManagerController::class, 'createUserApi']);
         Route::put('update', [UserManagerController::class, 'updateUserApi']);
         Route::delete('delete', [UserManagerController::class, 'deleteUserApi']);
+        Route::post('delete-many', [UserManagerController::class, 'deleteManyUserApi']);
     });
 
     Route::middleware('auth.custom')->group(function () {

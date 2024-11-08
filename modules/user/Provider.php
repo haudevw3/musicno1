@@ -14,10 +14,10 @@ class Provider extends ServiceProvider
     public function register()
     {
         $this->app->singleton(\Modules\User\Repository\Contracts\UserRepository::class, \Modules\User\Repository\UserRepository::class);
-        $this->app->singleton(\Modules\User\Repository\Contracts\ClientRepository::class, \Modules\User\Repository\ClientRepository::class);
+        $this->app->singleton(\Modules\User\Repository\Contracts\LoginRepository::class, \Modules\User\Repository\LoginRepository::class);
 
         $this->app->singleton(\Modules\User\Service\Contracts\UserService::class, \Modules\User\Service\UserService::class);
-        $this->app->singleton(\Modules\User\Service\Contracts\ClientService::class, \Modules\User\Service\ClientService::class);
+        $this->app->singleton(\Modules\User\Service\Contracts\LoginService::class, \Modules\User\Service\LoginService::class);
     }
 
     /**
