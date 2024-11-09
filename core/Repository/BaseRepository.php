@@ -2,7 +2,6 @@
 
 namespace Core\Repository;
 
-use Core\Pagination\Paginator;
 use Core\Repository\Contracts\BaseRepository as BaseRepositoryContract;
 use Illuminate\Support\Traits\Macroable;
 use MongoDB\BSON\ObjectId;
@@ -199,23 +198,8 @@ abstract class BaseRepository implements BaseRepositoryContract
     public function findMany(array $conditions = [], array $fields = [], array $options = [])
     {
         return $this->buildQuery(
-            $conditions, isset($options['limit']) ? $options : array_merge($options, ['limit' => 10])
+            $conditions, isset($options['limit']) ? $options : array_merge($options, ['limit' => 1000])
         )->get($fields);
-    }
-
-    /**
-     * Paginate the given query.
-     *
-     * @param  array  $fields
-     * @param  array  $conditions
-     * @param  array  $options
-     * @return \Core\Pagination\Contracts\Paginator
-     */
-    public function paginator(array $fields = [], array $conditions = [], array $options = [])
-    {
-        $items = $this->buildQuery($conditions, $options)->get($fields);
-
-        return Paginator::create($items, count($items), 20, request());
     }
 
     /**

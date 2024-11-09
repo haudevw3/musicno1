@@ -108,16 +108,6 @@ interface BaseRepository
     public function findMany(array $conditions = [], array $fields = [], array $options = []);
 
     /**
-     * Paginate the given query.
-     *
-     * @param  array  $fields
-     * @param  array  $conditions
-     * @param  array  $options
-     * @return \Core\Pagination\Contracts\Paginator
-     */
-    public function paginator(array $fields = [], array $conditions = [], array $options = []);
-
-    /**
      * Build a query statement with the given conditions and options if any.
      *
      * @param  array  $conditions
