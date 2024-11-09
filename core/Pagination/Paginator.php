@@ -3,7 +3,6 @@
 namespace Core\Pagination;
 
 use Core\Pagination\Contracts\Paginator as PaginatorContract;
-use Illuminate\Http\Request;
 use Illuminate\Support\Collection;
 
 class Paginator implements PaginatorContract
@@ -37,11 +36,11 @@ class Paginator implements PaginatorContract
     protected $path = '/';
 
     /**
-     * The query parameters to add to all URLs.
+     * The paginator options.
      *
      * @var array
      */
-    protected $query = [];
+    protected $options;
 
     /**
      * The query string variable used to store the page.
@@ -74,34 +73,34 @@ class Paginator implements PaginatorContract
     /**
      * Create a new paginator instance.
      *
-     * @param  mixed                     $items
-     * @param  int                       $total
-     * @param  int                       $perPage
-     * @param  \Illuminate\Http\Request  $request
+     * @param  mixed  $items
+     * @param  int    $total
+     * @param  int    $perPage
+     * @param  array  $options (force: "path: Full URL of the request", "parameter: The optional parameter of the route")
      * @return void
      */
-    public function __construct($items, $total, $perPage, Request $request)
+    public function __construct($items, $total, $perPage, array $options)
     {
         $this->perPage = $perPage;
         $this->total = $total;
         $this->lastPage = max((int) ceil($total / $perPage), 1);
-        $this->setPath($request->fullUrl());
-        $this->setCurrentPage($request->route('page'));
+        $this->setPath($options['path']);
+        $this->setCurrentPage($options['parameter']);
         $this->setItems($items);
     }
 
     /**
      * Create a new paginator instance.
      *
-     * @param  mixed                     $items
-     * @param  int                       $total
-     * @param  int                       $perPage
-     * @param  \Illuminate\Http\Request  $request
+     * @param  mixed  $items
+     * @param  int    $total
+     * @param  int    $perPage
+     * @param  array  $options
      * @return $this
      */
-    public static function create($items, $total, $perPage, Request $request)
+    public static function create($items, $total, $perPage, array $options)
     {
-        return new static($items, $total, $perPage, $request);
+        return new static($items, $total, $perPage, $options);
     }
 
     /**

@@ -11,7 +11,6 @@ interface Paginator
      * @return string
      */
     public function url($page);
-
     /**
      * The URL for the next page, or null.
      *
