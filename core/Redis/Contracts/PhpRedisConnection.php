@@ -47,6 +47,13 @@ interface PhpRedisConnection
     public function push($key, $value);
 
     /**
+     * Flush the selected Redis database.
+     *
+     * @return mixed
+     */
+    public function flush();
+
+    /**
      * Get connected.
      *
      * @return bool

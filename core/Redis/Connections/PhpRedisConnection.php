@@ -5,11 +5,14 @@ namespace Core\Redis\Connections;
 use Core\Redis\Contracts\PhpRedisConnection as PhpRedisConnectionContract;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Support\Facades\Redis;
+use Illuminate\Support\Traits\ForwardsCalls;
 use InvalidArgumentException;
 use Jenssegers\Mongodb\Eloquent\Model;
 
 class PhpRedisConnection implements PhpRedisConnectionContract
 {
+    use ForwardsCalls;
+    
     /**
      * The redis connection name.
      *
@@ -30,6 +33,13 @@ class PhpRedisConnection implements PhpRedisConnectionContract
      * @var \Illuminate\Redis\Connections\PhpRedisConnection
      */
     protected $connection;
+
+    /**
+     * The methods are not allowing through.
+     *
+     * @var array
+     */
+    protected $notThrough = ['get', 'set'];
 
     /**
      * Create a new "Php Redis Connection" instance.
@@ -144,6 +154,16 @@ class PhpRedisConnection implements PhpRedisConnectionContract
     }
 
     /**
+     * Flush the selected Redis database.
+     *
+     * @return mixed
+     */
+    public function flush()
+    {
+        return Redis::flushdb();
+    }
+
+    /**
      * Get connected.
      *
      * @return bool
@@ -183,5 +203,19 @@ class PhpRedisConnection implements PhpRedisConnectionContract
     public function getConnection()
     {
         return $this->connection;
+    }
+
+    /**
+     * Handle dynamic method calls into the base repository.
+     *
+     * @param  string  $method
+     * @param  array   $parameters
+     * @return mixed
+     */
+    public function __call($method, $parameters)
+    {
+        if (! in_array($method, $this->notThrough)) {
+            return $this->forwardCallTo($this->connection, $method, $parameters);
+        }
     }
 }
