@@ -291,6 +291,17 @@ class Paginator implements PaginatorContract
     }
 
     /**
+     * Get the number for the previous page.
+     *
+     * @return int
+     */
+    public function previousPage()
+    {
+        return ($this->currentPage() == 1)
+                ? 1 : $this->currentPage() - 1;
+    }
+
+    /**
      * Get the URL for the previous page.
      *
      * @return string|null
@@ -300,6 +311,18 @@ class Paginator implements PaginatorContract
         if ($this->currentPage() > 1) {
             return $this->url($this->currentPage() - 1);
         }
+    }
+
+    /**
+     * Get the number for the next page.
+     *
+     * @return int
+     */
+    public function nextPage()
+    {
+        return ($this->currentPage() == $this->lastPage())
+                ? $this->currentPage()
+                : $this->currentPage() + 1;
     }
 
     /**
@@ -395,9 +418,11 @@ class Paginator implements PaginatorContract
             'last_page' => $this->lastPage(),
             'last_page_url' => $this->url($this->lastPage()),
             'links' => $this->links(),
+            'next_page' => $this->nextPage(),
             'next_page_url' => $this->nextPageUrl(),
             'path' => $this->path(),
             'per_page' => $this->perPage(),
+            'prev_page' => $this->previousPage(),
             'prev_page_url' => $this->previousPageUrl(),
             'to' => $this->lastItem(),
             'total' => $this->total(),

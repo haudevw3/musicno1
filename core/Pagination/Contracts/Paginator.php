@@ -11,12 +11,27 @@ interface Paginator
      * @return string
      */
     public function url($page);
+
+    /**
+     * Get the number for the next page.
+     *
+     * @return int
+     */
+    public function nextPage();
+
     /**
      * The URL for the next page, or null.
      *
      * @return string|null
      */
     public function nextPageUrl();
+
+    /**
+     * Get the number for the previous page.
+     *
+     * @return int
+     */
+    public function previousPage();
 
     /**
      * Get the URL for the previous page, or null.
