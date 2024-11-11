@@ -26,7 +26,7 @@
             </div>
 
             <div class="mb-3">
-                <x-core::input-group-feedback id="image" label="Ảnh đại diện: (được bỏ trống)" icon="camera" type="text"
+                <x-core::input-group-feedback id="image" class="ofm" label="Ảnh đại diện: (được bỏ trống)" icon="camera" type="text"
                 name="image" placeholder="Nhấn vào đây để chọn ảnh"></x-core::input-group-feedback>
             </div>
 
