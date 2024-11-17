@@ -1,34 +1,6 @@
 <?php
 
-use Illuminate\Support\Arr;
-use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Str;
-
-if (! function_exists('menu')) {
-    /**
-     * Get a menu from the config with the given key.
-     *
-     * @param  string  $key
-     * @return mixed
-     */
-    function menu(string $key)
-    {
-        return config("menu.$key");
-    }
-}
-
-if (! function_exists('label')) {
-    /**
-     * Get a label from the config with the given key.
-     *
-     * @param  string  $key
-     * @return mixed
-     */
-    function label(string $key)
-    {
-        return config("label.$key");
-    }
-}
 
 if (! function_exists('current_date')) {
     /**
@@ -44,65 +16,81 @@ if (! function_exists('current_date')) {
     }
 }
 
-if (! function_exists('typecast')) {
-    /**
-     * Get typecast with the given value.
-     *
-     * @param  mixed   $value
-     * @param  string  $type
-     * @return mixed
-     */
-    function typecast($value, $type = 'bool')
-    {
-        if ($type === 'bool') {
-            $result = ($value === 'true') ? true : false;
-        } elseif ($type === 'int') {
-            $result = intval($value);
-        } elseif ($type === 'array') {
-            $result = is_array($value) ? $value : [$value];
-        } elseif ($type === 'hash') {
-            $result = Hash::make($value);
-        }
-
-        return $result;
-    }
-}
-
 if (! function_exists('isset_if')) {
     /**
-     * Determine if and get the value with the given array and key.
+     * Determine if and get the value with the given arguments.
      *
-     * @param  mixed  $variable
-     * @param  mixed  $key
-     * @param  mixed  $default
+     * @param  mixed   $variable
+     * @param  mixed   $callable
+     * @param  mixed   $default
      * @return mixed
      */
-    function isset_if($variable, $key = null, $default = null)
+    function isset_if(&$variable, $callable = null, $default = null)
     {
-        if (is_array($variable)) {
-            return isset($variable[$key]) ? $variable[$key] : $default;
+        if (! isset($variable)) {
+            return $default;
         }
 
-        return isset($variable) ? $key : $default;
+        if (is_null($callable)) {
+            return $variable;
+        }
+        
+        if (is_callable($callable)) {
+            return $callable($variable);
+        }
+
+        return $callable;
     }
 }
 
 if (! function_exists('empty_if')) {
     /**
-     * Determine if and get the value with the given array and key.
+     * Determine if and get the value with the given arguments.
      *
      * @param  mixed  $variable
-     * @param  mixed  $key
      * @param  mixed  $default
+     * @param  mixed  $callable
      * @return mixed
      */
-    function empty_if($variable, $key = null, $default = null)
+    function empty_if(&$variable, $default = null, $callable = null)
     {
-        if (is_array($variable)) {
-            return empty($variable[$key]) ? $variable[$key] : $default;
+        if (empty($variable)) {
+            return $default;
         }
 
-        return empty($variable) ? $key : $default;
+        if (is_null($callable)) {
+            return $variable;
+        }
+        
+        if (is_callable($callable)) {
+            return $callable($variable);
+        }
+
+        return $callable;
+    }
+}
+
+if (! function_exists('compare_if')) {
+    /**
+     * Compare if this value equals that value.
+     *
+     * @param  mixed  $needle
+     * @param  mixed  $haystack
+     * @param  mixed  $default
+     * @param  mixed  $callable
+     * @return mixed
+     */
+    function compare_if(&$needle, $haystack, $default = false, $callable = true)
+    {
+        if ($needle !== $haystack) {
+            return $default;
+        }
+        
+        if (is_callable($callable)) {
+            return $callable($needle, $haystack);
+        }
+
+        return $callable;
     }
 }
 
@@ -114,8 +102,6 @@ if (! function_exists('regex')) {
      * @return string
      */
     function regex(string $key) {
-        $result = '';
-
         if ($key === 'page') {
             $result = 'page-[1-9][0-9]*';
         }
@@ -138,6 +124,34 @@ if (! function_exists('class_name')) {
         }
 
         return $value;
+    }
+}
+
+if (! function_exists('badge')) {
+    /**
+     * Create an HTML badge with the given arguments.
+     *
+     * @param  string  $key
+     * @param  string  $value
+     * @return string
+     */
+    function badge(string $key, string $value) {
+        $types = [
+            'red' => 'bg-red-soft text-red',
+            'orange' => 'bg-orange-soft text-orange',
+            'yellow' => 'bg-yellow-soft text-yellow',
+            'green' => 'bg-green-soft text-green',
+            'teal' => 'bg-teal-soft text-teal',
+            'cyan' => 'bg-cyan-soft text-cyan',
+            'blue' => 'bg-blue-soft text-blue',
+            'indigo' => 'bg-indigo-soft text-indigo',
+            'purple' => 'bg-purple-soft text-purple',
+            'pink' => 'bg-pink-soft text-pink',
+        ];
+
+        $html = "<span class='badge $types[$key]'>$value</span>";
+
+        return $html;
     }
 }
 
