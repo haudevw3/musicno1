@@ -37,9 +37,16 @@ class {{ class }} extends Model
     /**
      * Define default values for the model's attributes.
      *
-     * @var array<string|int, string|null>
+     * @var array<string|int, string|int|null>
      */
     protected $attributes = [];
+
+    /**
+     * The attributes that should be cast.
+     *
+     * @var array<string, string>
+     */
+    protected $casts = [];
 
     /**
      * The attributes that should be hidden for serialization.
