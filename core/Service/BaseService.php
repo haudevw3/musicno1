@@ -75,7 +75,7 @@ class BaseService implements BaseServiceContract
     protected function basename($key)
     {
         $className = class_name(
-            $this->getModel()
+            $this->baseRepo->getModel()
         );
 
         return strtolower($className).':'.$key;
