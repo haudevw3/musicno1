@@ -12,6 +12,7 @@ class InputGroupFeedback extends Component
     public $name;
     public $type;
     public $value;
+    public $class;
     public $placeholder;
 
     /**
@@ -23,16 +24,18 @@ class InputGroupFeedback extends Component
      * @param  string  $name
      * @param  string  $type
      * @param  string  $placeholder
+     * @param  string  $class
      * @param  string  $value
      * @return void
      */
-    public function __construct($id, $label, $icon, $name, $type, $placeholder, $value = '')
+    public function __construct($id, $label, $icon, $name, $type, $placeholder, $class = '', $value = '')
     {
         $this->id = $id;
         $this->label = $label;
         $this->icon = $icon;
         $this->name = $name;
         $this->type = $type;
+        $this->class = $class;
         $this->value = $value;
         $this->placeholder = $placeholder;
     }
