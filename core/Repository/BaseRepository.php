@@ -3,6 +3,7 @@
 namespace Core\Repository;
 
 use Core\Repository\Contracts\BaseRepository as BaseRepositoryContract;
+use Illuminate\Support\Arr;
 use Illuminate\Support\Traits\Macroable;
 use MongoDB\BSON\ObjectId;
 
@@ -178,13 +179,14 @@ abstract class BaseRepository implements BaseRepositoryContract
      *
      * @param  array|string  $conditions
      * @param  array         $fields
+     * @param  array         $options
      * @return \Jenssegers\Mongodb\Eloquent\Model
      */
-    public function findOne($conditions, array $fields = [])
+    public function findOne($conditions, array $fields = [], array $options = [])
     {
-        return $this->buildQuery(
-            is_array($conditions) ? $conditions : [$this->primaryKey => $conditions]
-        )->first($fields);
+        $conditions = is_array($conditions) ? $conditions : [$this->primaryKey => $conditions];
+
+        return $this->buildQuery($conditions, $options)->first($fields);
     }
 
     /**
@@ -195,11 +197,11 @@ abstract class BaseRepository implements BaseRepositoryContract
      * @param  array  $options
      * @return \Illuminate\Database\Eloquent\Collection
      */
-    public function findMany(array $conditions = [], array $fields = [], array $options = [])
+    public function findMany(array $conditions, array $fields = [], array $options = [])
     {
-        return $this->buildQuery(
-            $conditions, isset($options['limit']) ? $options : array_merge($options, ['limit' => 1000])
-        )->get($fields);
+        $options = isset($options['limit']) ? $options : array_merge($options, ['limit' => 1000]);
+        
+        return $this->buildQuery($conditions, $options)->get($fields);
     }
 
     /**
@@ -226,29 +228,15 @@ abstract class BaseRepository implements BaseRepositoryContract
     }
 
     /**
-     * Parse conditions and convert them to the "query" standard in Mongo DB.
+     * Parse conditions and convert them to the query standard in Laravel.
      *
      * @param  array  $conditions
      * @return $this
      */
     protected function parseConditions(array $conditions)
     {
-        $identifiers =  $this->hasPrimaryKey($conditions) &&
-                        $this->hasOperator($conditions[$this->primaryKey], '$in')
-                        ? $conditions[$this->primaryKey]['$in'] : [];
-
-        if (! empty($identifiers)) {
-            $objectIds = [];
-
-            foreach ($identifiers as $identifier) {
-                $objectIds[] = new ObjectId($identifier);
-            }
-
-            $conditions[$this->primaryKey]['$in'] = $objectIds;
-        }
-
         foreach ($conditions as $key => $value) {
-            if (is_array($value) && $this->hasOperator($value, '$regex')) {
+            if (is_array($value) && isset($value['$regex'])) {
                 $this->builder = $this->builder->where($key, 'regexp', $value['$regex']);
             } else {
                 $this->builder = $this->builder->where($key, $value);
@@ -259,8 +247,7 @@ abstract class BaseRepository implements BaseRepositoryContract
     }
 
     /**
-     * Parse optional parameters addition as (skip, limit, sorted) and
-     * convert them to the "query" standard in Mongo DB.
+     * Parse optional parameters such as (skip, limit, sorted).
      *
      * @param  array  $options
      * @return $this
@@ -287,25 +274,13 @@ abstract class BaseRepository implements BaseRepositoryContract
     }
 
     /**
-     * Determine if the primary key exists in the given conditions.
-     * 
-     * @param  array  $conditions
-     * @return bool
-     */
-    protected function hasPrimaryKey(array $conditions)
-    {
-        return isset($conditions[$this->primaryKey]);
-    }
-
-    /**
-     * Determine if the comparison query operator exists in the given array.
+     * Create an object identifier with the given identifier.
      *
-     * @param  mixed   $array
-     * @param  string  $operator
-     * @return bool
+     * @param  string  $identifier
+     * @return \MongoDB\BSON\ObjectId
      */
-    protected function hasOperator($array, $operator)
+    public static function createObjectId($identifier)
     {
-        return is_array($array) && isset($array[$operator]);
+        return new ObjectId($identifier);
     }
 }

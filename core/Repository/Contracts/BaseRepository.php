@@ -93,9 +93,10 @@ interface BaseRepository
      *
      * @param  array|string  $conditions
      * @param  array         $fields
+     * @param  array         $options
      * @return \Jenssegers\Mongodb\Eloquent\Model
      */
-    public function findOne($conditions, array $fields = []);
+    public function findOne($conditions, array $fields = [], array $options = []);
 
     /**
      * Return many documents with the given conditions.
@@ -105,7 +106,7 @@ interface BaseRepository
      * @param  array  $options
      * @return \Illuminate\Database\Eloquent\Collection
      */
-    public function findMany(array $conditions = [], array $fields = [], array $options = []);
+    public function findMany(array $conditions, array $fields = [], array $options = []);
 
     /**
      * Build a query statement with the given conditions and options if any.
