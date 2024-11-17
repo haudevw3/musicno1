@@ -223,7 +223,7 @@ class Paginator implements PaginatorContract
     {
         $segments = explode('-', $parameter);
 
-        $currentPage = typecast(end($segments), 'int');
+        $currentPage = intval(end($segments));
 
         return $currentPage;
     }
