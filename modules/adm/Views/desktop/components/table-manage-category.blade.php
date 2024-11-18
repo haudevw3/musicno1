@@ -14,29 +14,29 @@
                             <x-core::check-box id="checkbox"></x-core::check-box>
                         </th>
                         <th>STT</th>
-                        <th>Họ và tên</th>
-                        <th>Tên đăng nhập</th>
-                        <th>Email</th>
-                        <th>Trạng thái</th>
-                        <th>Ngày tạo</th>
+                        <th>Tên danh mục</th>
+                        <th>Tên đường dẫn</th>
+                        <th>Loại danh mục</th>
+                        <th>Danh mục phụ thuộc</th>
+                        <th>Cập nhật gần đây</th>
                         <th>Hành động</th>
                     </tr>
                 </thead>
                 <tbody>
-                    @foreach ($users as $key => $user)
+                    @foreach ($categories as $key => $category)
                         @php $key++ @endphp
                         <tr id="row-{{ $key }}">
                             <th>
-                                <x-core::checkbox id="checkbox-{{ $key }}" name="user_ids[]" value="{{ $user->_id }}"></x-core::checkbox>
+                                <x-core::checkbox id="checkbox-{{ $key }}" name="category_ids[]" value="{{ $category->_id }}"></x-core::checkbox>
                             </th>
                             <td>{{ $key }}</td>
-                            <td>{{ $user->name }}</td>
-                            <td>{{ $user->username }}</td>
-                            <td>{{ $user->email }}</td>
-                            <td><span class="badge bg-blue-soft text-blue">Hoạt động</span></td>
-                            <td>{{ $user->created_at }}</td>
+                            <td>{{ $category->name }}</td>
+                            <td>{{ $category->slug }}</td>
+                            <td> {!! $category->badge() !!} </td>
+                            <td>{!! $category->badges() !!}</td>
+                            <td>{{ $category->updated_at }}</td>
                             <td>
-                                @include('adm::components.table-action-manage-user')
+                                @include('adm::components.table-action-manage-category')
                             </td>
                         </tr>
                     @endforeach

@@ -1,11 +1,7 @@
-<div class="d-flex position-relative">
-    <x-adm::table-button class="me-2" icon="ellipsis-vertical" extra="data-index={{ $key }}"></x-adm::table-button>
+<div class="col-9 items-align-vertical-center-end">
+    <x-core::button tag="a" icon="user-plus" name="Thêm thành viên" url="{{ route('adm-add-user') }}"
+    class="btn-sm btn-light text-primary mr-10"></x-core::button>
 
-    <x-adm::table-button tag="a" class="me-2" icon="pen-to-square" url="{{ route('adm-edit-user', $user->_id) }}"></x-adm::table-button>
-
-    <x-adm::table-button class="btn-delete-user" icon="trash-can" extra="data-id={{ $user->_id }}"></x-adm::table-button>
-
-    <div class="dropdown-menu animated-fade-in-up shadow">
-        
-    </div>
+    <x-core::button tag="button" icon="trash" name="Xóa nhanh" id="btn-delete-many-user"
+    class="btn-sm btn-red mr-10"></x-core::button>
 </div>

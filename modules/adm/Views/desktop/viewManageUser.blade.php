@@ -1,17 +1,15 @@
-@extends('layout.desktop-backend')
+@extends('adm::layout')
 
 @push('scripts')
-    <script src="{{ asset('js/table.js?=').time() }}"></script>
     <script src="{{ asset('js/user/manage-user.js?=').time() }}"></script>
 @endpush
 
-@section('content')
-    @include('components.toast')
-    @include('components.dialog')
-    
-    @include('adm::components.page-header-user')
+@section('page-header')
+    <x-adm::page-header-title icon="user" name="Quản lý người dùng"></x-adm::page-header-title>
 
-    <main id="page-body" class="page-body">
-        @include('adm::components.table-manage-user')
-    </main>
+    @include('adm::components.action-manage-user')
+@endsection
+
+@section('page-body')
+    @include('adm::components.table-manage-user')
 @endsection

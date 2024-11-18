@@ -11,5 +11,9 @@ Route::middleware(['demon', 'auth.admin.custom'])->group(function () {
         Route::get('manage-user/{page?}', [AdmController::class, 'pageManageUser'])
             ->where('page', regex('page'))
             ->name('adm-manage-user');
+        
+        Route::get('manage-category/{page?}', [AdmController::class, 'pageManageCategory'])
+            ->where('page', regex('page'))
+            ->name('adm-manage-category');
     });
 });
