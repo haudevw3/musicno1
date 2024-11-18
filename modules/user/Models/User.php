@@ -2,7 +2,6 @@
 
 namespace Modules\User\Models;
 
-use Core\Constant;
 use Illuminate\Auth\Authenticatable;
 use Illuminate\Auth\Passwords\CanResetPassword;
 use Illuminate\Contracts\Auth\Access\Authorizable as AuthorizableContract;
@@ -11,6 +10,7 @@ use Illuminate\Contracts\Auth\CanResetPassword as CanResetPasswordContract;
 use Illuminate\Foundation\Auth\Access\Authorizable;
 use Illuminate\Notifications\Notifiable;
 use Jenssegers\Mongodb\Eloquent\Model;
+use Modules\User\Constant;
 
 class User extends Model implements AuthenticatableContract,
     AuthorizableContract, CanResetPasswordContract
@@ -54,10 +54,10 @@ class User extends Model implements AuthenticatableContract,
         'password',
         'image',
         'remember_token',
-        'count_send_mail',
-        'time_send_mail',
-        'token_send_mail',
-        'active',
+        'count', // Number of email send attempts
+        'token',
+        'token_expires_at',
+        'verified', // verified account
         'created_at',
         'updated_at',
     ];
@@ -77,10 +77,10 @@ class User extends Model implements AuthenticatableContract,
         'password' => '',
         'image' => '',
         'remember_token' => '',
-        'count_send_mail' => 0,
-        'time_send_mail' => 0,
-        'token_send_mail' => '',
-        'active' => 0,
+        'count' => 0,
+        'token' => '',
+        'token_expires_at' => '',
+        'verified' => 0,
         'created_at' => '',
         'updated_at' => '',
     ];

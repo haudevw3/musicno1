@@ -7,22 +7,28 @@ interface UserService
     /**
      * @param  array  $data
      * @param  bool   $needSendMail
-     * @return \Jenssegers\Mongodb\Eloquent\Model
+     * @return \Modules\User\Models\User
      */
     public function create(array $data, $needSendMail = false);
 
     /**
      * @param  string  $id
      * @param  array   $data
-     * @return bool
+     * @return \Core\Http\ResponseBag
      */
     public function updateOne($id, array $data);
 
     /**
      * @param  string  $id
-     * @return bool
+     * @return \Core\Http\ResponseBag
      */
     public function deleteOne($id);
+
+    /**
+     * @param  array  $ids
+     * @return \Core\Http\ResponseBag
+     */
+    public function deleteMany(array $ids);
 
     /**
      * @param  array  $data

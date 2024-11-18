@@ -2,8 +2,9 @@
 
 namespace Modules\User\Request;
 
+use Core\Facades\Rule;
 use Illuminate\Foundation\Http\FormRequest;
-use Modules\User\Rules\EmailExcept;
+use Modules\User\Repository\Contracts\UserRepository;
 
 class FormUpdateUser extends FormRequest
 {
@@ -26,9 +27,9 @@ class FormUpdateUser extends FormRequest
     {
         return [
             'name' => 'required|min:6|max:50',
-            'username' => ['required', 'min:6', 'max:30'],
+            'username' => ['required', 'min:6', 'max:30', Rule::make(UserRepository::class, 'except', config('user.label.EXISTED_USERNAME'), $this)],
             'password' => 'required|min:8|max:30',
-            'email' => ['required', 'email', new EmailExcept($this)],
+            'email' => ['required', 'email', Rule::make(UserRepository::class, 'except', config('user.label.EXISTED_EMAIL'), $this)],
         ];
     }
 

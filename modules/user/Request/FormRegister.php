@@ -2,9 +2,9 @@
 
 namespace Modules\User\Request;
 
+use Core\Facades\Rule;
 use Illuminate\Foundation\Http\FormRequest;
-use Modules\User\Rules\EmailExisted;
-use Modules\User\Rules\UserExisted;
+use Modules\User\Repository\Contracts\UserRepository;
 
 class FormRegister extends FormRequest
 {
@@ -27,9 +27,9 @@ class FormRegister extends FormRequest
     {
         return [
             'name' => 'required|min:6|max:50',
-            'username' => ['required', 'min:6', 'max:30', new UserExisted],
+            'username' => ['required', 'min:6', 'max:30', Rule::make(UserRepository::class, 'exists', config('user.label.EXISTED_USERNAME'))],
             'password' => 'required|min:8|max:30',
-            'email' => ['required', 'email', new EmailExisted],
+            'email' => ['required', 'email', Rule::make(UserRepository::class, 'exists', config('user.label.EXISTED_EMAIL'))],
         ];
     }
 

@@ -29,7 +29,7 @@ class UserManagerController extends Controller
     public function pageEditUser($id)
     {
         $user = $this->userService->findOne(
-            ['_id' => $id], ['name', 'username', 'email', 'roles']
+            $id, ['name', 'username', 'email', 'roles']
         );
 
         if (is_null($user)) {
@@ -50,52 +50,34 @@ class UserManagerController extends Controller
 
     public function updateUserApi(FormUpdateUser $request)
     {
-        $updated = $this->userService->updateOne(
+        $responseBag = $this->userService->updateOne(
             $request->input('id'), $request->all()
         );
 
-        if ($updated) {
-            return response()->json(
-                ['success' => config('user.label.UPDATE_SUCCESS')]
-            );
-        }
-
         return response()->json(
-            ['errors' => config('user.label.UPDATE_FAILED')]
+            $responseBag->data(), $responseBag->status()
         );
     }
 
     public function deleteUserApi(Request $request)
     {
-        $deleted = $this->userService->deleteOne(
+        $responseBag = $this->userService->deleteOne(
             $request->input('id')
         );
 
-        if ($deleted) {
-            return response()->json(
-                ['success' => config('user.label.DELETE_SUCCESS')]
-            );
-        }
-
         return response()->json(
-            ['errors' => config('user.label.DELETE_FAILED')], 500
+            $responseBag->data(), $responseBag->status()
         );
     }
 
     public function deleteManyUserApi(Request $request)
     {
-        $deleted = $this->userService->delete(
-            ['_id' => ['$in' => $request->input('user_ids')]]
+        $responseBag = $this->userService->deleteMany(
+            $request->input('user_ids')
         );
 
-        if ($deleted) {
-            return response()->json(
-                ['success' => config('user.label.DELETE_SUCCESS')]
-            );
-        }
-
         return response()->json(
-            ['errors' => config('user.label.DELETE_FAILED')], 500
+            $responseBag->data(), $responseBag->status()
         );
     }
 }

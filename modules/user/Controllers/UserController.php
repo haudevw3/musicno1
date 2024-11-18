@@ -73,9 +73,20 @@ class UserController extends Controller
 
     public function registerApi(FormRegister $request)
     {
-        $user = $this->userService->create($request->all(), true);
+        $user = $this->userService->create(
+            $request->all(), true
+        );
 
-        return response()->json($user, 201);
+        return response()->json(['id' => $user->id], 201);
+    }
+
+    public function verifyAccountApi(Request $request)
+    {
+        $responseBag = $this->userService->verifyAccount($request->all());
+
+        return response()->json(
+            $responseBag->data(), $responseBag->status()
+        );
     }
 
     public function forgetPasswordApi(FormForgetPassword $request)
@@ -87,21 +98,6 @@ class UserController extends Controller
         );
     }
 
-    public function verifyAccountApi(Request $request)
-    {
-        $responseBag = $this->userService->verifyAccount($request->all());
-
-        if ($responseBag->status() == 200) {
-            $user = $this->userService->findOne(['id' => $request->input('id')]);
-
-            $this->loginService->create(['user_id' => $user->id]);
-            Auth::login($user);
-        }
-
-        return response()->json(
-            $responseBag->data(), $responseBag->status()
-        );
-    }
 
     public function refreshTokenToSendMailApi(Request $request)
     {

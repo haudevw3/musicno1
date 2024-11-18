@@ -17,7 +17,7 @@
 
             <div class="mb-3">
                 <x-core::input-group-feedback id="password" label="Mật khẩu" icon="lock" type="password"
-                name="password" placeholder="Nhập mật khẩu" value="{{ isset($user) ? label('DEFAULT_PASSWORD') : '' }}"></x-core::input-group-feedback>
+                name="password" placeholder="Nhập mật khẩu" value="{{ isset($user) ? config('label.DEFAULT_PASSWORD') : '' }}"></x-core::input-group-feedback>
             </div>
 
             <div class="mb-3">

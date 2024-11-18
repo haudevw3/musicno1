@@ -43,9 +43,9 @@ class PendingClient
     public static function make(array $credentials)
     {
         return new static(
-            str_filter($credentials['username']),
-            str_filter($credentials['password']),
-            typecast($credentials['remember'])
+            trim($credentials['username']),
+            trim($credentials['password']),
+            $credentials['remember'] === 'true' ? true : false
         );
     }
 }

@@ -18,32 +18,34 @@ return [
 
         'TOKEN_NOT_EXPIRED' => 'Chúng tôi sẽ gửi thư cho bạn sau khi mã thông báo hết hiệu lực.',
     
-        'LIMITED_SEND_MAIL' => 'Số lần gửi thư của bạn đã vượt quá giới hạn cho phép. Vui lòng thử lại vào ngày mai.',
+        'LIMITED_SEND_EMAIL' => 'Số lần gửi thư của bạn đã vượt quá giới hạn cho phép. Vui lòng thử lại vào ngày mai.',
     
         'INVALID_TOKEN' => 'Mã xác nhận của bạn không hợp lệ. Vui lòng kiểm tra lại.',
     
-        'INVALID_USER' => 'Người dùng không hợp lệ. Vui lòng kiểm tra lại.',
+        'INVALID_LOGIN' => 'Tên đăng nhập hoặc mật khẩu không hợp lệ. Vui lòng kiểm tra lại thông tin.',
     
-        'INVALID_LOGIN' => 'Tên đăng nhập hoặc mật khẩu không hợp lệ. Vui lòng kiểm tra lại.',
-    
-        'NUMBER_OF_MAILINGS' => 'Số lượng thư đã gửi là {total}. Bạn chỉ còn {number} lần gửi thư.',
+        'EMAIL_SEND_STATUS' => 'Số lượng thư đã gửi là {total}. Bạn chỉ còn {number} lần gửi thư.',
     
         'LOGIN_ON_ANOTHER_DEVICE' => 'Tài khoản của bạn đang đăng nhập trên một thiết bị khác. Vui lòng đăng xuất trước khi thực hiện yêu cầu này.',
     
-        'ACCOUNT_NOT_ACTIVATED' => 'Tài khoản của bạn chưa được kích hoạt. Vui lòng kiểm tra lại hộp thư để xác thực tài khoản.',
+        'ACCOUNT_NOT_VERIFIED' => 'Tài khoản của bạn chưa được xác minh. Vui lòng kiểm tra lại hộp thư để xác thực tài khoản.',
     
-        'SENT_PASSWORD' => 'Chúng tôi đã gửi một mật khẩu mới đến email của bạn. Vui lòng kiểm tra hộp thư để lấy mật khẩu của bạn.',
-    
-        'REQUEST_NOT_EXPIRED' => 'Yêu cầu quên mật khẩu của bạn lần trước chưa hết hiệu lực. Chúng tôi sẽ gửi thư cho bạn sau khi yêu cầu hết hiệu lực.',
+        'REQUEST_FORGET_PASSWORD_NOT_EXPIRED' => 'Yêu cầu quên mật khẩu của bạn lần trước chưa hết hiệu lực. Vui lòng thực hiện lại yêu cầu này sau khi hết lực.',
+
+        'SENT_NEW_PASSWORD' => 'Chúng tôi đã gửi một mật khẩu mới đến email của bạn. Vui lòng kiểm tra hộp thư để lấy mật khẩu của bạn.',
+
+        'EXISTED_USERNAME' => 'Tên đăng nhập đã tồn tại. Vui lòng chọn tên đăng nhập khác.',
+
+        'EXISTED_EMAIL' => 'Tên email đã tồn tại. Vui lòng chọn email khác.',
+
+        'NOT_EXISTS_EMAIL' => 'Tên email không tồn tại. Vui lòng kiểm tra lại thông tin.',
+
+        'NOT_FOUND_USER' => 'Không tìm thấy người dùng. Vui lòng kiểm tra lại thông tin.',
 
         'CREATE_SUCCESS' => 'Tạo tài khoản người dùng thành công.',
 
         'UPDATE_SUCCESS' => 'Cập nhật tài khoản người dùng thành công.',
 
-        'UPDATE_FAILED' => 'Cập nhật tài khoản người dùng thất bại.',
-
         'DELETE_SUCCESS' => 'Xóa tài khoản người dùng thành công.',
-
-        'DELETE_FAILED' => 'Xóa tài khoản người dùng thất bại.',
     ]
 ];

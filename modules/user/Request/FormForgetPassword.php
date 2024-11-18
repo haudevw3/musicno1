@@ -2,8 +2,9 @@
 
 namespace Modules\User\Request;
 
+use Core\Facades\Rule;
 use Illuminate\Foundation\Http\FormRequest;
-use Modules\User\Rules\EmailNotExists;
+use Modules\User\Repository\Contracts\UserRepository;
 
 class FormForgetPassword extends FormRequest
 {
@@ -25,7 +26,7 @@ class FormForgetPassword extends FormRequest
     public function rules()
     {
         return [
-            'email' => ['required', 'email', new EmailNotExists],
+            'email' => ['required', 'email', Rule::make(UserRepository::class, 'not_exists', config('user.label.NOT_EXISTS_EMAIL'))],
         ];
     }
 

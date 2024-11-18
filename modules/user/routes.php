@@ -24,7 +24,7 @@ Route::middleware('demon')->group(function () {
         });
     });
 
-    Route::prefix('user')->middleware('auth.admin.custom')->group(function () {
+    Route::prefix('users')->middleware('auth.admin.custom')->group(function () {
         Route::get('add', [UserManagerController::class, 'pageAddUser'])->name('adm-add-user');
         Route::get('edit/{id}', [UserManagerController::class, 'pageEditUser'])->name('adm-edit-user');
     });

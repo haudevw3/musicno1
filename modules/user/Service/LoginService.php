@@ -2,7 +2,6 @@
 
 namespace Modules\User\Service;
 
-use Core\Constant;
 use Core\Http\ResponseBag;
 use Core\Jwt\Jwt;
 use Core\Service\BaseService;
@@ -12,6 +11,7 @@ use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Request;
 use Illuminate\Support\Facades\Session;
 use Laravel\Socialite\Contracts\User as GoogleUser;
+use Modules\User\Constant;
 use Modules\User\Models\User;
 use Modules\User\Objects\PendingClient;
 use Modules\User\Repository\Contracts\LoginRepository;
@@ -47,9 +47,6 @@ class LoginService extends BaseService implements LoginServiceContract
             'user_id' => $data['user_id'],
             'session_id' => Session::getId(),
             'remember_token' => Cookie::get('remember_token'),
-            'token' => isset_if($data, 'token'),
-            'refresh_token' => isset_if($data, 'refresh_token'),
-            'status' => 1,
             'created_at' => current_date(),
             'updated_at' => current_date(),
             'created_time' => time(),
@@ -87,37 +84,34 @@ class LoginService extends BaseService implements LoginServiceContract
             $responseBag->errors = config('user.label.INVALID_LOGIN');
         }
 
-        // If the account is not activated then the user
-        // can't login into the application.
-        elseif ($user->active === 0) {
-            $responseBag->errors = config('user.label.ACCOUNT_NOT_ACTIVATED');
+        // If the account is not verified then the user can't login into the application.
+        elseif ($user->verified == 0) {
+            $responseBag->errors = config('user.label.ACCOUNT_NOT_VERIFIED');
         }
 
-        if ($responseBag->isNotEmptyError()) {
+        if ($responseBag->isNotEmptyErrors()) {
             return $responseBag;
         }
 
-        $client = $this->baseRepo->findOne(['user_id' => $user->id]);
-
-        $timed = time() - ($client->created_time ?? 0);
-        $sessionLifetime = config('session.lifetime') * 60;
+        $login = $this->baseRepo->findOne(['user_id' => $user->id]);
 
         // If the user was login into the previous application,
         // then we will check the start time login and the session lifetime,
         // if it is valid then we must delete the previous session.
-        if (! is_null($client) && $timed >= $sessionLifetime) {
+        if (! is_null($login) &&
+           (time() - $login->created_time >= config('session.lifetime') * 60)) {
             $this->baseRepo->delete(['user_id' => $user->id]);
         }
 
-        // If the user login into the application on another device,
-        // then we will check the current session or IP address if any,
-        // if it is valid the we force must the give an error for the user know.
-        elseif (! is_null($client) && ($client->ip !== Request::ip() ||
-            $client->session_id !== Session::getId())) {
+        // If the user logs into the application on another device,
+        // then we will check the current session or IP address if any.
+        // If it is valid then we force give an error for the user to know.
+        elseif (! is_null($login) &&
+               ($login->ip != Request::ip() || $login->session_id !== Session::getId())) {
             $responseBag->errors = config('user.label.LOGIN_ON_ANOTHER_DEVICE');
         }
 
-        if ($responseBag->isEmptyError()) {
+        if ($responseBag->isEmptyErrors()) {
             Auth::login($user, $pendingClient->remember);
 
             $this->create(['user_id' => $user->id]);
@@ -159,7 +153,7 @@ class LoginService extends BaseService implements LoginServiceContract
 
         if (is_null($user)) {
             $username = explode('@', $googleUser->email)[0];
-            $password = $username.label('DEFAULT_PASSWORD');
+            $password = $username.config('label.DEFAULT_PASSWORD');
 
             $user = $this->userRepo->create([
                 'id' => $googleUser->id,
@@ -168,28 +162,26 @@ class LoginService extends BaseService implements LoginServiceContract
                 'email' => $googleUser->email,
                 'username' => $username,
                 'password' => $password,
-                'active' => 1,
+                'verified' => 1,
                 'roles' => [Constant::MEMBER_ROLE],
             ]);
         }
 
         $deleted = false;
 
-        $client = $this->baseRepo->findOne(['user_id' => $user->id]);
-
-        $timed = time() - ($client->created_time ?? 0);
-        $sessionLifetime = config('session.lifetime') * 60;
+        $login = $this->baseRepo->findOne(['user_id' => $user->id]);
 
         // If the user was login into the previous application,
         // then we will check the start time login and the session lifetime,
         // if it is valid then we must delete the previous session.
-        if (! is_null($client) && $timed >= $sessionLifetime) {
+        if (! is_null($login) &&
+           (time() - $login->created_time >= config('session.lifetime') * 60)) {
             $deleted = $this->baseRepo->delete(['user_id' => $user->id]);
         }
 
         Auth::login($user);
 
-        if (is_null($client) || $deleted) {
+        if (is_null($login) || $deleted) {
             $this->create([
                 'user_id' => $user->id,
                 'token' => $googleUser->token,
