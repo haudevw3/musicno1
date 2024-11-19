@@ -25,6 +25,7 @@
                 <tbody>
                     @foreach ($categories as $key => $category)
                         @php $key++ @endphp
+
                         <tr id="row-{{ $key }}">
                             <th>
                                 <x-core::checkbox id="checkbox-{{ $key }}" name="category_ids[]" value="{{ $category->_id }}"></x-core::checkbox>
@@ -33,7 +34,7 @@
                             <td>{{ $category->name }}</td>
                             <td>{{ $category->slug }}</td>
                             <td> {!! $category->badge() !!} </td>
-                            <td>{!! $category->badges() !!}</td>
+                            <td>{!! $category->badges !!}</td>
                             <td>{{ $category->updated_at }}</td>
                             <td>
                                 @include('adm::components.table-action-manage-category')

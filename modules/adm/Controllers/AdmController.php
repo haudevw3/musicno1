@@ -3,8 +3,8 @@
 namespace Modules\Adm\Controllers;
 
 use App\Http\Controllers\Controller;
-use Core\Facades\Redis;
 use Illuminate\Http\Request;
+use Modules\Categories\Objects\Category;
 use Modules\Categories\Service\Contracts\CategoryService;
 use Modules\User\Service\Contracts\UserService;
 
@@ -49,8 +49,24 @@ class AdmController extends Controller
             'name', 'slug', 'tag_type', 'created_at', 'updated_at'
         ]);
 
+        $categories = $paginator->items();
+
+        foreach ($categories as $key => $category) {
+            if ($category->isNotPrimary()) {
+                $category->badges = null;
+            }
+
+            elseif ($category->isPrimary()) {
+                $category->badges = Category::make(
+                    $category, $this->categoryService->repository()
+                )->badges();
+            }
+
+            $categories[$key] = $category;
+        }
+
         $data = [
-            'categories' => $paginator->items(),
+            'categories' => $categories,
             'paginator' => $paginator,
         ];
 
