@@ -25,7 +25,7 @@ class Provider extends ServiceProvider
     public function boot()
     {
         $this->loadRoutesFrom(__DIR__.'/routes.php');
-        $this->mergeConfigFrom(__DIR__.'/config.php', 'categories');
         $this->loadViewsFrom(__DIR__.'/Views/desktop', 'categories');
+        $this->mergeConfigFrom(__DIR__.'/config.php', 'categories');
     }
 }

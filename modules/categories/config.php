@@ -20,13 +20,13 @@ return [
         
         'NOT_FOUND_CATEGORY' => 'Không tìm thấy danh mục.',
 
-        'PRIMARY_CATEGORY_HAD_DEPENDENCIES_PRIMARY_TYPE' => 'Danh mục {name} đang chứa các danh mục phụ thuộc loại Primary.
-                                                             Vui lòng chọn loại danh mục là Primary để thực hiện chức năng này.',
+        'CATEGORY_DEPENDENCY_PRIMARY_TYPE' => 'Danh mục {name} đang chứa các danh mục phụ thuộc loại Primary.
+                                               Vui lòng chọn loại danh mục là Primary để thực hiện chức năng này.',
         
-        'PRIMARY_CATEGORY_HAD_DEPENDENCIES_NOT_PRIMARY_TYPE' => 'Danh mục {name} đang chứa các danh mục phụ thuộc không phải là loại Primary.
-                                                                 Vui lòng chọn loại danh mục như Playlist, Album, Artist thực hiện chức năng này.',
+        'CATEGORY_DEPENDENCY_NON_PRIMARY_TYPE' => 'Danh mục {name} đang chứa các danh mục phụ thuộc không phải là loại Primary.
+                                                   Vui lòng chọn loại danh mục như Playlist, Album, Artist thực hiện chức năng này.',
 
-        'PRIMARY_CATEGORY_HAD_DEPENDENCIES' => 'Không thể cập nhật danh mục này bởi vì danh mục đang chứa các phụ thuộc khác.
-                                                Vui lòng vào các danh mục phụ thuộc để hủy danh mục chính và thực hiện lại chức năng này nếu cần.',
+        'CATEGORY_UPDATE_BLOCKED_DEPENDENCIES' => 'Không thể cập nhật danh mục này bởi vì danh mục đang chứa các phụ thuộc khác.
+                                                   Vui lòng vào các danh mục phụ thuộc để hủy danh mục chính và thực hiện lại chức năng này nếu cần.',
     ],
 ];

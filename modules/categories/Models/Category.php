@@ -100,49 +100,6 @@ class Category extends Model
     }
 
     /**
-     * Get the category repository instance.
-     *
-     * @return \Modules\Categories\Repository\Contracts\CategoryRepository
-     */
-    protected function repository()
-    {
-        return app(\Modules\Categories\Repository\Contracts\CategoryRepository::class);
-    }
-
-    /**
-     * Get subcategories of the primary category if any.
-     *
-     * @return \Illuminate\Database\Eloquent\Collection;
-     */
-    public function getSubcategories()
-    {
-        return $this->repository()
-                    ->findMany(['parent_id' => $this->_id]);
-    }
-
-    /**
-     * Get badges of subcategories for the primary category.
-     *
-     * @return string
-     */
-    public function badges()
-    {
-        $subcategories = $this->getSubcategories();
-
-        if ($subcategories->isEmpty()) {
-            return;
-        }
-
-        $badges = [];
-
-        foreach ($subcategories as $subcategory) {
-            $badges[] = $this->badge($subcategory->tag_type, $subcategory->name);
-        }
-
-        return implode(' ', $badges);
-    }
-
-    /**
      * Get the badge following the property "tag_type".
      *
      * @param  int|null  $key
@@ -166,57 +123,5 @@ class Category extends Model
         return badge(
             $badgeKey, $value ?? config('categories.tag_types')[$key]
         );
-    }
-
-    /**
-     * Determine if the primary category has subcategories.
-     *
-     * @return bool
-     */
-    public function hasSubcategories()
-    {
-        return $this->getSubcategories()->isNotEmpty();
-    }
-
-    /**
-     * Determine if the primary category has no subcategories.
-     *
-     * @return bool
-     */
-    public function hasNoSubcategories()
-    {
-        return ! $this->hasSubcategories();
-    }
-
-    /**
-     * Determine if all subcategories are the primary type.
-     *
-     * @return bool
-     */
-    public function subcategoriesMustBePrimaryType()
-    {  
-        $subcategories = $this->getSubcategories();
-
-        if ($subcategories->isEmpty()) {
-            return false;
-        }
-
-        foreach ($subcategories as $subcategory) {
-            if ($subcategory->tag_type > 0) {
-                return false;
-            }
-        }
-
-        return true;
-    }
-
-    /**
-     * Determine if all subcategories are not the primary type.
-     *
-     * @return bool
-     */
-    public function subcategoriesAreNotPrimaryType()
-    {
-        return ! $this->subcategoriesMustBePrimaryType();
     }
 }

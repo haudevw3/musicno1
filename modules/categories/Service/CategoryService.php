@@ -5,6 +5,7 @@ namespace Modules\Categories\Service;
 use Core\Http\ResponseBag;
 use Core\Service\BaseService;
 use Modules\Categories\Constant;
+use Modules\Categories\Objects\Category;
 use Modules\Categories\Repository\Contracts\CategoryRepository;
 use Modules\Categories\Service\Contracts\CategoryService as CategoryServiceContract;
 
@@ -59,37 +60,39 @@ class CategoryService extends BaseService implements CategoryServiceContract
     /**
      * Parse value attribute "tag type" and get the response bag instance.
      *
-     * @param  array                        $attributes
-     * @param  \Core\Http\ResponseBag|null  $responseBag
+     * @param  array                   $attributes
+     * @param  \Core\Http\ResponseBag  $responseBag
      * @return \Core\Http\ResponseBag
      */
     protected function parseValueAttributes(array $attributes, ResponseBag $responseBag)
     {
-        $primaryCategory = $this->baseRepo->findOne($attributes['parent_id']);
-    
-        if ($primaryCategory->hasNoSubcategories()) {
+        $category = Category::make(
+            $attributes['parent_id'], $this->baseRepo
+        );
+
+        if ($category->hasNoSubcategories()) {
             return $responseBag;
         }
 
-        // If the primary category contains subcategories are the primary type
+        // If a category is the primary type and it contains subcategories are the primary type
         // and the given attribute "tag type" is not the primary type
         // then we can't execute this request.
-        if ($primaryCategory->subcategoriesMustBePrimaryType() &&
+        if ($category->subcategoriesMustBePrimaryType() &&
             $attributes['tag_type'] != Constant::TAG_PRIMARY) {
             $responseBag->errors = preg_replace(
-                '/{name}/', $primaryCategory->name,
-                config('categories.label.PRIMARY_CATEGORY_HAD_DEPENDENCIES_PRIMARY_TYPE')
+                '/{name}/', $category->name,
+                config('categories.label.CATEGORY_DEPENDENCY_PRIMARY_TYPE')
             );
         }
 
-        // If the primary category contains subcategories aren't the primary type
+        // If a category is the primary type and it contains subcategories aren't the primary type
         // and the given attribute "tag type" is the primary type
         // then we can't execute it.
-        elseif ($primaryCategory->subcategoriesAreNotPrimaryType() &&
+        elseif ($category->subcategoriesAreNotPrimaryType() &&
                 $attributes['tag_type'] == Constant::TAG_PRIMARY) {
             $responseBag->errors = preg_replace(
-                '/{name}/', $primaryCategory->name,
-                config('categories.label.PRIMARY_CATEGORY_HAD_DEPENDENCIES_NOT_PRIMARY_TYPE')
+                '/{name}/', $category->name,
+                config('categories.label.CATEGORY_DEPENDENCY_NON_PRIMARY_TYPE')
             );
         }
 
@@ -105,28 +108,26 @@ class CategoryService extends BaseService implements CategoryServiceContract
     {
         $responseBag = ResponseBag::create();
 
-        $category = $this->baseRepo->findOne($id);
+        $attributes = $this->filterData($data);
+
+        $category = Category::make($id, $this->baseRepo);
 
         if (is_null($category)) {
             $responseBag->errors = config('categories.label.NOT_FOUND_CATEGORY');
-
-            return $responseBag;
         }
-
-        $attributes = $this->filterData($data);
 
         // If this is a primary category and the given data to
         // update has the attribute "tag_type" and it changed,
         // then we must determine if it has subcategories.
         // If it has then we can't update with this situation.
-        if ($category->hasSubcategories() &&
+        elseif ($category->hasSubcategories() &&
             $attributes['tag_type'] !== $category->tag_type) {
-            $responseBag->errors = config('categories.label.PRIMARY_CATEGORY_HAD_DEPENDENCIES');
+            $responseBag->errors = config('categories.label.CATEGORY_UPDATE_BLOCKED_DEPENDENCIES');
         }
         
         elseif (! is_null($attributes['parent_id']) &&
             $attributes['parent_id'] !== $category->parent_id) {
-            $responseBag = $this->parseValueAttributes($attributes, $responseBag);
+            $responseBag = $this->parseValueAttributes($attributes, $responseBag, $category);
         }
         
         if ($responseBag->isEmptyErrors()) {
@@ -173,31 +174,29 @@ class CategoryService extends BaseService implements CategoryServiceContract
     {
         $responseBag = ResponseBag::create();
 
-        $category = $this->baseRepo->findOne($id);
+        $category = Category::make($id, $this->baseRepo);
 
         if (is_null($category)) {
             $responseBag->errors = config('categories.label.NOT_FOUND_CATEGORY');
-
-            return $responseBag;
         }
 
-        $subcategories = $category->getSubcategories();
-
-        if ($subcategories->isNotEmpty()) {
+        elseif ($category->hasSubcategories()) {
             $categoryIds = [];
 
-            foreach ($subcategories as $subcategory) {
-                $categoryIds[] = $subcategory->_id;
+            foreach ($category->getSubcategories() as $subcategory) {
+                $categoryIds[] = $this->baseRepo::createObjectId($subcategory->_id);
             }
 
             $this->baseRepo->update(['_id' => ['$in' => $categoryIds]], ['parent_id' => null]);
         }
 
-        $this->baseRepo->deleteOne($id);
+        if ($responseBag->isEmptyErrors()) {
+            $this->baseRepo->deleteOne($id);
 
-        $responseBag->status(200)->data([
-            'success' => config('categories.label.DELETE_SUCCESS')
-        ]);
+            $responseBag->status(200)->data([
+                'success' => config('categories.label.DELETE_SUCCESS')
+            ]);
+        }
 
         return $responseBag;
     }

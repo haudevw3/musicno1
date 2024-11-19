@@ -5,6 +5,7 @@ namespace Modules\Categories\Controllers;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Modules\Categories\Constant;
+use Modules\Categories\Repository\CategoryRepository;
 use Modules\Categories\Request\FormCreateCategory;
 use Modules\Categories\Request\FormUpdateCategory;
 use Modules\Categories\Service\Contracts\CategoryService;
@@ -39,7 +40,7 @@ class CategoryManagerController extends Controller
 
         if ($category->isPrimary()) {
             $conditions = array_merge($conditions, [
-                '_id' => ['$ne' => $category->_id]
+                '_id' => ['$ne' => CategoryRepository::createObjectId($category->_id)]
             ]);
         }
 
