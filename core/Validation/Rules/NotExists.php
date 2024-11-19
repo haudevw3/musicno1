@@ -18,7 +18,9 @@ class NotExists implements Rule
      */
     public function passes($attribute, $value)
     {
-        $result = $this->repository->findOne([$attribute => $value]);
+        $result = $this->repository->findOne([
+            $attribute => $attribute !== 'name' ? $value : str_ucwords($value)
+        ]);
 
         return ! is_null($result) ? true : false;
     }

@@ -24,7 +24,7 @@ class Except implements Rule
         $result = $this->repository->findOne($id);
 
         if (($result->{$attribute} == $value) ||
-            (is_null($this->repository->findOne([$attribute => $value])))) {
+            (is_null($this->repository->findOne([$attribute => $attribute !== 'name' ? $value : str_ucwords($value)])))) {
             return true;
         }
 
