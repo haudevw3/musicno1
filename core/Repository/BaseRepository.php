@@ -3,7 +3,6 @@
 namespace Core\Repository;
 
 use Core\Repository\Contracts\BaseRepository as BaseRepositoryContract;
-use Illuminate\Support\Arr;
 use Illuminate\Support\Traits\Macroable;
 use MongoDB\BSON\ObjectId;
 
