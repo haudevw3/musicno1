@@ -4,9 +4,10 @@ namespace Modules\Adm\Controllers;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
-use Modules\Categories\Objects\Category;
+use Modules\Categories\Category;
 use Modules\Categories\Service\Contracts\CategoryService;
 use Modules\User\Service\Contracts\UserService;
+use Modules\User\User;
 
 class AdmController extends Controller
 {
@@ -32,11 +33,19 @@ class AdmController extends Controller
     public function pageManageUser(Request $request)
     {
         $paginator = $this->userService->paginator([
-            'name', 'username', 'email', 'created_at', 'updated_at'
+            'id', 'name', 'username', 'email', 'created_at', 'updated_at'
         ]);
 
+        $users = $paginator->items();
+
+        foreach ($users as $key => $user) {
+            $users[$key] = User::create(
+                $user, $this->userService->repository()
+            );
+        }
+
         $data = [
-            'users' => $paginator->items(),
+            'users' => $users,
             'paginator' => $paginator,
         ];
 

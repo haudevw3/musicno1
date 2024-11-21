@@ -5,7 +5,7 @@ namespace Modules\Adm;
 use Illuminate\Support\Facades\Blade;
 use Illuminate\Support\ServiceProvider;
 
-class Provider extends ServiceProvider
+class AdmServiceProvider extends ServiceProvider
 {
     /**
      * Register services.

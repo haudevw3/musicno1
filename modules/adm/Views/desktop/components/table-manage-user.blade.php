@@ -33,7 +33,7 @@
                             <td>{{ $user->name }}</td>
                             <td>{{ $user->username }}</td>
                             <td>{{ $user->email }}</td>
-                            <td><span class="badge bg-blue-soft text-blue">Hoạt động</span></td>
+                            <td>{!! $user->badge() !!}</td>
                             <td>{{ $user->created_at }}</td>
                             <td>
                                 @include('adm::components.table-action-manage-user')
