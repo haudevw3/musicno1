@@ -1,6 +1,6 @@
 <?php
 
-namespace Modules\Categories\Objects;
+namespace Modules\Categories;
 
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Support\Traits\ForwardsCalls;
@@ -33,7 +33,7 @@ class Category
     protected $subcategories;
 
     /**
-     * Create a new primary category instance.
+     * Create a new category instance.
      *
      * @param  \Modules\Categories\Models\Category                          $model
      * @param  \Modules\Categories\Repository\Contracts\CategoryRepository  $repository
@@ -48,7 +48,7 @@ class Category
     }
 
     /**
-     * Create a new primary category instance.
+     * Create a new category instance.
      *
      * @param  \Modules\Categories\Models\Category|array|string             $value
      * @param  \Modules\Categories\Repository\Contracts\CategoryRepository  $repository
@@ -161,7 +161,7 @@ class Category
     }
 
     /**
-     * Handle dynamic method calls into the base repository.
+     * Handle dynamic method calls into the model.
      *
      * @param  string  $method
      * @param  array   $parameters

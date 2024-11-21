@@ -11,6 +11,6 @@
     @include('components.file-manager')
     
     <main id="page-body" class="page-body">
-        @include('categories::components.backend.form-add-category')
+        @include('categories::components.backend.form-save-category')
     </main>
 @endsection

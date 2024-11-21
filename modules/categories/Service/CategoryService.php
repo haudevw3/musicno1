@@ -5,7 +5,7 @@ namespace Modules\Categories\Service;
 use Core\Http\ResponseBag;
 use Core\Service\BaseService;
 use Modules\Categories\Constant;
-use Modules\Categories\Objects\Category;
+use Modules\Categories\Category;
 use Modules\Categories\Repository\Contracts\CategoryRepository;
 use Modules\Categories\Service\Contracts\CategoryService as CategoryServiceContract;
 
@@ -36,8 +36,8 @@ class CategoryService extends BaseService implements CategoryServiceContract
             'priority' => isset_if($data['priority'], 'intval'),
             'tag_type' => isset_if($data['tag_type'], 'intval'),
             'images' => empty_if($data['images'], []),
-            'created_at' => current_date(),
-            'updated_at' => current_date(),
+            'created_at' => date_at(),
+            'updated_at' => date_at(),
         ];
 
         $responseBag = ResponseBag::create();
@@ -149,7 +149,7 @@ class CategoryService extends BaseService implements CategoryServiceContract
      */
     protected function filterData(array $data)
     {
-        $attributes['updated_at'] = current_date();
+        $attributes['updated_at'] = date_at();
 
         foreach ($data as $key => $value) {
             if (in_array($key, ['name', 'slug'])) {

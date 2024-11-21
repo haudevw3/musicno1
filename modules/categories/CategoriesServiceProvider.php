@@ -4,7 +4,7 @@ namespace Modules\Categories;
 
 use Illuminate\Support\ServiceProvider;
 
-class Provider extends ServiceProvider
+class CategoriesServiceProvider extends ServiceProvider
 {
     /**
      * Register services.

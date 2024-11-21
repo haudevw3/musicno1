@@ -25,7 +25,7 @@ class CategoryManagerController extends Controller
 
     public function pageAddCategory()
     {
-        return view('categories::viewAddCategory', [
+        return view('categories::viewFormCategory', [
             'primaryCategories' => $this->categoryService->findMany(['tag_type' => Constant::TAG_PRIMARY])
         ]);
     }
@@ -54,7 +54,7 @@ class CategoryManagerController extends Controller
             }
         }
 
-        return view('categories::viewAddCategory', [
+        return view('categories::viewFormCategory', [
             'category' => $category,
             'primaryCategories' => $primaryCategories
         ]);

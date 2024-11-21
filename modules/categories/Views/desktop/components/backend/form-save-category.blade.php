@@ -1,4 +1,4 @@
-<div id="form-add-category" class="card shadow mt-20 col-8" data-id="{{ isset($category) ? $category->_id : '' }}">
+<div id="form-save-category" class="card shadow mt-20 col-8" data-id="{{ isset($category) ? $category->_id : '' }}">
     <div class="card-header fw-semibold">Thêm danh mục</div>
 
     <div class="card-body">
@@ -50,7 +50,7 @@
             </div>
 
             <div class="mb-0 items-align-vertical-center-end">
-                <x-core::button id="btn-submit-form-add-category" class="btn-primary" name="{{ isset($category) ? 'Cập nhật danh mục' : 'Tạo danh mục' }}"></x-core::button>
+                <x-core::button id="btn-save-category" class="btn-primary" name="{{ isset($category) ? 'Cập nhật danh mục' : 'Tạo danh mục' }}"></x-core::button>
             </div>
         </div>
     </div>
