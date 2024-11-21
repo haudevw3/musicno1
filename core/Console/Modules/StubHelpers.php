@@ -1,10 +1,10 @@
 <?php
 
-namespace Core\Console\Traits;
+namespace Core\Console\Modules;
 
 use Illuminate\Contracts\Filesystem\FileNotFoundException;
 
-trait Stub
+trait StubHelpers
 {
     /**
      * Get content with the given stub name.

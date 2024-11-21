@@ -25,12 +25,12 @@ class ConsoleServiceProvider extends ServiceProvider
     {
         if ($this->app->runningInConsole()) {
             $this->commands([
-                ModuleMakeCommand::class,
-                ModelMakeCommand::class,
-                ControllerMakeCommand::class,
-                RequestMakeCommand::class,
-                RepositoryMakeCommand::class,
-                ServiceMakeCommand::class,
+                \Core\Console\Modules\ModuleMakeCommand::class,
+                \Core\Console\Modules\ModelMakeCommand::class,
+                \Core\Console\Modules\ControllerMakeCommand::class,
+                \Core\Console\Modules\RequestMakeCommand::class,
+                \Core\Console\Modules\RepositoryMakeCommand::class,
+                \Core\Console\Modules\ServiceMakeCommand::class,
             ]);
         }
     }
