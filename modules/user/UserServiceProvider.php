@@ -4,7 +4,7 @@ namespace Modules\User;
 
 use Illuminate\Support\ServiceProvider;
 
-class Provider extends ServiceProvider
+class UserServiceProvider extends ServiceProvider
 {
     /**
      * Register services.
@@ -28,7 +28,7 @@ class Provider extends ServiceProvider
     public function boot()
     {
         $this->loadRoutesFrom(__DIR__.'/routes.php');
-        $this->mergeConfigFrom(__DIR__.'/config.php', 'user');
         $this->loadViewsFrom(__DIR__.'/Views/desktop', 'user');
+        $this->mergeConfigFrom(__DIR__.'/config.php', 'user');
     }
 }

@@ -42,8 +42,8 @@ class UserService extends BaseService implements UserServiceContract
             'email' => isset_if($data['email'], 'trim'),
             'image' => isset_if($data['image'], 'trim'),
             'roles' => [0],
-            'created_at' => current_date(),
-            'updated_at' => current_date(),
+            'created_at' => date_at(),
+            'updated_at' => date_at(),
             'created_time' => time(),
             'count' => 1,
             'token' => str_random('int'),
@@ -90,7 +90,7 @@ class UserService extends BaseService implements UserServiceContract
      */
     protected function filterData(array $data)
     {
-        $attributes['updated_at'] = current_date();
+        $attributes['updated_at'] = date_at();
 
         foreach ($data as $key => $value) {
             if ($key == 'name') {

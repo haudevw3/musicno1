@@ -14,7 +14,7 @@
             </div>
 
             <div class="mb-3">
-                <button type="button" id="submit-form-forget-password" class="btn bg-white text-black fw-semibold">Gửi yêu cầu</button>
+                <button type="button" id="btn-forget-password" class="btn bg-white text-black fw-semibold">Gửi yêu cầu</button>
             </div>
         </div>
     </div>

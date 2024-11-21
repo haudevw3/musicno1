@@ -20,11 +20,11 @@
             </div>
 
             <div class="mb-3 d-flex justify-content-end">
-                <a id="refresh-token-to-send-mail" class="text-smoke-gray">Gửi lại mã xác nhận</a>
+                <a id="text-refresh-token" class="text-smoke-gray">Gửi lại mã xác nhận</a>
             </div>
 
             <div class="mb-3">
-                <button type="button" id="submit-form-verify-account" class="btn bg-white text-black fw-semibold">Xác nhận tài khoản</button>
+                <button type="button" id="btn-verify-account" class="btn bg-white text-black fw-semibold">Xác nhận tài khoản</button>
             </div>
         </div>
     </div>

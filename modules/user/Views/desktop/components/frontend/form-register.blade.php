@@ -26,7 +26,7 @@
             </div>
 
             <div class="mb-3">
-                <button type="button" id="submit-form-register" class="btn bg-white text-black fw-semibold">Đăng ký</button>
+                <button type="button" id="btn-register" class="btn bg-white text-black fw-semibold">Đăng ký</button>
             </div>
 
             <div class="mb-3 text-center text-smoke-gray">Hoặc</div>

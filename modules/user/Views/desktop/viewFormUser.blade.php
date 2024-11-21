@@ -11,6 +11,6 @@
     @include('components.file-manager')
     
     <main id="page-body" class="page-body">
-        @include('user::components.backend.form-add-user')
+        @include('user::components.backend.form-save-user')
     </main>
 @endsection

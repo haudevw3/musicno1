@@ -47,8 +47,8 @@ class LoginService extends BaseService implements LoginServiceContract
             'user_id' => $data['user_id'],
             'session_id' => Session::getId(),
             'remember_token' => Cookie::get('remember_token'),
-            'created_at' => current_date(),
-            'updated_at' => current_date(),
+            'created_at' => date_at(),
+            'updated_at' => date_at(),
             'created_time' => time(),
         ];
 
@@ -76,9 +76,9 @@ class LoginService extends BaseService implements LoginServiceContract
     {
         $responseBag = ResponseBag::create();
 
-        $pendingClient = PendingClient::make($credentials);
+        $credentials = $this->filterCredentials($credentials);
 
-        $user = $this->attempt($pendingClient);
+        $user = $this->attempt($credentials);
 
         if (is_null($user)) {
             $responseBag->errors = config('user.label.INVALID_LOGIN');
@@ -112,7 +112,7 @@ class LoginService extends BaseService implements LoginServiceContract
         }
 
         if ($responseBag->isEmptyErrors()) {
-            Auth::login($user, $pendingClient->remember);
+            Auth::login($user, $credentials['remember']);
 
             $this->create(['user_id' => $user->id]);
 
@@ -123,19 +123,36 @@ class LoginService extends BaseService implements LoginServiceContract
     }
 
     /**
+     * Filter with the given credentials.
+     *
+     * @param  array  $credentials
+     * @return array
+     */
+    protected function filterCredentials(array $credentials)
+    {
+        return [
+            'username' => trim($credentials['username']),
+            'password' => trim($credentials['password']),
+            'remember' => $credentials['remember'] === 'true' ? true : false,
+        ];
+    }
+
+    /**
      * Attempt to authenticate a user using the given credentials.
      *
-     * @param  \Modules\User\Objects\PendingClient  $client
+     * @param  array  $credentials
      * @return \Modules\User\Models\User|null
      */
-    protected function attempt(PendingClient $client)
+    protected function attempt(array $credentials)
     {
+        $username = $credentials['username'];
+
         $user = $this->userRepo->findOne([
-            '$or' => [['username' => $client->username], ['email' => $client->username]]
+            '$or' => [['username' => $username], ['email' => $username]]
         ]);
 
         $validated = ! is_null($user) && Hash::check(
-            $client->password, $user->password
+            $credentials['password'], $user->password
         );
 
         return $validated ? $user : null;

@@ -23,7 +23,7 @@ class UserManagerController extends Controller
 
     public function pageAddUser()
     {
-        return view('user::viewAddUser');
+        return view('user::viewFormUser');
     }
 
     public function pageEditUser($id)
@@ -36,7 +36,7 @@ class UserManagerController extends Controller
             return redirect()->route('adm-manage-user');
         }
 
-        return view('user::viewAddUser', compact('user'));
+        return view('user::viewFormUser', compact('user'));
     }
 
     public function createUserApi(FormRegister $request)

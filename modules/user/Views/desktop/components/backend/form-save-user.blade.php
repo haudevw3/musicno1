@@ -1,4 +1,4 @@
-<div id="form-add-user" class="card shadow mt-20 col-8" data-id="{{ isset($user) ? $user->_id : '' }}">
+<div id="form-save-user" class="card shadow mt-20 col-8" data-id="{{ isset($user) ? $user->_id : '' }}">
     <div class="card-header fw-semibold">Thêm thành viên</div>
 
     <div class="card-body">
@@ -39,7 +39,7 @@
             </div>
 
             <div class="mb-0 items-align-vertical-center-end">
-                <x-core::button id="submit-form-add-user" class="btn-primary" name="{{ isset($user) ? 'Cập nhật người dùng' : 'Tạo người dùng' }}"></x-core::button>
+                <x-core::button id="btn-save-user" class="btn-primary" name="{{ isset($user) ? 'Cập nhật người dùng' : 'Tạo người dùng' }}"></x-core::button>
             </div>
         </div>
     </div>
