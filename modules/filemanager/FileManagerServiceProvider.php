@@ -4,7 +4,7 @@ namespace Modules\FileManager;
 
 use Illuminate\Support\ServiceProvider;
 
-class Provider extends ServiceProvider
+class FileManagerServiceProvider extends ServiceProvider
 {
     /**
      * Register services.
@@ -26,7 +26,7 @@ class Provider extends ServiceProvider
     public function boot()
     {
         $this->loadRoutesFrom(__DIR__.'/routes.php');
-        $this->mergeConfigFrom(__DIR__.'/config.php', 'filemanager');
         $this->loadViewsFrom(__DIR__.'/Views/desktop', 'filemanager');
+        $this->mergeConfigFrom(__DIR__.'/config.php', 'filemanager');
     }
 }

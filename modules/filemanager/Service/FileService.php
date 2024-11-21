@@ -3,7 +3,7 @@
 namespace Modules\FileManager\Service;
 
 use Core\Service\BaseService;
-use Modules\FileManager\Objects\FileParser;
+use Modules\FileManager\FileParser;
 use Modules\FileManager\Repository\Contracts\FileRepository;
 use Modules\FileManager\Service\Contracts\FileService as FileServiceContract;
 
@@ -28,12 +28,12 @@ class FileService extends BaseService implements FileServiceContract
     {
         $attributes = [
             'id' => str_random(),
-            'name' => $data['name'],
-            'type' => $data['type'],
-            'size' => $data['size'],
-            'url' => $data['url'],
-            'created_at' => current_date(),
-            'updated_at' => current_date(),
+            'name' => isset_if($data['name']),
+            'type' => isset_if($data['type']),
+            'size' => isset_if($data['size']),
+            'url' => isset_if($data['url']),
+            'created_at' => date_at(),
+            'updated_at' => date_at(),
         ];
 
         return $this->baseRepo->create($attributes);

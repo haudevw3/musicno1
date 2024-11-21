@@ -1,6 +1,6 @@
 <?php
 
-namespace Modules\FileManager\Objects;
+namespace Modules\FileManager;
 
 use Illuminate\Http\UploadedFile;
 
