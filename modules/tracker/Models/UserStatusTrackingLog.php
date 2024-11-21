@@ -4,7 +4,7 @@ namespace Modules\Tracker\Models;
 
 use Jenssegers\Mongodb\Eloquent\Model;
 
-class UserTrackingLog extends Model
+class UserStatusTrackingLog extends Model
 {
     /**
      * Assign different a connection if any.
@@ -18,7 +18,7 @@ class UserTrackingLog extends Model
      *
      * @var string
      */
-    protected $collection = 'user_tracking_logs';
+    protected $collection = 'user_status_tracking_logs';
 
     /**
      * The attribute will disabled.
@@ -51,8 +51,8 @@ class UserTrackingLog extends Model
         'ip' => '',
         'user_id' => '',
         'status' => 0,
+        'created_time' => 0,
         'created_at' => '',
-        'created_time' => '',
         'updated_at' => '',
     ];
 

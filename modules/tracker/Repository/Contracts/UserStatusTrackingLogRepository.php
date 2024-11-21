@@ -2,7 +2,7 @@
 
 namespace Modules\Tracker\Repository\Contracts;
 
-interface UserTrackingLogRepository
+interface UserStatusTrackingLogRepository
 {
     //
 }

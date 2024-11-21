@@ -4,7 +4,7 @@ namespace Modules\Tracker;
 
 use Illuminate\Support\ServiceProvider;
 
-class Provider extends ServiceProvider
+class TrackerServiceProvider extends ServiceProvider
 {
     /**
      * Register services.
@@ -13,9 +13,8 @@ class Provider extends ServiceProvider
      */
     public function register()
     {
-        $this->app->singleton(\Modules\Tracker\Repository\Contracts\UserTrackingLogRepository::class, \Modules\Tracker\Repository\UserTrackingLogRepository::class);
-
-        $this->app->singleton(\Modules\Tracker\Service\Contracts\UserTrackingLogService::class, \Modules\Tracker\Service\UserTrackingLogService::class);
+        $this->app->singleton(\Modules\Tracker\Repository\Contracts\UserStatusTrackingLogRepository::class, \Modules\Tracker\Repository\UserStatusTrackingLogRepository::class);
+        $this->app->singleton(\Modules\Tracker\Service\Contracts\UserStatusTrackingLogService::class, \Modules\Tracker\Service\UserStatusTrackingLogService::class);
     }
 
     /**

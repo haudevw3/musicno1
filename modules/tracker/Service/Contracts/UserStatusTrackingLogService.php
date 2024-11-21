@@ -2,7 +2,7 @@
 
 namespace Modules\Tracker\Service\Contracts;
 
-interface UserTrackingLogService
+interface UserStatusTrackingLogService
 {
     /**
      * @param  array  $data

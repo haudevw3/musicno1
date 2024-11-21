@@ -4,24 +4,24 @@ namespace Modules\Tracker\Controllers;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
-use Modules\Tracker\Service\Contracts\UserTrackingLogService;
+use Modules\Tracker\Service\Contracts\UserStatusTrackingLogService;
 
 class UserTrackingLogController extends Controller
 {
-    protected $userTrackingLogService;
+    protected $userStatusTrackingLogService;
 
     /**
-     * @param  \Modules\Tracker\Service\Contracts\UserTrackingLogService  $userTrackingLogService
+     * @param  \Modules\Tracker\Service\Contracts\UserStatusTrackingLogService  $userStatusTrackingLogService
      * @return void
      */
-    public function __construct(UserTrackingLogService $userTrackingLogService)
+    public function __construct(UserStatusTrackingLogService $userStatusTrackingLogService)
     {
-        $this->userTrackingLogService = $userTrackingLogService;
+        $this->userStatusTrackingLogService = $userStatusTrackingLogService;
     }
 
     public function createUserTrackingLogApi(Request $request)
     {
-        $responseBag = $this->userTrackingLogService->create($request->all());
+        $responseBag = $this->userStatusTrackingLogService->create($request->all());
 
         return response()->json(
             $responseBag->data(), $responseBag->status()

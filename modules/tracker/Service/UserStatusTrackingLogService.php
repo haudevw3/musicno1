@@ -5,14 +5,14 @@ namespace Modules\Tracker\Service;
 use Core\Http\ResponseBag;
 use Core\Service\BaseService;
 use Illuminate\Support\Facades\Request;
-use Modules\Tracker\Repository\Contracts\UserTrackingLogRepository;
-use Modules\Tracker\Service\Contracts\UserTrackingLogService as UserTrackingLogServiceContract;
+use Modules\Tracker\Repository\Contracts\UserStatusTrackingLogRepository;
+use Modules\Tracker\Service\Contracts\UserStatusTrackingLogService as UserStatusTrackingLogServiceContract;
 
-class UserTrackingLogService extends BaseService implements UserTrackingLogServiceContract
+class UserStatusTrackingLogService extends BaseService implements UserStatusTrackingLogServiceContract
 {
     protected $baseRepo;
 
-    public function __construct(UserTrackingLogRepository $baseRepo)
+    public function __construct(UserStatusTrackingLogRepository $baseRepo)
     {
         parent::__construct($baseRepo);
     }
@@ -28,8 +28,8 @@ class UserTrackingLogService extends BaseService implements UserTrackingLogServi
             'user_id' => isset_if($data['user_id']),
             'status' => 1,
             'created_time' => time(),
-            'created_at' => current_date(),
-            'updated_at' => current_date(),
+            'created_at' => date_at(),
+            'updated_at' => date_at(),
         ];
 
         $this->baseRepo->create($attributes);
@@ -55,7 +55,7 @@ class UserTrackingLogService extends BaseService implements UserTrackingLogServi
         else {
             $this->baseRepo->updateOne($id, [
                 'status' => isset_if($data['status'], 1, 0),
-                'updated_at' => current_date(),
+                'updated_at' => date_at(),
                 'updated_time' => time(),
             ]);
 
