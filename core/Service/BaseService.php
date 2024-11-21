@@ -14,19 +14,29 @@ class BaseService implements BaseServiceContract
     /**
      * The base repository instance.
      *
-     * @var \Core\Repository\BaseRepository
+     * @var mixed
      */
     protected $baseRepo;
 
     /**
      * Create a new base service instance.
      *
-     * @param  \Core\Repository\BaseRepository  $baseRepo
+     * @param  mixed  $baseRepo
      * @return void
      */
     public function __construct($baseRepo = null)
     {
         $this->baseRepo = $baseRepo;
+    }
+
+    /**
+     * Get the repository instance.
+     *
+     * @return mixed
+     */
+    public function repository()
+    {
+        return $this->baseRepo;
     }
 
     /**
@@ -75,7 +85,7 @@ class BaseService implements BaseServiceContract
     protected function basename($key)
     {
         $className = class_name(
-            $this->baseRepo->getModel()
+            $this->getModel()
         );
 
         return strtolower($className).':'.$key;

@@ -3,7 +3,14 @@
 namespace Core\Service\Contracts;
 
 interface BaseService
-{
+{   
+    /**
+     * Get the repository instance.
+     *
+     * @return mixed
+     */
+    public function repository();
+
     /**
      * Paginate the given query.
      *
