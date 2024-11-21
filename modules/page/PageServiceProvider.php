@@ -4,7 +4,7 @@ namespace Modules\Page;
 
 use Illuminate\Support\ServiceProvider;
 
-class Provider extends ServiceProvider
+class PageServiceProvider extends ServiceProvider
 {
     /**
      * Register services.
@@ -24,7 +24,7 @@ class Provider extends ServiceProvider
     public function boot()
     {
         $this->loadRoutesFrom(__DIR__.'/routes.php');
-        $this->mergeConfigFrom(__DIR__.'/config.php', 'page');
         $this->loadViewsFrom(__DIR__.'/Views/desktop', 'page');
+        $this->mergeConfigFrom(__DIR__.'/config.php', 'page');
     }
 }
