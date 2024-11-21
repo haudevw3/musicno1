@@ -2,17 +2,77 @@
 
 use Illuminate\Support\Str;
 
-if (! function_exists('current_date')) {
+if (! function_exists('date_on')) {
     /**
-     * Get the current date.
+     * Get the current date by format "day-month-year".
      *
-     * @param  string|null  $format
-     * @param  int|null     $timestamp
      * @return string
      */
-    function current_date($format = null, $timestamp = null)
+    function date_on() {
+        return date('d-m-Y');
+    }
+}
+
+if (! function_exists('date_at')) {
+    /**
+     * Get the current date by format "day-month-year" and the timestamp.
+     *
+     * @return string
+     */
+    function date_at() {
+        return date('d-m-Y H:i:s');
+    }
+}
+
+if (! function_exists('format_timestamp')) {
+    /**
+     * Format timestamp with the given arguments.
+     *
+     * @param  int                $timestamp
+     * @param  string|array|null  $keys
+     * @return string
+     */
+    function format_timestamp($timestamp, $keys = null)
     {
-        return date($format ?? 'd-m-Y H:i:s', $timestamp);
+        $hours = intval($timestamp / 3600);
+
+        $minutes = intval(($timestamp - $hours * 3600) / 60);
+
+        $seconds = $timestamp - ($hours * 3600) - ($minutes * 60);
+
+        if ($hours >= 10) {
+            $array['hours'] = "{$hours} giờ";
+        } elseif ($hours > 0) {
+            $array['hours'] = "0{$hours} giờ";
+        }
+
+        if ($minutes >= 10) {
+            $array['minutes'] = "{$minutes} phút";
+        } elseif ($minutes > 0) {
+            $array['minutes'] = "0{$minutes} phút";
+        }
+
+        if ($seconds >= 10) {
+            $array['seconds'] = "{$seconds} giây";
+        } elseif ($seconds > 0) {
+            $array['seconds'] = "0{$seconds} giây";
+        }
+
+        if (is_null($keys)) {
+            return implode(' ', $array);
+        }
+
+        $keys = is_array($keys) ? $keys : [$keys];
+
+        foreach ($keys as $as => $key) {
+            if (isset($array[$key])) {
+                $keys[$as] = $array[$key];
+            } else {
+                unset($keys[$as]);
+            }
+        }
+
+        return implode(' ', $keys);
     }
 }
 
@@ -104,6 +164,8 @@ if (! function_exists('regex')) {
     function regex(string $key) {
         if ($key === 'page') {
             $result = 'page-[1-9][0-9]*';
+        } elseif ($key === 'date_on') {
+            $result = '/'.date_on().'/';
         }
 
         return $result;
