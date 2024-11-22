@@ -2,7 +2,7 @@
 
 namespace Modules\User\Service;
 
-use Core\Http\ResponseBag;
+use Core\Http\Response;
 use Core\Service\BaseService;
 use Core\Support\DataBag;
 use Illuminate\Support\Facades\Auth;
@@ -63,25 +63,27 @@ class UserService extends BaseService implements UserServiceContract
     /**
      * @param  string  $id
      * @param  array   $data
-     * @return \Core\Http\ResponseBag
+     * @return \Core\Http\Response
      */
     public function updateOne($id, array $data)
     {
-        $responseBag = ResponseBag::create();
+        $response = Response::create();
 
         $user = $this->baseRepo->findOne($id);
 
         if (is_null($user)) {
-            $responseBag->errors = config('user.label.NOT_FOUND_USER');
-        } else {
+            $response->errors = config('user.label.NOT_FOUND_USER');
+        }
+        
+        else {
             $this->baseRepo->updateOne($id, $this->filterData($data));
 
-            $responseBag->status(200)->data([
+            $response->setStatus(200)->setData([
                 'success' => config('user.label.UPDATE_SUCCESS')
             ]);
         }
 
-        return $responseBag;
+        return $response;
     }
 
     /**
@@ -109,68 +111,72 @@ class UserService extends BaseService implements UserServiceContract
 
     /**
      * @param  string  $id
-     * @return \Core\Http\ResponseBag
+     * @return \Core\Http\Response
      */
     public function deleteOne($id)
     {
-        $responseBag = ResponseBag::create();
+        $response = Response::create();
 
         $user = $this->baseRepo->findOne($id);
 
         if (is_null($user)) {
-            $responseBag->errors = config('user.label.NOT_FOUND_USER');
-        } else {
+            $response->errors = config('user.label.NOT_FOUND_USER');
+        }
+        
+        else {
             $this->baseRepo->deleteOne($id);
 
-            $responseBag->status(200)->data([
+            $response->setStatus(200)->setData([
                 'success' => config('user.label.DELETE_SUCCESS')
             ]);
         }
 
-        return $responseBag;
+        return $response;
     }
 
     /**
      * @param  array  $ids
-     * @return \Core\Http\ResponseBag
+     * @return \Core\Http\Response
      */
     public function deleteMany(array $ids)
     {
+        $response = Response::create();
+
         foreach ($ids as $key => $id) {
             $ids[$key] = $this->baseRepo::createObjectId($id);
         }
 
         $this->baseRepo->delete(['_id' => ['$in' => $ids]]);
 
-        return ResponseBag::create(
-            ['success' => config('user.label.DELETE_SUCCESS')], 200
-        );
+        return $response->setStatus(200)->setData([
+            'success' => config('user.label.DELETE_SUCCESS')
+        ]);
     }
 
     /**
      * @param  array  $data
-     * @return array
+     * @return \Core\Http\Response
      */
     public function verifyAccount(array $data)
     {
-        $responseBag = ResponseBag::create();
+        $response = Response::create();
 
         $user = $this->baseRepo->findOne(['id' => $data['id']]);
 
         if (is_null($user)) {
-            $responseBag->errors = config('user.label.NOT_FOUND_USER');
+            $response->errors = config('user.label.NOT_FOUND_USER');
         }
 
         // If the given token is different from the token
         // of the user to verify, then it is invalid.
         elseif ($user->token != $data['token']) {
-            $responseBag->errors = config('user.label.INVALID_TOKEN');
+            $response->errors = config('user.label.INVALID_TOKEN');
         }
 
         // If the current time minus "token expires at" is larger than
         // the token expiration time, then it's expired.
         elseif (time() - $user->token_expires_at > Constant::TOKEN_EXPIRATION_TIME) {
-            $responseBag->errors = config('user.label.TOKEN_EXPIRED');
+            $response->errors = config('user.label.TOKEN_EXPIRED');
         }
 
         else {
@@ -186,27 +192,27 @@ class UserService extends BaseService implements UserServiceContract
 
             Auth::login($user);
 
-            $responseBag->status(200)->data(['success' => true]);
+            $response->setStatus(200)->setData(['success' => true]);
         }
 
-        return $responseBag;
+        return $response;
     }
 
     /**
      * @param  string  $id
-     * @return \Core\Http\ResponseBag
+     * @return \Core\Http\Response
      */
     public function refreshTokenToSendMail(string $id)
     {
         $dataBag = DataBag::create();
-        $responseBag = ResponseBag::create();
+        $response = Response::create();
 
         $user = $this->baseRepo->findOne(['id' => $id]);
 
         $timed = time() - $user->token_expires_at ?? 0;
 
         if (is_null($user)) {
-            $responseBag->errors = config('user.label.NOT_FOUND_USER');
+            $response->errors = config('user.label.NOT_FOUND_USER');
         }
 
         // If a day has passed since the last email was sent,
@@ -225,13 +231,13 @@ class UserService extends BaseService implements UserServiceContract
         // then we will not send mail to the user when they execute this function.
         // We want to ensure that, every process must be valid.
         elseif ($timed <= Constant::TOKEN_EXPIRATION_TIME) {
-            $responseBag->errors = config('user.label.TOKEN_NOT_EXPIRED');
+            $response->errors = config('user.label.TOKEN_NOT_EXPIRED');
         }
 
         // A day, we just allow the user to execute this function is maximum of three times.
         // If the user exceeds the limit allowed then we force them wait to next day.
         elseif ($user->count >= Constant::LIMITED_SEND_EMAIL) {
-            $responseBag->errors = config('user.label.LIMITED_SEND_EMAIL');
+            $response->errors = config('user.label.LIMITED_SEND_EMAIL');
         }
         
         else {
@@ -255,20 +261,20 @@ class UserService extends BaseService implements UserServiceContract
                 config('user.label.EMAIL_SEND_STATUS'),
             );
 
-            $responseBag->status(200)->add($message, 'success');
+            $response->setStatus(200)->setData(['success' => $message]);
         }
 
-        return $responseBag;
+        return $response;
     }
 
     /**
      * @param  string  $email
-     * @return \Core\Http\ResponseBag
+     * @return \Core\Http\Response
      */
     public function forgetPassword(string $email)
     {
         $dataBag = DataBag::create();
-        $responseBag = ResponseBag::create();
+        $response = Response::create();
 
         $user = $this->baseRepo->findOne(['email' => $email]);
 
@@ -288,7 +294,7 @@ class UserService extends BaseService implements UserServiceContract
         // A day, we just allow the user to execute this function is maximum of one times.
         // If the user exceeds the limit allowed then we force them wait to next day.
         elseif ($user->count >= Constant::LIMITED_SEND_EMAIL_FORGET_PASSWORD) {
-            $responseBag->errors = config('user.label.REQUEST_FORGET_PASSWORD_NOT_EXPIRED');
+            $response->errors = config('user.label.REQUEST_FORGET_PASSWORD_NOT_EXPIRED');
         }
 
         if ($dataBag->isNotEmpty()) {
@@ -305,11 +311,11 @@ class UserService extends BaseService implements UserServiceContract
             //     'btn_name' => 'Link đăng nhập',
             // ]);
 
-            $responseBag->status(200)->data([
+            $response->setStatus(200)->setData([
                 'success' => config('user.label.SENT_NEW_PASSWORD')
             ]);
         }
 
-        return $responseBag;
+        return $response;
     }
 }

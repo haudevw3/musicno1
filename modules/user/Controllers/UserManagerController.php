@@ -50,34 +50,28 @@ class UserManagerController extends Controller
 
     public function updateUserApi(FormUpdateUser $request)
     {
-        $responseBag = $this->userService->updateOne(
+        $response = $this->userService->updateOne(
             $request->input('id'), $request->all()
         );
 
-        return response()->json(
-            $responseBag->data(), $responseBag->status()
-        );
+        return $response->withJson();
     }
 
     public function deleteUserApi(Request $request)
     {
-        $responseBag = $this->userService->deleteOne(
+        $response = $this->userService->deleteOne(
             $request->input('id')
         );
 
-        return response()->json(
-            $responseBag->data(), $responseBag->status()
-        );
+        return $response->withJson();
     }
 
     public function deleteManyUserApi(Request $request)
     {
-        $responseBag = $this->userService->deleteMany(
+        $response = $this->userService->deleteMany(
             $request->input('user_ids')
         );
 
-        return response()->json(
-            $responseBag->data(), $responseBag->status()
-        );
+        return $response->withJson();
     }
 }

@@ -2,7 +2,7 @@
 
 namespace Modules\User\Service;
 
-use Core\Http\ResponseBag;
+use Core\Http\Response;
 use Core\Jwt\Jwt;
 use Core\Service\BaseService;
 use Illuminate\Support\Facades\Auth;
@@ -13,7 +13,6 @@ use Illuminate\Support\Facades\Session;
 use Laravel\Socialite\Contracts\User as GoogleUser;
 use Modules\User\Constant;
 use Modules\User\Models\User;
-use Modules\User\Objects\PendingClient;
 use Modules\User\Repository\Contracts\LoginRepository;
 use Modules\User\Repository\Contracts\UserRepository;
 use Modules\User\Service\Contracts\LoginService as LoginServiceContract;
@@ -24,8 +23,8 @@ class LoginService extends BaseService implements LoginServiceContract
     protected $userRepo;
 
     /**
-     * @param  \Modules\User\Repository\Contracts\LoginRepository  $baseRepo
-     * @param  \Modules\User\Repository\Contracts\UserRepository   $userRepo
+     * @param  \Modules\User\Repository\Contracts\LoginRepository                     $baseRepo
+     * @param  \Modules\User\Repository\Contracts\UserRepository                      $userRepo
      * @return void
      */
     public function __construct(LoginRepository $baseRepo, UserRepository $userRepo)
@@ -70,27 +69,27 @@ class LoginService extends BaseService implements LoginServiceContract
      * Log a user into the application with the given credentials.
      *
      * @param  array  $credentials
-     * @return \Core\Http\ResponseBag
+     * @return \Core\Http\Response
      */
     public function withAccount(array $credentials)
     {
-        $responseBag = ResponseBag::create();
+        $response = Response::create();
 
         $credentials = $this->filterCredentials($credentials);
 
         $user = $this->attempt($credentials);
 
         if (is_null($user)) {
-            $responseBag->errors = config('user.label.INVALID_LOGIN');
+            $response->errors = config('user.label.INVALID_LOGIN');
         }
 
         // If the account is not verified then the user can't login into the application.
         elseif ($user->verified == 0) {
-            $responseBag->errors = config('user.label.ACCOUNT_NOT_VERIFIED');
+            $response->errors = config('user.label.ACCOUNT_NOT_VERIFIED');
         }
 
-        if ($responseBag->isNotEmptyErrors()) {
-            return $responseBag;
+        if ($response->isNotEmptyErrors()) {
+            return $response;
         }
 
         $login = $this->baseRepo->findOne(['user_id' => $user->id]);
@@ -108,18 +107,21 @@ class LoginService extends BaseService implements LoginServiceContract
         // If it is valid then we force give an error for the user to know.
         elseif (! is_null($login) &&
                ($login->ip != Request::ip() || $login->session_id !== Session::getId())) {
-            $responseBag->errors = config('user.label.LOGIN_ON_ANOTHER_DEVICE');
+            $response->errors = config('user.label.LOGIN_ON_ANOTHER_DEVICE');
         }
 
-        if ($responseBag->isEmptyErrors()) {
+        if ($response->isEmptyErrors()) {
             Auth::login($user, $credentials['remember']);
 
             $this->create(['user_id' => $user->id]);
 
-            $responseBag->status(200)->data(['success' => true]);
+            $response->setStatus(200)->setData([
+                'success' => true,
+                'user_id' => $user->id,
+            ]);
         }
 
-        return $responseBag;
+        return $response;
     }
 
     /**

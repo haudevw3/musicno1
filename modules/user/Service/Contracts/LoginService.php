@@ -25,7 +25,7 @@ interface LoginService
      * Log a user into the application with the given credentials.
      *
      * @param  array  $credentials
-     * @return \Core\Http\ResponseBag
+     * @return \Core\Http\Response
      */
     public function withAccount(array $credentials);
 

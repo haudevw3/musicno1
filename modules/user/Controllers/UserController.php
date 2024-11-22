@@ -5,6 +5,7 @@ namespace Modules\User\Controllers;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Modules\Tracker\Service\Contracts\UserStatusTrackingLogService;
 use Modules\User\Request\FormForgetPassword;
 use Modules\User\Request\FormRegister;
 use Modules\User\Service\Contracts\LoginService;
@@ -14,16 +15,19 @@ class UserController extends Controller
 {
     protected $userService;
     protected $loginService;
+    protected $userStatusTrackingLogService;
 
     /**
-     * @param  \Modules\User\Service\Contracts\UserService   $userService
-     * @param  \Modules\User\Service\Contracts\LoginService  $loginService
+     * @param  \Modules\User\Service\Contracts\UserService                      $userService
+     * @param  \Modules\User\Service\Contracts\LoginService                     $loginService
+     * @param  \Modules\Tracker\Service\Contracts\UserStatusTrackingLogService  $userStatusTrackingLogService
      * @return void
      */
-    public function __construct(UserService $userService, LoginService $loginService)
+    public function __construct(UserService $userService, LoginService $loginService, UserStatusTrackingLogService $userStatusTrackingLogService)
     {
         $this->userService = $userService;
         $this->loginService = $loginService;
+        $this->userStatusTrackingLogService = $userStatusTrackingLogService;
     }
 
     public function loginPage(Request $request)
@@ -64,11 +68,13 @@ class UserController extends Controller
 
     public function loginApi(Request $request)
     {
-        $responseBag = $this->loginService->withAccount($request->all());
+        $response = $this->loginService->withAccount($request->all());
 
-        return response()->json(
-            $responseBag->data(), $responseBag->status()
+        $this->userStatusTrackingLogService->create(
+            $response->data('user_id')
         );
+
+        return $response->withJson($excepts = ['user_id']);
     }
 
     public function registerApi(FormRegister $request)
@@ -82,29 +88,23 @@ class UserController extends Controller
 
     public function verifyAccountApi(Request $request)
     {
-        $responseBag = $this->userService->verifyAccount($request->all());
+        $response = $this->userService->verifyAccount($request->all());
 
-        return response()->json(
-            $responseBag->data(), $responseBag->status()
-        );
+        return $response->withJson();
     }
 
     public function forgetPasswordApi(FormForgetPassword $request)
     {
-        $responseBag = $this->userService->forgetPassword($request->input('email'));
+        $response = $this->userService->forgetPassword($request->input('email'));
 
-        return response()->json(
-            $responseBag->data(), $responseBag->status()
-        );
+        return $response->withJson();
     }
 
 
     public function refreshTokenToSendMailApi(Request $request)
     {
-        $responseBag = $this->userService->refreshTokenToSendMail($request->input('id'));
+        $response = $this->userService->refreshTokenToSendMail($request->input('id'));
 
-        return response()->json(
-            $responseBag->messages(), $responseBag->status()
-        );
+        return $response->withJson();
     }
 }
