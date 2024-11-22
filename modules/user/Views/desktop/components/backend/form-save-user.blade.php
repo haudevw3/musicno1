@@ -1,4 +1,4 @@
-<div id="form-save-user" class="card shadow mt-20 col-8" data-id="{{ isset($user) ? $user->_id : '' }}">
+<div id="form-save-user" class="card shadow mt-20 col-8" data-user-id="{{ isset($user) ? $user->_id : '' }}">
     <div class="card-header fw-semibold">Thêm thành viên</div>
 
     <div class="card-body">
