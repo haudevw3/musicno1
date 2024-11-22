@@ -62,32 +62,26 @@ class CategoryManagerController extends Controller
 
     public function createCategoryApi(FormCreateCategory $request)
     {
-        $responseBag = $this->categoryService->create($request->all());
+        $response = $this->categoryService->create($request->all());
 
-        return response()->json(
-            $responseBag->data(), $responseBag->status()
-        );
+        return $response->withJson();
     }
 
     public function updateCategoryApi(FormUpdateCategory $request)
     {
-        $responseBag = $this->categoryService->updateOne(
+        $response = $this->categoryService->updateOne(
             $request->input('id'), $request->all()
         );
 
-        return response()->json(
-            $responseBag->data(), $responseBag->status()
-        );
+        return $response->withJson();
     }
 
     public function deleteCategoryApi(Request $request)
     {
-        $responseBag = $this->categoryService->deleteOne(
+        $response = $this->categoryService->deleteOne(
             $request->input('id')
         );
 
-        return response()->json(
-            $responseBag->data(), $responseBag->status()
-        );
+        return $response->withJson();
     }
 }

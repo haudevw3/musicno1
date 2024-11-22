@@ -2,7 +2,7 @@
 
 namespace Modules\Categories\Service;
 
-use Core\Http\ResponseBag;
+use Core\Http\Response;
 use Core\Service\BaseService;
 use Modules\Categories\Constant;
 use Modules\Categories\Category;
@@ -24,7 +24,7 @@ class CategoryService extends BaseService implements CategoryServiceContract
 
     /**
      * @param  array $data
-     * @return \Core\Http\ResponseBag
+     * @return \Core\Http\Response
      */
     public function create(array $data)
     {
@@ -40,38 +40,38 @@ class CategoryService extends BaseService implements CategoryServiceContract
             'updated_at' => date_at(),
         ];
 
-        $responseBag = ResponseBag::create();
+        $response = Response::create();
 
         if (! is_null($attributes['parent_id'])) {
-            $responseBag = $this->parseValueAttributes($attributes, $responseBag);
+            $response = $this->parseValueAttributes($attributes, $response);
         }
 
-        if ($responseBag->isEmptyErrors()) {
+        if ($response->isEmptyErrors()) {
             $this->baseRepo->create($attributes);
 
-            $responseBag->status(201)->data([
+            $response->setStatus(200)->setData([
                 'success' => config('categories.label.CREATE_SUCCESS')
             ]);
         }
 
-        return $responseBag;
+        return $response;
     }
 
     /**
      * Parse value attribute "tag type" and get the response bag instance.
      *
-     * @param  array                   $attributes
-     * @param  \Core\Http\ResponseBag  $responseBag
-     * @return \Core\Http\ResponseBag
+     * @param  array                $attributes
+     * @param  \Core\Http\Response  $response
+     * @return \Core\Http\Response
      */
-    protected function parseValueAttributes(array $attributes, ResponseBag $responseBag)
+    protected function parseValueAttributes(array $attributes, Response $response)
     {
         $category = Category::make(
             $attributes['parent_id'], $this->baseRepo
         );
 
         if ($category->hasNoSubcategories()) {
-            return $responseBag;
+            return $response;
         }
 
         // If a category is the primary type and it contains subcategories are the primary type
@@ -79,7 +79,7 @@ class CategoryService extends BaseService implements CategoryServiceContract
         // then we can't execute this request.
         if ($category->subcategoriesMustBePrimaryType() &&
             $attributes['tag_type'] != Constant::TAG_PRIMARY) {
-            $responseBag->errors = preg_replace(
+            $response->errors = preg_replace(
                 '/{name}/', $category->name,
                 config('categories.label.CATEGORY_DEPENDENCY_PRIMARY_TYPE')
             );
@@ -90,30 +90,30 @@ class CategoryService extends BaseService implements CategoryServiceContract
         // then we can't execute it.
         elseif ($category->subcategoriesAreNotPrimaryType() &&
                 $attributes['tag_type'] == Constant::TAG_PRIMARY) {
-            $responseBag->errors = preg_replace(
+            $response->errors = preg_replace(
                 '/{name}/', $category->name,
                 config('categories.label.CATEGORY_DEPENDENCY_NON_PRIMARY_TYPE')
             );
         }
 
-        return $responseBag;
+        return $response;
     }
 
     /**
      * @param  string  $id
      * @param  array   $data
-     * @return \Core\Http\ResponseBag
+     * @return \Core\Http\Response
      */
     public function updateOne($id, array $data)
     {
-        $responseBag = ResponseBag::create();
+        $response = Response::create();
 
         $attributes = $this->filterData($data);
 
         $category = Category::make($id, $this->baseRepo);
 
         if (is_null($category)) {
-            $responseBag->errors = config('categories.label.NOT_FOUND_CATEGORY');
+            $response->errors = config('categories.label.NOT_FOUND_CATEGORY');
         }
 
         // If this is a primary category and the given data to
@@ -122,23 +122,23 @@ class CategoryService extends BaseService implements CategoryServiceContract
         // If it has then we can't update with this situation.
         elseif ($category->hasSubcategories() &&
             $attributes['tag_type'] !== $category->tag_type) {
-            $responseBag->errors = config('categories.label.CATEGORY_UPDATE_BLOCKED_DEPENDENCIES');
+            $response->errors = config('categories.label.CATEGORY_UPDATE_BLOCKED_DEPENDENCIES');
         }
         
         elseif (! is_null($attributes['parent_id']) &&
             $attributes['parent_id'] !== $category->parent_id) {
-            $responseBag = $this->parseValueAttributes($attributes, $responseBag, $category);
+            $response = $this->parseValueAttributes($attributes, $response, $category);
         }
         
-        if ($responseBag->isEmptyErrors()) {
+        if ($response->isEmptyErrors()) {
             $this->baseRepo->updateOne($id, $attributes);
 
-            $responseBag->status(200)->data([
+            $response->setStatus(200)->setData([
                 'success' => config('categories.label.UPDATE_SUCCESS')
             ]);
         }
 
-        return $responseBag;
+        return $response;
     }
 
     /**
@@ -170,16 +170,16 @@ class CategoryService extends BaseService implements CategoryServiceContract
 
     /**
      * @param  string  $id
-     * @return \Core\Http\ResponseBag
+     * @return \Core\Http\Response
      */
     public function deleteOne($id)
     {
-        $responseBag = ResponseBag::create();
+        $response = Response::create();
 
         $category = Category::make($id, $this->baseRepo);
 
         if (is_null($category)) {
-            $responseBag->errors = config('categories.label.NOT_FOUND_CATEGORY');
+            $response->errors = config('categories.label.NOT_FOUND_CATEGORY');
         }
 
         elseif ($category->hasSubcategories()) {
@@ -192,14 +192,14 @@ class CategoryService extends BaseService implements CategoryServiceContract
             $this->baseRepo->update(['_id' => ['$in' => $categoryIds]], ['parent_id' => null]);
         }
 
-        if ($responseBag->isEmptyErrors()) {
+        if ($response->isEmptyErrors()) {
             $this->baseRepo->deleteOne($id);
 
-            $responseBag->status(200)->data([
+            $response->setStatus(200)->setData([
                 'success' => config('categories.label.DELETE_SUCCESS')
             ]);
         }
 
-        return $responseBag;
+        return $response;
     }
 }
