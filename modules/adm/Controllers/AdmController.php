@@ -4,6 +4,7 @@ namespace Modules\Adm\Controllers;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
+use Modules\Artist\Service\Contracts\ArtistService;
 use Modules\Categories\Category;
 use Modules\Categories\Service\Contracts\CategoryService;
 use Modules\User\Service\Contracts\UserService;
@@ -13,16 +14,19 @@ class AdmController extends Controller
 {
     protected $userService;
     protected $categoryService;
+    protected $artistService;
 
     /**
      * @param  \Modules\User\Service\Contracts\UserService            $userService
      * @param  \Modules\Categories\Service\Contracts\CategoryService  $categoryService
+     * @param  \Modules\Artist\Service\Contracts\ArtistService        $artistService
      * @return void
      */
-    public function __construct(UserService $userService, CategoryService $categoryService)
+    public function __construct(UserService $userService, CategoryService $categoryService, ArtistService $artistService)
     {
         $this->userService = $userService;
         $this->categoryService = $categoryService;
+        $this->artistService = $artistService;
     }
 
     public function dashboard()
@@ -80,5 +84,19 @@ class AdmController extends Controller
         ];
 
         return view('adm::viewManageCategory', $data);
+    }
+
+    public function pageManageArtist(Request $request)
+    {
+        $paginator = $this->artistService->paginator([
+            'name', 'slug', 'updated_at'
+        ]);
+
+        $data = [
+            'artists' => $paginator->items(),
+            'paginator' => $paginator,
+        ];
+
+        return view('adm::viewManageArtist', $data);
     }
 }
