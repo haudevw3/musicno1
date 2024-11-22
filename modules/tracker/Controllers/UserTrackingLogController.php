@@ -21,10 +21,8 @@ class UserTrackingLogController extends Controller
 
     public function createUserTrackingLogApi(Request $request)
     {
-        $responseBag = $this->userStatusTrackingLogService->create($request->all());
+        $response = $this->userStatusTrackingLogService->create($request->all());
 
-        return response()->json(
-            $responseBag->data(), $responseBag->status()
-        );
+        return $response->withJson();
     }
 }

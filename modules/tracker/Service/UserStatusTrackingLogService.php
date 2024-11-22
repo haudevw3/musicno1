@@ -2,7 +2,7 @@
 
 namespace Modules\Tracker\Service;
 
-use Core\Http\ResponseBag;
+use Core\Http\Response;
 use Core\Service\BaseService;
 use Illuminate\Support\Facades\Request;
 use Modules\Tracker\Repository\Contracts\UserStatusTrackingLogRepository;
@@ -19,7 +19,7 @@ class UserStatusTrackingLogService extends BaseService implements UserStatusTrac
 
     /**
      * @param  array  $data
-     * @return \Core\Http\ResponseBag
+     * @return \Core\Http\Response
      */
     public function create(array $data)
     {
@@ -34,22 +34,22 @@ class UserStatusTrackingLogService extends BaseService implements UserStatusTrac
 
         $this->baseRepo->create($attributes);
 
-        return ResponseBag::create(['success' => true], 201);
+        return Response::create()->setStatus(201)->setData(['success' => true]);
     }
 
     /**
      * @param  string   $id
      * @param  array    $data
-     * @return \Core\Http\ResponseBag
+     * @return \Core\Http\Response
      */
     public function updateOne(string $id, array $data)
     {
-        $responseBag = ResponseBag::create();
+        $response = Response::create();
 
         $userTrackingLog = $this->baseRepo->findOne($id);
 
         if (is_null($userTrackingLog)) {
-            $responseBag->errors = config('tracker.label.NOT_FOUND_USER_TRACKING_LOG');
+            $response->errors = config('tracker.label.NOT_FOUND_USER_TRACKING_LOG');
         }
         
         else {
@@ -59,36 +59,36 @@ class UserStatusTrackingLogService extends BaseService implements UserStatusTrac
                 'updated_time' => time(),
             ]);
 
-            $responseBag->status(200)->data([
+            $response->setStatus(200)->setData([
                 'success' => config('tracker.label.UPDATE_SUCCESS')
             ]);
         }
 
-        return $responseBag;
+        return $response;
     }
 
     /**
      * @param  string  $id
-     * @return \Core\Http\ResponseBag
+     * @return \Core\Http\Response
      */
     public function deleteOne(string $id)
     {
-        $responseBag = ResponseBag::create();
+        $response = Response::create();
 
         $userTrackingLog = $this->baseRepo->findOne($id);
 
         if (is_null($userTrackingLog)) {
-            $responseBag->errors = config('tracker.label.NOT_FOUND_USER_TRACKING_LOG');
+            $response->errors = config('tracker.label.NOT_FOUND_USER_TRACKING_LOG');
         }
         
         else {
             $this->baseRepo->deleteOne($id);
 
-            $responseBag->status(200)->data([
+            $response->setStatus(200)->setData([
                 'success' => config('tracker.label.DELETE_SUCCESS')
             ]);
         }
 
-        return $responseBag;
+        return $response;
     }
 }

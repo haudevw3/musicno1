@@ -2,6 +2,7 @@
 
 namespace Modules\Tracker;
 
+use Illuminate\Support\Facades\Auth;
 use Modules\Tracker\Repository\Contracts\UserStatusTrackingLogRepository;
 use Modules\User\Models\User;
 

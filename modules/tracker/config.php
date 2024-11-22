@@ -9,7 +9,7 @@ return [
         
         'IS_NOT_ACTIVE' => 'Không hoạt động',
 
-        'ACTIVE_ABOUT' => 'Hoạt động khoảng {timestamp} trước',
+        'ACTIVE_ABOUT' => 'Khoảng {timestamp} trước',
 
         'NOT_FOUND_USER_TRACKING_LOG' => 'Không tìm thấy nhật ký theo dõi của người dùng này.',
 
