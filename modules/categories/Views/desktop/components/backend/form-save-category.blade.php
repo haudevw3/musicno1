@@ -1,4 +1,4 @@
-<div id="form-save-category" class="card shadow mt-20 col-8" data-id="{{ isset($category) ? $category->_id : '' }}">
+<div id="form-save-category" class="card shadow mt-20 col-8" data-category-id="{{ isset($category) ? $category->_id : '' }}">
     <div class="card-header fw-semibold">Thêm danh mục</div>
 
     <div class="card-body">

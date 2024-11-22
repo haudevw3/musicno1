@@ -152,8 +152,10 @@ class CategoryService extends BaseService implements CategoryServiceContract
         $attributes['updated_at'] = date_at();
 
         foreach ($data as $key => $value) {
-            if (in_array($key, ['name', 'slug'])) {
+            if ($key == 'slug') {
                 $attributes[$key] = trim($value);
+            } elseif ($key == 'name') {
+                $attributes[$key] = str_ucwords(trim($value));
             } elseif (in_array($key, ['priority', 'tag_type'])) {
                 $attributes[$key] = intval($value);
             } elseif (in_array($key, ['images', 'tag_ids'])) {

@@ -2,19 +2,16 @@
 
 return [
 
-    'tag_types' => [
-        'Primary',
-        'Playlist',
-        'Album',
-        'Artist',
-    ],
+    'tag_types' => ['Primary', 'Playlist', 'Album', 'Artist'],
 
     'label' => [
-        'EXISTED_NAME' => 'Tên danh mục đã tồn tại. Vui lòng chọn tên danh mục khác.',
+        'EXISTED_NAME' => 'Tên danh mục đã tồn tại. Vui lòng chọn một tên khác.',
+
+        'EXISTED_SLUG' => 'Tên đường dẫn đã tồn tại. Vui lòng chọn một tên khác.',
 
         'CREATE_SUCCESS' => 'Tạo danh mục thành công.',
 
-        'UPDATE_SUCCESS' => 'Cập nhật danh mục thành công.',
+        'UPDATE_SUCCESS' => 'Cập nhật thông tin danh mục thành công.',
 
         'DELETE_SUCCESS' => 'Xóa danh mục thành công.',
         
