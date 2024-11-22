@@ -2,7 +2,7 @@
 
 namespace Modules\Artist\Service;
 
-use Core\Http\ResponseBag;
+use Core\Http\Response;
 use Core\Service\BaseService;
 use Modules\Artist\Repository\Contracts\ArtistRepository;
 use Modules\Artist\Service\Contracts\ArtistService as ArtistServiceContract;
@@ -41,16 +41,16 @@ class ArtistService extends BaseService implements ArtistServiceContract
     /**
      * @param  string  $id
      * @param  array   $data
-     * @return \Core\Http\ResponseBag
+     * @return \Core\Http\Response
      */
     public function updateOne(string $id, array $data)
     {
-        $responseBag = ResponseBag::create();
+        $response = Response::create();
 
         $artist = $this->baseRepo->findOne($id);
 
         if (is_null($artist)) {
-            $responseBag->errors = config('artist.label.NOT_FOUND_ARTIST');
+            $response->errors = config('artist.label.NOT_FOUND_ARTIST');
         }
         
         else {
@@ -58,12 +58,12 @@ class ArtistService extends BaseService implements ArtistServiceContract
                 $id, $this->filterData($data)
             );
 
-            $responseBag->status(200)->data([
+            $response->setStatus(200)->setData([
                 'success' => config('artist.label.UPDATE_SUCCESS')
             ]);
         }
 
-        return $responseBag;
+        return $response;
     }
 
     /**
@@ -89,26 +89,26 @@ class ArtistService extends BaseService implements ArtistServiceContract
 
     /**
      * @param  string  $id
-     * @return \Core\Http\ResponseBag
+     * @return \Core\Http\Response
      */
     public function deleteOne(string $id)
     {
-        $responseBag = ResponseBag::create();
+        $response = Response::create();
 
         $artist = $this->baseRepo->findOne($id);
 
         if (is_null($artist)) {
-            $responseBag->errors = config('artist.label.NOT_FOUND_ARTIST');
+            $response->errors = config('artist.label.NOT_FOUND_ARTIST');
         }
 
         else {
             $this->baseRepo->deleteOne($id);
 
-            $responseBag->status(200)->data([
+            $response->setStatus(200)->setData([
                 'success' => config('artist.label.DELETE_SUCCESS')
             ]);
         }
 
-        return $responseBag;
+        return $response;
     }
 }

@@ -46,23 +46,19 @@ class ArtistManagerController extends Controller
 
     public function updateArtistApi(FormUpdateArtist $request)
     {
-        $responseBag = $this->artistService->updateOne(
+        $response = $this->artistService->updateOne(
             $request->input('id'), $request->all()
         );
 
-        return response()->json(
-            $responseBag->data(), $responseBag->status()
-        );
+        return $response->withJson();
     }
 
     public function deleteArtistApi(Request $request)
     {
-        $responseBag = $this->artistService->deleteOne(
+        $response = $this->artistService->deleteOne(
             $request->input('id')
         );
 
-        return response()->json(
-            $responseBag->data(), $responseBag->status()
-        );
+        return $response->withJson();
     }
 }
