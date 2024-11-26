@@ -15,10 +15,12 @@
         "laravel/tinker": "^2.7",
         "mailgun/mailgun-php": "^4.3",
         "nyholm/psr7": "^1.8",
+        "predis/predis": "^2.2",
         "railsware/mailtrap-php": "^2.0",
         "symfony/http-client": "^6.4"
     },
     "require-dev": {
+        "barryvdh/laravel-debugbar": "^3.14",
         "fakerphp/faker": "^1.9.1",
         "laravel/sail": "^1.0.1",
         "mockery/mockery": "^1.4.4",
@@ -34,7 +36,13 @@
             "Database\\Seeders\\": "database/seeders/",
             "Modules\\Adm\\": "modules/adm/",
             "Modules\\User\\": "modules/user/",
-            "Modules\\Page\\": "modules/page/"
+            "Modules\\Page\\": "modules/page/",
+            "Modules\\FileManager\\": "modules/filemanager",
+            "Modules\\Categories\\": "modules/categories",
+            "Modules\\Tracker\\": "modules/tracker",
+            "Modules\\Artist\\": "modules/artist",
+            "Modules\\Album\\": "modules/album",
+            "Modules\\Track\\": "modules/track"
         },
         "files": [
             "core/functions.php"
