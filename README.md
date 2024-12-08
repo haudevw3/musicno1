@@ -1,11 +1,8 @@
 ## Giới thiệu
 
-Đây là dự án cá nhân nhằm phục vụ sở thích nghe nhạc của bản thân.
-Dự án này là bản tiền nhiệm được xây dựng dựa trên [Laravel framework](https://laravel.com/docs).
+- Đây là dự án cá nhân nhằm phục vụ sở thích nghe nhạc của bản thân. Dự án này là bản tiền nhiệm được xây dựng dựa trên [Laravel framework](https://laravel.com/docs).
 
-Bản gốc [MusicNo1](https://github.com/haudevw3/musicno1) được xây dựng dựa trên [PHP](https://www.php.net/docs.php)
-và cùng với một [Foundation framework](https://github.com/haudevw3/foundation) do chính bản thân tự viết dựa trên Laravel.
-Trong quá trình xây dựng vẫn còn rất nhiều thiếu sót nên bản gốc này chưa thể hoàn thành.
+- Bản gốc [MusicNo1](https://github.com/haudevw3/musicno1) được xây dựng dựa trên [PHP](https://www.php.net/docs.php) và cùng với một [Foundation framework](https://github.com/haudevw3/foundation) do chính bản thân tự viết dựa trên Laravel. Trong quá trình xây dựng vẫn còn rất nhiều thiếu sót nên bản gốc này chưa thể hoàn thành.
 
 ## Tổng quan
 
@@ -21,22 +18,35 @@ Trong quá trình xây dựng vẫn còn rất nhiều thiếu sót nên bản g
 ## Modules
 
 - adm (Quản lý các hành động như thêm, sửa, xóa,... của các modules album, artist, categories, user).
-- album
-- artist
-- categories
-- filemanager
+- album (Album).
+- artist (Nghệ sĩ).
+- categories (Danh mục).
+- filemanager (Quản lý tệp tin).
 - page
-- track
-- tracker
-- user
+- track (Bài hát).
+- tracker (Người theo dõi).
+- user (Người dùng).
 
 ## Các chức năng đã làm được
 
 #basic: Chức năng cơ bản (thêm, sửa, xóa).
 
-- album: `#basic`.
-- artist: `#basic`.
-- categories: `#basic`.
-- filemanager: `#basic`.
-- track: `#basic`.
-- tracker: `#basic`.
+- album: `#basic`
+- artist: `#basic`
+- categories: `#basic`
+- filemanager: `#basic`
+- track: `#basic`
+- tracker: `#basic`
+- user:
+    + `#basic`
+    + đăng nhập trên một thiết bị, với Google
+    + đăng ký
+    + quên mật khẩu
+    + gửi email
+    + theo dõi trạng thái hoạt động
+
+## Dự kiến trong tương lai
+
+- Phát triển theo hướng Single-Page Application (SPA) sử dụng Client-Side Rendering (CSR).
+- Frontend: ReactJS.
+
