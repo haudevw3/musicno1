@@ -1,64 +1,42 @@
-<p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400"></a></p>
+## Giới thiệu
 
-<p align="center">
-<a href="https://travis-ci.org/laravel/framework"><img src="https://travis-ci.org/laravel/framework.svg" alt="Build Status"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/dt/laravel/framework" alt="Total Downloads"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/v/laravel/framework" alt="Latest Stable Version"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
-</p>
+Đây là dự án cá nhân nhằm phục vụ sở thích nghe nhạc của bản thân.
+Dự án này là bản tiền nhiệm được xây dựng dựa trên [Laravel framework](https://laravel.com/docs).
 
-## About Laravel
+Bản gốc [MusicNo1](https://github.com/haudevw3/musicno1) được xây dựng dựa trên [PHP](https://www.php.net/docs.php)
+và cùng với một [Foundation framework](https://github.com/haudevw3/foundation) do chính bản thân tự viết dựa trên Laravel.
+Trong quá trình xây dựng vẫn còn rất nhiều thiếu sót nên bản gốc này chưa thể hoàn thành.
 
-Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:
+## Tổng quan
 
-- [Simple, fast routing engine](https://laravel.com/docs/routing).
-- [Powerful dependency injection container](https://laravel.com/docs/container).
-- Multiple back-ends for [session](https://laravel.com/docs/session) and [cache](https://laravel.com/docs/cache) storage.
-- Expressive, intuitive [database ORM](https://laravel.com/docs/eloquent).
-- Database agnostic [schema migrations](https://laravel.com/docs/migrations).
-- [Robust background job processing](https://laravel.com/docs/queues).
-- [Real-time event broadcasting](https://laravel.com/docs/broadcasting).
+- Dự án phát triển theo hướng Multi-Page Application (MPA) sử dụng Server-Side Rendering (SSR).
+- Giao diện được thiết kế dựa trên các trang nghe nhạc trực tuyến như [Zing MP3](https://zingmp3.vn) và [Spotify](https://open.spotify.com).
+- Các tính năng phát triển theo hướng Modules và kết hợp với các Design Patterns như Service, Repository để đảm bảo kiến trúc rõ ràng dễ bảo trì.
 
-Laravel is accessible, powerful, and provides tools required for large, robust applications.
+## Công nghệ sử dụng
 
-## Learning Laravel
+- Frontend: HTML, CSS, SCSS, Jquery.
+- Backend: PHP (Laravel), MongoDB, Redis, Nginx.
 
-Laravel has the most extensive and thorough [documentation](https://laravel.com/docs) and video tutorial library of all modern web application frameworks, making it a breeze to get started with the framework.
+## Modules
 
-If you don't feel like reading, [Laracasts](https://laracasts.com) can help. Laracasts contains over 2000 video tutorials on a range of topics including Laravel, modern PHP, unit testing, and JavaScript. Boost your skills by digging into our comprehensive video library.
+- adm (Quản lý các hành động như thêm, sửa, xóa,... của các modules album, artist, categories, user).
+- album
+- artist
+- categories
+- filemanager
+- page
+- track
+- tracker
+- user
 
-## Laravel Sponsors
+## Các chức năng đã làm được
 
-We would like to extend our thanks to the following sponsors for funding Laravel development. If you are interested in becoming a sponsor, please visit the Laravel [Patreon page](https://patreon.com/taylorotwell).
+#basic: Chức năng cơ bản (thêm, sửa, xóa).
 
-### Premium Partners
-
-- **[Vehikl](https://vehikl.com/)**
-- **[Tighten Co.](https://tighten.co)**
-- **[Kirschbaum Development Group](https://kirschbaumdevelopment.com)**
-- **[64 Robots](https://64robots.com)**
-- **[Cubet Techno Labs](https://cubettech.com)**
-- **[Cyber-Duck](https://cyber-duck.co.uk)**
-- **[Many](https://www.many.co.uk)**
-- **[Webdock, Fast VPS Hosting](https://www.webdock.io/en)**
-- **[DevSquad](https://devsquad.com)**
-- **[Curotec](https://www.curotec.com/services/technologies/laravel/)**
-- **[OP.GG](https://op.gg)**
-- **[WebReinvent](https://webreinvent.com/?utm_source=laravel&utm_medium=github&utm_campaign=patreon-sponsors)**
-- **[Lendio](https://lendio.com)**
-
-## Contributing
-
-Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](https://laravel.com/docs/contributions).
-
-## Code of Conduct
-
-In order to ensure that the Laravel community is welcoming to all, please review and abide by the [Code of Conduct](https://laravel.com/docs/contributions#code-of-conduct).
-
-## Security Vulnerabilities
-
-If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell via [taylor@laravel.com](mailto:taylor@laravel.com). All security vulnerabilities will be promptly addressed.
-
-## License
-
-The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+- album: `#basic`.
+- artist: `#basic`.
+- categories: `#basic`.
+- filemanager: `#basic`.
+- track: `#basic`.
+- tracker: `#basic`.
