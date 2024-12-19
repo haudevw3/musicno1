@@ -1,0 +1,1 @@
+<i class="fa-{{ $type ?? 'regular' }} fa-{{ $icon }} {{ $class }}" {{ $event }}></i>
