@@ -4,12 +4,7 @@
 /public
 /storage
 /vendor
-/docker
-/modules/adm
-/modules/page
-/resources
 /core/Http
-docker-compose.yml
 .env
 .env.backup
 .env.production
