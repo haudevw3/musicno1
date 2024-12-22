@@ -53,27 +53,33 @@ class BaseService implements BaseServiceContract
         $parameter = request()->route('page');
         $perPage = 20;
 
-        $key = isset($options['need_cache']) ? $this->basename(
-            $options['need_cache'].$parameter
-        ) : null;
+        dd($this->findMany(['_id' => ['$ne' => null]], [], ['skip' => 0, 'limit' => 10]));
 
-        $result = Redis::get($key);
+        $count = $this->count(['_id' => ['$ne' => null]]);
 
-        if (! is_null($key) && ! is_null($result)) {
-            return $result;
-        }
+        dump($this->count(['_id' => ['$ne' => null]]));
 
-        $items = $this->buildQuery($conditions, $options)->get($fields);
+        // $key = isset($options['need_cache']) ? $this->basename(
+        //     $options['need_cache'].$parameter
+        // ) : null;
 
-        $paginator = Paginator::create(
-            $items, count($items), $perPage, ['path' => $path, 'parameter' => $parameter]
-        );
+        // $result = Redis::get($key);
 
-        if (! is_null($key)) {
-            Redis::set($key, $paginator);
-        }
+        // if (! is_null($key) && ! is_null($result)) {
+        //     return $result;
+        // }
 
-        return $paginator;
+        // $items = $this->buildQuery($conditions, $options)->get($fields);
+
+        // $paginator = Paginator::create(
+        //     $items, count($items), $perPage, ['path' => $path, 'parameter' => $parameter]
+        // );
+
+        // if (! is_null($key)) {
+        //     Redis::set($key, $paginator);
+        // }
+
+        // return $paginator;
     }
 
     /**

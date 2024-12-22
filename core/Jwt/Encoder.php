@@ -143,7 +143,7 @@ class Encoder
         }
 
         if (! isset($payload['exp'])) {
-            $payload = array_merge($payload, ['exp' => time() + Constant::DEFAULT_EXP]);
+            $payload = array_merge($payload, ['exp' => time() + 180]);
         }
 
         foreach ($payload as $key => $value) {

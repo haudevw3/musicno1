@@ -61,4 +61,15 @@ class ArtistManagerController extends Controller
 
         return $response->withJson();
     }
+
+    public function searchArtistApi(Request $request)
+    {
+        $name = str_ucwords($request->input('name'));
+
+        $data = $this->artistService->findMany([
+            'name' => ['$regex' => "/$name/"]
+        ]);
+
+        return response()->json(['data' => $data]);
+    }
 }

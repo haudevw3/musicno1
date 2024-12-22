@@ -19,7 +19,7 @@ trait Mailer
             $options = array_merge($options, [
                 'subject' => config('user.label.EMAIL_SUBJECT_VERIFY_ACCOUNT'),
                 'content' => config('user.label.EMAIL_CONTENT_VERIFY_ACCOUNT'),
-                'url' => route('verify-account-page', $user->id),
+                'url' => route('page-verify-account', $user->id),
                 'btn_name' => 'Link xác thực của bạn',
             ]);
         }

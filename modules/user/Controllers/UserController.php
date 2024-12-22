@@ -70,9 +70,11 @@ class UserController extends Controller
     {
         $response = $this->loginService->withAccount($request->all());
 
-        $this->userStatusTrackingLogService->create(
-            $response->data('user_id')
-        );
+        if ($response->status() === 200) {
+            $this->userStatusTrackingLogService->create(
+                $response->data('user_id')
+            );
+        }
 
         return $response->withJson($excepts = ['user_id']);
     }

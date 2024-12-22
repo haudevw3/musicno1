@@ -2,7 +2,7 @@
 
 return [
 
-    'USER_TRACKING_INTERVAL' => 300,
+    'USER_TRACKING_INTERVAL' => 350,
     
     'label' => [
         'IS_ACTIVE' => 'Đang hoạt động',

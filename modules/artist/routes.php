@@ -14,5 +14,6 @@ Route::middleware('demon')->group(function () {
         Route::post('create', [ArtistManagerController::class, 'createArtistApi']);
         Route::put('update', [ArtistManagerController::class, 'updateArtistApi']);
         Route::delete('delete', [ArtistManagerController::class, 'deleteArtistApi']);
+        Route::get('search', [ArtistManagerController::class, 'searchArtistApi']);
     });
 });

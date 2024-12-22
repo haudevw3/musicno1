@@ -54,7 +54,6 @@ class Kernel extends HttpKernel
             \Illuminate\View\Middleware\ShareErrorsFromSession::class,
             \App\Http\Middleware\VerifyCsrfToken::class,
             \Illuminate\Routing\Middleware\SubstituteBindings::class,
-            \Core\Http\Middleware\AuthenticateCookies::class,
         ]
     ];
 
@@ -75,8 +74,9 @@ class Kernel extends HttpKernel
         'signed' => \Illuminate\Routing\Middleware\ValidateSignature::class,
         'throttle' => \Illuminate\Routing\Middleware\ThrottleRequests::class,
         'verified' => \Illuminate\Auth\Middleware\EnsureEmailIsVerified::class,
-        'auth.custom' => \Core\Http\Middleware\AuthenticateCustom::class,
-        'auth.api' => \Core\Http\Middleware\AuthenticateApi::class,
-        'auth.admin.custom' => \Core\Http\Middleware\AuthenticateAdminCustom::class,
+        'auth.custom' => \Core\Http\Middleware\AuthenticationCustom::class,
+        'auth.api' => \Core\Http\Middleware\AuthenticationApi::class,
+        'auth.admin.api' => \Core\Http\Middleware\AuthenticationAdminApi::class,
+        'auth.admin.custom' => \Core\Http\Middleware\AuthenticationAdminCustom::class,
     ];
 }
