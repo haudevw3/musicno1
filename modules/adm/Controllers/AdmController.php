@@ -44,20 +44,20 @@ class AdmController extends Controller
             'id', 'name', 'username', 'email', 'created_at', 'updated_at'
         ]);
 
-        // $users = $paginator->items();
+        $users = $paginator->items();
 
-        // foreach ($users as $key => $user) {
-        //     $users[$key] = User::create(
-        //         $user, $this->userService->repository()
-        //     );
-        // }
+        foreach ($users as $key => $user) {
+            $users[$key] = User::create(
+                $user, $this->userService->repository()
+            );
+        }
 
-        // $data = [
-        //     'users' => $users,
-        //     'paginator' => $paginator,
-        // ];
+        $data = [
+            'users' => $users,
+            'paginator' => $paginator,
+        ];
 
-        // return view('adm::viewManageUser', $data);
+        return view('adm::viewManageUser', $data);
     }
 
     public function pageManageCategory(Request $request)

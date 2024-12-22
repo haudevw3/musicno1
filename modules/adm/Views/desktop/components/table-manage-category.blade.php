@@ -11,7 +11,7 @@
                 <thead>
                     <tr>
                         <th>
-                            <x-core::check-box id="checkbox"></x-core::check-box>
+                            <x-core::checkbox id="checkbox"></x-core::checkbox>
                         </th>
                         <th>STT</th>
                         <th>Tên danh mục</th>
