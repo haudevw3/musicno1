@@ -8,13 +8,6 @@ use Illuminate\Support\Collection;
 class Paginator implements PaginatorContract
 {
     /**
-     * All of the items being paginated.
-     *
-     * @var \Illuminate\Support\Collection
-     */
-    protected $items;
-
-    /**
      * The number of items to be shown per page.
      *
      * @var int
@@ -34,13 +27,6 @@ class Paginator implements PaginatorContract
      * @var string
      */
     protected $path = '/';
-
-    /**
-     * The paginator options.
-     *
-     * @var array
-     */
-    protected $options;
 
     /**
      * The query string variable used to store the page.
@@ -71,36 +57,27 @@ class Paginator implements PaginatorContract
     protected $hasMore;
 
     /**
+     * All of the items being paginated.
+     *
+     * @var \Illuminate\Support\Collection
+     */
+    protected $items;
+
+    /**
      * Create a new paginator instance.
      *
-     * @param  mixed  $items
      * @param  int    $total
      * @param  int    $perPage
      * @param  array  $options (force: "path: Full URL of the request", "parameter: The optional parameter of the route")
      * @return void
      */
-    public function __construct($items, $total, $perPage, array $options)
+    public function __construct($total, $perPage, array $options)
     {
-        $this->perPage = $perPage;
         $this->total = $total;
+        $this->perPage = $perPage;
         $this->lastPage = max((int) ceil($total / $perPage), 1);
         $this->setPath($options['path']);
         $this->setCurrentPage($options['parameter']);
-        $this->setItems($items);
-    }
-
-    /**
-     * Create a new paginator instance.
-     *
-     * @param  mixed  $items
-     * @param  int    $total
-     * @param  int    $perPage
-     * @param  array  $options
-     * @return $this
-     */
-    public static function create($items, $total, $perPage, array $options)
-    {
-        return new static($items, $total, $perPage, $options);
     }
 
     /**
@@ -229,6 +206,22 @@ class Paginator implements PaginatorContract
     }
 
     /**
+     * Get offset value between pages.
+     *
+     * @return int
+     */
+    public function getOffset()
+    {
+        $offset = 0;
+
+        if ($this->currentPage > 1) {
+            $offset = $this->currentPage * $this->perPage - $this->perPage;
+        }
+
+        return $offset;
+    }
+
+    /**
      * Get the slice of items being paginated.
      *
      * @return array
@@ -244,15 +237,13 @@ class Paginator implements PaginatorContract
      * @param  mixed  $items
      * @return void
      */
-    protected function setItems($items)
+    public function setItems($items)
     {
-        $offset = ($this->currentPage() == 1) ? 0 : ($this->currentPage() - 1) * $this->perPage;
-
         $this->items = $items instanceof Collection ? $items : Collection::make($items);
 
-        $this->hasMore = $this->items->count() > $this->perPage;
+        $this->hasMore = $this->total > $this->perPage;
 
-        $this->items = $this->items->slice($offset, $this->perPage);
+        $this->items = $this->items->slice(0, $this->perPage);
     }
 
     /**
@@ -297,8 +288,7 @@ class Paginator implements PaginatorContract
      */
     public function previousPage()
     {
-        return ($this->currentPage() == 1)
-                ? 1 : $this->currentPage() - 1;
+        return ($this->currentPage() == 1) ? 1 : $this->currentPage() - 1;
     }
 
     /**
@@ -320,9 +310,7 @@ class Paginator implements PaginatorContract
      */
     public function nextPage()
     {
-        return ($this->currentPage() == $this->lastPage())
-                ? $this->currentPage()
-                : $this->currentPage() + 1;
+        return ($this->currentPage() == $this->lastPage()) ? 0 : $this->currentPage() + 1;
     }
 
     /**
@@ -390,7 +378,7 @@ class Paginator implements PaginatorContract
      */
     public function firstItem()
     {
-        return count($this->items) > 0 ? ($this->currentPage - 1) * $this->perPage + 1 : null;
+        return $this->count() ? ($this->currentPage - 1) * $this->perPage + 1 : null;
     }
 
     /**
@@ -400,7 +388,7 @@ class Paginator implements PaginatorContract
      */
     public function lastItem()
     {
-        return count($this->items) > 0 ? $this->firstItem() + $this->count() - 1 : null;
+        return $this->count() ? $this->firstItem() + $this->count() - 1 : null;
     }
 
     /**
