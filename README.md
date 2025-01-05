@@ -1,52 +1,42 @@
 ## Giới thiệu
-
-- Đây là dự án cá nhân nhằm phục vụ sở thích nghe nhạc của bản thân. Dự án này là bản tiền nhiệm được xây dựng dựa trên [Laravel framework](https://laravel.com/docs).
-
-- Bản gốc [MusicNo1](https://github.com/haudevw3/musicno1) được xây dựng dựa trên [PHP](https://www.php.net/docs.php) và cùng với một [Foundation framework](https://github.com/haudevw3/foundation) do chính bản thân tự viết dựa trên Laravel. Trong quá trình xây dựng vẫn còn rất nhiều thiếu sót nên bản gốc này chưa thể hoàn thành.
++ Đây là dự án cá nhân nhằm phục vụ sở thích nghe nhạc của bản thân. Dự án này là bản tiền nhiệm được xây dựng dựa trên [Laravel framework](https://laravel.com/docs).
++ Bản gốc [MusicNo1](https://github.com/haudevw3/musicno1) được xây dựng dựa trên [PHP](https://www.php.net/docs.php) và cùng với một [Foundation framework](https://github.com/haudevw3/foundation) do chính bản thân tự viết dựa trên Laravel. Trong quá trình xây dựng vẫn còn rất nhiều thiếu sót nên bản gốc này chưa thể hoàn thành.
 
 ## Tổng quan
-
-- Dự án phát triển theo hướng Multi-Page Application (MPA) sử dụng Server-Side Rendering (SSR).
-- Giao diện được thiết kế dựa trên các trang nghe nhạc trực tuyến như [Zing MP3](https://zingmp3.vn) và [Spotify](https://open.spotify.com).
-- Các tính năng phát triển theo hướng Modules và kết hợp với các Design Patterns như Service, Repository để đảm bảo kiến trúc rõ ràng dễ bảo trì.
++ Dự án phát triển theo hai hướng MPA (Multi-Page Application) và SPA (Single-Page Application) sử dụng SSR (Server-Side Rendering).
++ Về mặt giao diện và tính năng được thiết kế dựa trên các trang web có sẵn như Spotify và ZingMP3.
++ Cấu trúc thư mục và cách tổ chức code theo hướng modules để đảm bảo kiến trúc rõ ràng dễ bảo trì.
 
 ## Công nghệ sử dụng
-
-- Frontend: HTML, CSS, SCSS, Jquery.
-- Backend: PHP (Laravel), MongoDB, Redis, Nginx.
++ Backend: PHP/Laravel, MongoDB, Redis, Nginx.
++ Frontend: HTML, CSS/SCSS, Javascript/Jquery.
 
 ## Modules
-
-- adm (Quản lý các hành động như thêm, sửa, xóa,... của các modules album, artist, categories, user).
-- album (Album).
-- artist (Nghệ sĩ).
-- categories (Danh mục).
-- filemanager (Quản lý tệp tin).
-- page
-- track (Bài hát).
-- tracker (Người theo dõi).
-- user (Người dùng).
++ adm (Quản lý các hành động như thêm, sửa, xóa,... của các modules khác)
++ album
++ artist
++ categories
++ filemanager
++ page
++ track
++ tracker
++ user
 
 ## Các chức năng đã làm được
-
-#basic: Chức năng cơ bản (thêm, sửa, xóa).
-
-- album: `#basic`
-- artist: `#basic`
-- categories: `#basic`
-- filemanager: `#basic`
-- track: `#basic`
-- tracker: `#basic`
-- user:
-    + `#basic`
-    + đăng nhập trên một thiết bị, với Google
-    + đăng ký
-    + quên mật khẩu
-    + gửi email
-    + theo dõi trạng thái hoạt động
++ album: `CRUD`
++ artist: `CRUD`
++ categories: `CRUD`
++ filemanager: `CRUD`
++ track: `CRUD`
++ tracker: `CRUD`
++ user:
+    - `CRUD`
+    - đăng nhập trên một thiết bị, với Google
+    - đăng ký
+    - quên mật khẩu
+    - gửi email
+    - theo dõi trạng thái hoạt động
 
 ## Dự kiến trong tương lai
-
-- Phát triển theo hướng Single-Page Application (SPA) sử dụng Client-Side Rendering (CSR).
-- Frontend: ReactJS.
++ Frontend: ReactJS.
 
