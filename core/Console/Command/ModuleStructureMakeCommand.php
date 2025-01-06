@@ -1,0 +1,86 @@
+<?php
+
+namespace Core\Console\Command;
+
+use ErrorException;
+use Core\Console\Command\AbstractMakeCommand;
+
+class ModuleStructureMakeCommand extends AbstractMakeCommand
+{
+    /**
+     * The name and signature of the console command.
+     *
+     * @var string
+     */
+    protected $signature = 'mk:module {name}';
+
+    /**
+     * The console command description.
+     *
+     * @var string
+     */
+    protected $description = 'Create a new module structure';
+
+    /**
+     * Execute the console command.
+     *
+     * {@override}
+     */
+    public function handle(): void
+    {
+        $this->make(
+            $this->basepath(),
+            ucfirst($this->argument('name')),
+            null, null
+        );
+    }
+
+    /**
+     * Get the base path to any directory in the modules directory.
+     * 
+     * {@override}
+     */
+    protected function basepath(): string
+    {
+        return 'modules/'.strtolower($this->argument('name'));
+    }
+
+    /**
+     * Make stub content.
+     * 
+     * {@override}
+     */
+    protected function make(string $basepath, string $module, ?string $filename): void
+    {
+        try {
+            $this->filesystem->makeDirectory($basepath);
+            $this->filesystem->makeDirectory($contractPath = "{$basepath}/Contract");
+            $this->filesystem->makeDirectory("{$contractPath}/Repository");
+            $this->filesystem->makeDirectory("{$contractPath}/Service");
+            $this->filesystem->makeDirectory("{$basepath}/Controller");
+            $this->filesystem->makeDirectory("{$basepath}/Model");
+            $this->filesystem->makeDirectory("{$basepath}/Request");
+            $this->filesystem->makeDirectory("{$basepath}/Repository");
+            $this->filesystem->makeDirectory("{$basepath}/Service");
+            $this->filesystem->makeDirectory($viewPath = "{$basepath}/View");
+            $this->filesystem->makeDirectory($assetPath = "{$viewPath}/asset");
+            $this->filesystem->makeDirectory("{$assetPath}/css");
+            $this->filesystem->makeDirectory("{$assetPath}/js");
+            $this->filesystem->makeDirectory("{$assetPath}/scss");
+            $this->filesystem->makeDirectory($desktopPath = "{$viewPath}/desktop");
+            $this->filesystem->makeDirectory("{$desktopPath}/component");
+            $this->filesystem->makeDirectory($mobilePath = "{$viewPath}/mobile");
+            $this->filesystem->makeDirectory("{$mobilePath}/component");
+
+            $this->addStubContentTo('route', "{$basepath}/route.php");
+            $this->addStubContentTo('config', "{$basepath}/config.php");
+            $this->addStubContentTo('provider', "{$basepath}/{$module}ServiceProvider.php", [
+                'namespace' => "Modules\\{$module}",
+                'class' => "{$module}ServiceProvider"
+            ]);
+
+        } catch (ErrorException $e) {
+            $this->error($e->getMessage());
+        }
+    }
+}

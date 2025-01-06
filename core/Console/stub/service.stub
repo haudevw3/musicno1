@@ -7,10 +7,5 @@ use {{ use }} as {{ interface }};
 
 class {{ class }} extends BaseService implements {{ interface }}
 {
-    protected $baseRepo;
-
-    public function __construct($baseRepo = null)
-    {
-        parent::__construct($baseRepo);
-    }
+    
 }
