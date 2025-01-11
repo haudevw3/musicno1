@@ -2,39 +2,44 @@
 
 namespace Core\Repository;
 
-use Core\Repository\Contracts\BaseRepository as BaseRepositoryContract;
-use Illuminate\Support\Traits\Macroable;
 use MongoDB\BSON\ObjectId;
+use Jenssegers\Mongodb\Eloquent\Model;
+use Jenssegers\Mongodb\Eloquent\Builder;
+use Illuminate\Database\Eloquent\Collection;
+use Core\Contract\Repository\BaseRepository as BaseRepositoryContract;
 
 abstract class BaseRepository implements BaseRepositoryContract
 {
-    use Macroable;
-
     /**
      * The primary key name in Mongo DB.
      *
      * @var string
      */
     protected $primaryKey = '_id';
+
+    /**
+     * The default direction for sort order.
+     *
+     * @var string
+     */
+    protected $direction = 'asc';
     
     /**
      * The eloquent model instance.
      *
-     * @var \Jenssegers\Mongodb\Eloquent\Model
+     * @var Model
      */
     protected $model;
 
     /**
      * The eloquent builder instance.
      *
-     * @var \Jenssegers\Mongodb\Eloquent\Builder
+     * @var Builder
      */
     protected $builder;
 
     /**
-     * Create a new base repository instance.
-     * 
-     * @return void
+     * Create a new "base repository" instance.
      */
     public function __construct()
     {
@@ -43,174 +48,119 @@ abstract class BaseRepository implements BaseRepositoryContract
 
     /**
      * Get the model name of the sub-class when it extends from the parent class.
-     *
-     * @return string
      */
-    abstract public function getModel();
+    abstract public function getModel(): string;
 
     /**
-     * Set the model name with the given name.
-     *
-     * @param  string  $model
-     * @return void
+     * Set the model instance with the given name.
      */
-    protected function setModel($model)
+    protected function setModel(string $model): void
     {
         $this->model = app($model);
     }
 
-    /**
+     /**
      * Get the eloquent model instance.
-     *
-     * @return \Jenssegers\Mongodb\Eloquent\Model
      */
-    public function model()
+    public function model(): Model
     {
         return $this->model;
     }
 
     /**
      * Get the eloquent builder instance.
-     *
-     * @return \Jenssegers\Mongodb\Eloquent\Builder
      */
-    public function builder()
+    public function builder(): Builder
     {
         return $this->builder;
     }
 
     /**
-     * Count documents with the given conditions.
-     *
-     * @param  array  $conditions
-     * @return int
+     * Get a document with the given unique identifier.
      */
-    public function count(array $conditions = [])
-    {
-        return $this->buildQuery($conditions)->count();
-    }
-
-    /**
-     * Calculate the sum with the given conditions.
-     *
-     * @param  string  $field
-     * @param  array   $conditions
-     * @return float
-     */
-    public function sum(string $field, array $conditions = [])
-    {
-        return $this->buildQuery($conditions)->sum($field);
-    }
-
-    /**
-     * Get one document with the given unique identifier.
-     *
-     * @param  string  $id
-     * @param  array   $fields
-     * @return \Jenssegers\Mongodb\Eloquent\Model
-     */
-    public function get(string $id, array $fields = [])
+    public function get(string $id, array $fields = []): Model
     {
         return $this->model::where($this->primaryKey, $id)->first($fields);
     }
 
     /**
-     * Insert one or many new data into the database.
-     *
-     * @param  array  $data
-     * @return \Jenssegers\Mongodb\Eloquent\Model
+     * Count documents with the given conditions.
      */
-    public function create(array $data)
+    public function count(array $conditions = []): int
+    {
+        return $this->buildQuery($conditions)->count();
+    }
+
+    /**
+     * Calculate the sum of a field with the given conditions.
+     */
+    public function sum(string $field, array $conditions = []): float
+    {
+        return $this->buildQuery($conditions)->sum($field);
+    }
+
+    /**
+     * Insert one or many data arrays into the database.
+     */
+    public function create(array $data): Model
     {
         return $this->model::create($data);
     }
 
     /**
-     * Update documents with the given conditions.
-     *
-     * @param  array  $conditions
-     * @param  array  $data
-     * @param  array  $options
-     * @return bool
+     * Update one or many documents with the given conditions.
      */
-    public function update(array $conditions, array $data, array $options = [])
+    public function update(array $conditions, array $data, array $options = []): bool
     {
         return $this->buildQuery($conditions)->update($data, $options);
     }
 
     /**
      * Update one document with the given unique identifier.
-     *
-     * @param  string  $id
-     * @param  array   $data
-     * @param  array   $options
-     * @return bool
      */
-    public function updateOne(string $id, array $data, array $options = [])
+    public function updateOne(string $id, array $data, array $options = []): bool
     {
         return $this->model::where($this->primaryKey, $id)->update($data, $options);
     }
 
     /**
-     * Delete documents with the given conditions.
-     *
-     * @param  array  $conditions
-     * @return bool
+     * Delete one or many documents with the given conditions.
      */
-    public function delete(array $conditions)
+    public function delete(array $conditions): bool
     {
         return $this->buildQuery($conditions)->delete();
     }
 
     /**
      * Delete one document with the given unique identifier.
-     *
-     * @param  string  $id
-     * @return bool
      */
-    public function deleteOne(string $id)
+    public function deleteOne(string $id): bool
     {
         return $this->model::where($this->primaryKey, $id)->delete();
     }
 
     /**
-     * Return one document with the given conditions.
-     *
-     * @param  array|string  $conditions
-     * @param  array         $fields
-     * @param  array         $options
-     * @return \Jenssegers\Mongodb\Eloquent\Model
+     * Find one document with the given conditions.
      */
-    public function findOne($conditions, array $fields = [], array $options = [])
+    public function findOne(array|string $conditions, array $fields = []): Model
     {
-        $conditions = is_array($conditions) ? $conditions : [$this->primaryKey => $conditions];
-
-        return $this->buildQuery($conditions, $options)->first($fields);
+        return $this->buildQuery(
+            is_array($conditions) ? $conditions : [$this->primaryKey => $conditions]
+        )->first($fields);
     }
 
     /**
-     * Return many documents with the given conditions.
-     *
-     * @param  array  $conditions
-     * @param  array  $fields
-     * @param  array  $options
-     * @return \Illuminate\Database\Eloquent\Collection
+     * Find many documents with the given conditions.
      */
-    public function findMany(array $conditions, array $fields = [], array $options = [])
+    public function findMany(array $conditions, array $fields = [], array $options = []): Collection
     {
-        $options = isset($options['limit']) ? $options : array_merge($options, ['limit' => 1000]);
-        
         return $this->buildQuery($conditions, $options)->get($fields);
     }
 
     /**
      * Build a query statement with the given conditions and options if any.
-     *
-     * @param  array  $conditions
-     * @param  array  $options
-     * @return \Jenssegers\Mongodb\Eloquent\Builder
      */
-    public function buildQuery(array $conditions = [], array $options = [])
+    public function buildQuery(array $conditions = [], ?array $options = null): Builder
     {
         // Get a new eloquent query builder for the model's table.
         $this->builder = $this->model::query();
@@ -219,7 +169,7 @@ abstract class BaseRepository implements BaseRepositoryContract
             $this->parseConditions($conditions);
         }
 
-        if (! empty($options)) {
+        if (! is_null($options)) {
             $this->parseOptions($options);
         }
 
@@ -228,17 +178,14 @@ abstract class BaseRepository implements BaseRepositoryContract
 
     /**
      * Parse conditions and convert them to the query standard in Laravel.
-     *
-     * @param  array  $conditions
-     * @return $this
      */
-    protected function parseConditions(array $conditions)
+    protected function parseConditions(array $conditions): self
     {
         foreach ($conditions as $key => $value) {
             if (is_array($value) && isset($value['$regex'])) {
-                $this->builder = $this->builder->where($key, 'regexp', $value['$regex']);
+                $this->builder->where($key, 'regexp', $value['$regex']);
             } else {
-                $this->builder = $this->builder->where($key, $value);
+                $this->builder->where($key, $value);
             }
         }
 
@@ -246,39 +193,36 @@ abstract class BaseRepository implements BaseRepositoryContract
     }
 
     /**
-     * Parse optional parameters such as (skip, limit, sorted).
-     *
-     * @param  array  $options
-     * @return $this
+     * Parse optional parameters and convert them to the query standard in Laravel.
      */
-    protected function parseOptions(array $options)
+    protected function parseOptions(array $options): self
     {
-        if (isset($options['skip']) && is_numeric($skip = $options['skip'])) {
-            $this->builder = $this->builder->skip($skip);
-        }
+        $this->builder->skip(
+            isset($options['skip']) ? intval($options['skip']) : 0
+        )->take(
+            isset($options['limit']) ? intval($options['limit']) : 1000
+        );
 
-        if (isset($options['limit']) && is_numeric($limit = $options['limit'])) {
-            $this->builder = $this->builder->take($limit);
-        }
-        
-        if (isset($options['sorted']) && is_array($sorted = $options['sorted'])) {
-            foreach ($sorted as $key => $value) {
-                $this->builder = $this->builder->orderBy(
-                    $key, (is_string($value) ? ($value == 'desc' ? -1 : 1) : $value)
-                );
+        $sorts = array_merge(
+            isset($options['sort']) && is_array($options['sort']) ? $options['sort'] : [],
+            [$this->primaryKey => $this->direction]
+        );
+
+        foreach ($sorts as $key => $value) {
+            if ($key != $this->primaryKey) {
+                $this->direction = $value;
             }
+
+            $this->builder->orderBy($key, $this->direction);
         }
 
         return $this;
     }
 
     /**
-     * Create an object identifier with the given identifier.
-     *
-     * @param  string  $identifier
-     * @return \MongoDB\BSON\ObjectId
+     * Create a new object identifier with the given identifier.
      */
-    public static function createObjectId($identifier)
+    public static function createObjectId($identifier): ObjectId
     {
         return new ObjectId($identifier);
     }
