@@ -3,7 +3,6 @@
 namespace Core\Console\Command;
 
 use ErrorException;
-use Illuminate\Console\Command;
 use Core\Console\Command\AbstractMakeCommand;
 
 class ControllerMakeCommand extends AbstractMakeCommand
@@ -23,26 +22,14 @@ class ControllerMakeCommand extends AbstractMakeCommand
     protected $description = 'Create a new controller class';
 
     /**
-     * Make stub content.
+     * Execute the console command.
      * 
      * @throws ErrorException
      */
-    protected function make(string $basepath, string $module, string $filename): void
+    public function handle(): void
     {
-        try {
-            $basepath = "{$basepath}/Controller";
-
-            $path = "{$basepath}/{$filename}.php";
-
-            if ($this->promptIf($path, $filename)) {
-                $this->addStubContentTo('controller', $path, [
-                    'namespace' => "Modules\\{$module}\\Controller",
-                    'class' => $filename
-                ]);
-            }
-
-        } catch (ErrorException $e) {
-            $this->error($e->getMessage());
-        }
+        $this->touch(function() {
+            $this->putContent();
+        });
     }
 }

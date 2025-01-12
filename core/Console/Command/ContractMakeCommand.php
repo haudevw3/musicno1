@@ -4,7 +4,6 @@ namespace Core\Console\Command;
 
 use ErrorException;
 use Core\Console\Command\AbstractMakeCommand;
-use Illuminate\Contracts\Filesystem\FileNotFoundException;
 
 class ContractMakeCommand extends AbstractMakeCommand
 {
@@ -13,7 +12,7 @@ class ContractMakeCommand extends AbstractMakeCommand
      *
      * @var string
      */
-    protected $signature = 'mk:contract {filename} {--module=} {--dirname=} {--confirm=no}';
+    protected $signature = 'mk:contract {filename} {--module=} {--dirname=}';
 
     /**
      * The console command description.
@@ -23,28 +22,49 @@ class ContractMakeCommand extends AbstractMakeCommand
     protected $description = 'Create a new contract class';
 
     /**
-     * Make stub content.
+     * Get the sub-directory name in the parent directory if any.
+     */
+    protected function dirname(): ?string
+    {
+        return $this->options['dirname'] ?? $this->option('dirname');
+    }
+
+    /**
+     * Get the namespace.
+     * 
+     * @override
+     */
+    protected function namespace(): string
+    {
+        return "Modules\\{$this->ucfirst('module')}\\{$this->ucfirst('basename')}".(
+            $this->dirname() ? "\\{$this->dirname()}\\" : "\\"
+        )."{$this->filename()}";
+    }
+
+    /**
+     * Get the full path to the directory file.
+     * 
+     * @override
+     */
+    protected function path(): string
+    {
+        return "{$this->basepath()}/{$this->ucfirst('basename')}".(
+            $this->dirname() ? "/{$this->dirname()}/" : "/"
+        )."{$this->filename()}.php";
+    }
+
+    /**
+     * Execute the console command.
      * 
      * @throws ErrorException
      */
-    public function make(string $basepath, string $module, string $filename): void
+    public function handle(): void
     {
-        try {
-            $basepath = "{$basepath}/Contract";
-
-            $dirname = ucfirst($this->option('dirname'));
-            
-            $path = "{$basepath}/{$dirname}/{$filename}.php";
-
-            if ($this->option('confirm') === 'yes' || $this->promptIf($path, $filename)) {
-                $this->addStubContentTo('contract', $path, [
-                    'namespace' => "Modules\\{$module}\\Contract\\{$dirname}",
-                    'interface' => $filename
-                ]);
-            }
-
-        } catch (ErrorException $e) {
-            $this->error($e->getMessage());
-        }
+        $this->touch(function() {
+            $this->putContent([
+                'interface' => $this->filename(),
+                'namespace' => $this->namespace()
+            ]);
+        });
     }
 }

@@ -3,7 +3,7 @@
 namespace {{ namespace }};
 
 use Core\Service\BaseService;
-use {{ use }} as {{ interface }};
+use {{ namespaced }} as {{ interface }};
 
 class {{ class }} extends BaseService implements {{ interface }}
 {

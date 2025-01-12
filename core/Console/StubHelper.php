@@ -15,7 +15,7 @@ trait StubHelper
     {
         try {
             return $this->filesystem->get(
-                __DIR__."/stub/{$name}.stub"
+                __DIR__."/stubs/{$name}.stub"
             );
         } catch (FileNotFoundException $e) {
             $this->error("Not found [$name.stub] file.");
@@ -34,7 +34,7 @@ trait StubHelper
                 '!{{ '.preg_quote($contextual).' }}!', $value, $stubContent
             );
         }
-
+    
         return $stubContent;
     }
 

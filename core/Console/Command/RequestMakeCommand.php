@@ -22,26 +22,14 @@ class RequestMakeCommand extends AbstractMakeCommand
     protected $description = 'Create a new request class';
 
     /**
-     * Make stub content.
+     * Execute the console command.
      * 
      * @throws ErrorException
      */
-    protected function make(string $basepath, string $module, string $filename): void
+    public function handle(): void
     {
-        try {
-            $basepath = "{$basepath}/Request";
-
-            $path = "{$basepath}/{$filename}.php";
-
-            if ($this->promptIf($path, $filename)) {
-                $this->addStubContentTo('request', $path, [
-                    'namespace' => "Modules\\{$module}\\Request",
-                    'class' => $filename
-                ]);
-            }
-
-        } catch (ErrorException $e) {
-            $this->error($e->getMessage());
-        }
+        $this->touch(function() {
+            $this->putContent();
+        });
     }
 }

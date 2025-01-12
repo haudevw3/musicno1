@@ -3,7 +3,6 @@
 namespace Core\Console\Command;
 
 use ErrorException;
-use Illuminate\Support\Facades\Artisan;
 use Core\Console\Command\AbstractMakeCommand;
 use Core\Console\Command\ContractMakeCommand;
 
@@ -24,35 +23,24 @@ class ServiceMakeCommand extends AbstractMakeCommand
     protected $description = 'Create a new service class';
 
     /**
-     * Make stub content.
+     * Execute the console command.
      * 
      * @throws ErrorException
      */
-    protected function make(string $basepath, string $module, string $filename): void
+    public function handle(): void
     {
-        try {
-            $basepath = "{$basepath}/Service";
+        $this->touch(function() {
+            $this->putContent([
+                'class' => $this->filename(),
+                'interface' => "{$this->filename()}Contract",
+                'namespace' => $this->namespace(),
+                'namespaced' => "Modules\\{$this->ucfirst('module')}\\Contract\\Service\\{$this->filename()}",
+            ]);
 
-            $path = "{$basepath}/{$filename}.php";
-
-            if ($this->promptIf($path, $filename)) {
-                $this->addStubContentTo('service', $path, [
-                    'namespace' => "Modules\\{$module}\\Service",
-                    'interface' => "{$filename}Contract",
-                    'use' => "Modules\\{$module}\\Contract\\Service\\{$filename}",
-                    'class' => $filename
-                ]);
-
-                Artisan::call(ContractMakeCommand::class, [
-                    'filename' => $filename,
-                    '--module' => $module,
-                    '--dirname' => 'service',
-                    '--confirm' => 'yes'
-                ]);
-            }
-
-        } catch (ErrorException $e) {
-            $this->error($e->getMessage());
-        }
+            ContractMakeCommand::make(
+                ['filename' => $this->filename()],
+                ['module' => $this->module(), 'dirname' => 'Service']
+            );
+        });
     }
 }

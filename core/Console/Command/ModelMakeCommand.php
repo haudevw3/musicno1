@@ -22,26 +22,14 @@ class ModelMakeCommand extends AbstractMakeCommand
     protected $description = 'Create a new model class';
 
     /**
-     * Make stub content.
+     * Execute the console command.
      * 
      * @throws ErrorException
      */
-    protected function make(string $basepath, string $module, string $filename): void
+    public function handle(): void
     {
-        try {
-            $basepath = "{$basepath}/Model";
-
-            $path = "{$basepath}/{$filename}.php";
-
-            if ($this->promptIf($path, $filename)) {
-                $this->addStubContentTo('model', $path, [
-                    'namespace' => "Modules\\{$module}\\Model",
-                    'class' => $filename
-                ]);
-            }
-
-        } catch (ErrorException $e) {
-            $this->error($e->getMessage());
-        }
+        $this->touch(function() {
+            $this->putContent();
+        });
     }
 }

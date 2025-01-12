@@ -18,7 +18,7 @@ class {{ class }} extends Model
      *
      * @var string
      */
-    protected $collection = 'collection_name';
+    protected $collection = 'name';
 
     /**
      * The attribute will disabled.
@@ -30,28 +30,28 @@ class {{ class }} extends Model
     /**
      * Assign fields to save in the database.
      *
-     * @var array<int, string>
+     * @var array
      */
     protected $fillable = [];
 
     /**
      * Define default values for the model's attributes.
      *
-     * @var array<string|int, string|int|null>
+     * @var array
      */
     protected $attributes = [];
 
     /**
      * The attributes that should be cast.
      *
-     * @var array<string, string>
+     * @var array
      */
     protected $casts = [];
 
     /**
      * The attributes that should be hidden for serialization.
      *
-     * @var array<int, string>
+     * @var array
      */
     protected $hidden = [];
 }

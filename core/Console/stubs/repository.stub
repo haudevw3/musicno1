@@ -3,7 +3,7 @@
 namespace {{ namespace }};
 
 use Core\Repository\BaseRepository;
-use {{ use }} as {{ interface }};
+use {{ namespaced }} as {{ interface }};
 
 class {{ class }} extends BaseRepository implements {{ interface }}
 {
